@@ -1,0 +1,9 @@
+@font-face {
+    font-family: sofia;
+    src: url(/assets/fonts/sofiapro-light.otf);
+  }
+  
+
+.sofia{
+    font-family: 'sofia';
+}

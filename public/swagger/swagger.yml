@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: 'PHP REST TEMPLATE'
+  description: 'API documentation'
+  version: '1'
+servers:
+  -
+    url: 'http://localhost:8081'
+    description: 'Local server'
+  -
+    url: 'http://localhost:81'
+    description: 'docker server'
+components:
+  schemas:
+    LoginRequestDTO:
+      title: LoginRequestDTO
+      description: LoginRequestDTO
+      required:
+        - username
+        - password
+      properties:
+        username:
+          description: username
+          type: string
+          example: john.doe
+        password:
+          description: Password
+          type: string
+          example: M0N_M0T_DE_P4SS3_leet
+      type: object
+    LoginResponseDTO:
+      title: LoginResponseDTO
+      description: LoginResponseDTO
+      properties:
+        access_token:
+          description: 'access token'
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        refresh_token:
+          description: 'decode me'
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkVBU1RFUiBFR0cifQ.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJtZXJjaSI6Ikdyw6JjZSBhdXggdXNhZ2VycyB2b3VzIGF2ZXogdW4gZW1wbG9pLCBkb25jIG4nb3VibGlleiBwYXMgZGUgbGV1cnMgZGlyZSBtZXJjaSAhIn0.drMDruzO5qlje12n6PR-0b2wWC9J8G_wxOyUKv3qs9k
+        user:
+          description: user
+          type: object
+      type: object
+    HttpResponse:
+      title: HttpResponse
+      description: 'Class for handling HTTP responses'
+      properties:
+        success:
+          description: 'Indicates whether the response was successful or not'
+          type: boolean
+          default: false
+        status:
+          description: 'The HTTP status code for the response'
+          type: integer
+          default: 500
+        messages:
+          type: array
+          items:
+            description: 'An array of strings representing messages for the response'
+            type: string
+        data:
+          description: 'The data returned by the response. Could be an anonymous object or an array of anonymous objects'
+          type: object
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer
