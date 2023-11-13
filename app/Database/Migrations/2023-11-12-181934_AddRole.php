@@ -25,6 +25,11 @@ class AddRole extends Migration
                 'type' => 'datetime',
                 'null' => true,
             ],
+            'exists' => [
+                'type' => 'BOOLEAN',
+                'null' => false,
+                'default' => true,
+            ],
         'created_at datetime default current_timestamp',
         ]);
         $this->forge->addPrimaryKey('id');

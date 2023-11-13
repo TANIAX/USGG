@@ -20,9 +20,11 @@ class User extends Entity
     private DateTime $birthdate;
     private string $phone;
     private string $picture;
+    private bool $exists;
     private DateTime $updated_at;
     private DateTime $created_at;
     private array $roles;
+    private UserType $userType;
 
     /**
      * Get the value of id
@@ -260,6 +262,46 @@ class User extends Entity
     public function setRoles($roles)
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of userType
+     */ 
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * Set the value of userType
+     *
+     * @return  self
+     */ 
+    public function setUserType($userType)
+    {
+        $this->userType = $userType;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of exists
+     */ 
+    public function getExists()
+    {
+        return $this->exists;
+    }
+
+    /**
+     * Set the value of exists
+     *
+     * @return  self
+     */ 
+    public function setExists($exists)
+    {
+        $this->exists = $exists;
 
         return $this;
     }

@@ -14,6 +14,7 @@ use DateTime;
  {
         private int $id;
         private string $name;
+        private bool $exists;
         private ?DateTime $updated_at;
         private DateTime $created_at;
     
@@ -93,6 +94,26 @@ use DateTime;
         public function setCreated_at($created_at)
         {
                 $this->created_at = $created_at;
+
+                return $this;
+        }
+
+        /**
+         * Get the value of exists
+         */ 
+        public function getExists()
+        {
+                return $this->exists;
+        }
+
+        /**
+         * Set the value of exists
+         *
+         * @return  self
+         */ 
+        public function setExists($exists)
+        {
+                $this->exists = $exists;
 
                 return $this;
         }

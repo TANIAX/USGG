@@ -3,173 +3,97 @@
 <?= $this->section('content') ?>
 
 <!-- Banner -->
-<header class="banner">
+<header class="banner hidden md:block">
   <span class="background"></span>
   <div class="animate__animated animate__slideInUp animate__slow">
-    <h1>UNITÉ GUIDE ET SCOUT DE GOSSELIES</h1>
+    <h1>UNITÉ SCOUT ET GUIDE DE GOSSELIES</h1>
   </div>
 </header>
 
+
 <!-- News -->
-<div class="bg-white py-8 sm:py-12">
+<div class="bg-white py-8 sm:py-12 min-h-screen">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Actualités</h2>
-      <p class="mt-2 text-lg leading-8 text-gray-600">En ce moment chez les Guides et scouts de <span class="font-bold">Gosselies</span>.</p>
+      <p class="mt-2 text-lg leading-8 text-gray-600">En ce moment chez les scouts et guides de <span class="font-bold">Gosselies</span>.</p>
     </div>
     <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      <article class="flex flex-col items-start justify-between">
+
+    <?php if (!empty($news) && is_array($news)) : ?>
+    <?php foreach ($news as $key=> $item) : ?>
+      <article class="flex flex-col items-start justify-between animate__animated <?= getAnimateClass($key) ?> animate__slow animate__delay-1s">
         <div class="relative w-full">
-          <img src="https://images.unsplash.com/photo-1470698521175-2e6953957278?q=80&w=2033&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]">
+          <img src="<?= $item->picture ?>">
           <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
         </div>
         <div class="max-w-xl">
           <div class="mt-8 flex items-center gap-x-4 text-xs">
-            <time datetime="2020-03-16" class="text-gray-500">Mar 16, 2020</time>
-            <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Évenements</a>
+            <p class="text-gray-500"><?= $item->created_at->format('d/m/Y') ?></time>
+            <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"><?= $item->category->name ?></a>
           </div>
           <div class="group relative">
-            <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+            <h3 class="mt-3 text-lg text-ellipsis whitespace-nowrap overflow-hidden font-semibold leading-6 text-gray-900 group-hover:text-gray-600" style="max-width: 350px;">
               <a href="#">
                 <span class="absolute inset-0"></span>
-                Souper photo
+                <?= $item->title ?>
               </a>
             </h3>
-            <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.</p>
+            <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600"><?= $item->content ?></p>
           </div>
           <div class="relative mt-8 flex items-center gap-x-4">
-            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="h-10 w-10 rounded-full bg-gray-100">
+            <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100">
             <div class="text-sm leading-6">
               <p class="font-semibold text-gray-900">
                 <a href="#">
                   <span class="absolute inset-0"></span>
-                  Justine Harpigny
+                  <?= $item->author->totem ?>
                 </a>
               </p>
-              <p class="text-gray-600">Chef d'unité</p>
+              <p class="text-sm font-semibold leading-6 text-indigo-600"><?= $item->author->user_type->name ?></p>
             </div>
           </div>
         </div>
       </article>
+      <?php endforeach ?>
+    <?php else : ?>
+      <p>Aucune actualité pour le moment</p>
+    <?php endif ?>
 
-      <article class="flex flex-col items-start justify-between">
-        <div class="relative w-full">
-          <img src="https://images.unsplash.com/photo-1522413452208-996ff3f3e740?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]">
-          <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
-        </div>
-        <div class="max-w-xl">
-          <div class="mt-8 flex items-center gap-x-4 text-xs">
-            <time datetime="2020-03-16" class="text-gray-500">Mar 16, 2020</time>
-            <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Évenements</a>
-          </div>
-          <div class="group relative">
-            <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-              <a href="#">
-                <span class="absolute inset-0"></span>
-                Fêtes d'unité
-              </a>
-            </h3>
-            <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.</p>
-          </div>
-          <div class="relative mt-8 flex items-center gap-x-4">
-            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="h-10 w-10 rounded-full bg-gray-100">
-            <div class="text-sm leading-6">
-              <p class="font-semibold text-gray-900">
-                <a href="#">
-                  <span class="absolute inset-0"></span>
-                  Marine Collart
-                </a>
-              </p>
-              <p class="text-gray-600">chef d'unité</p>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="flex flex-col items-start justify-between">
-        <div class="relative w-full">
-          <img src="https://images.unsplash.com/photo-1621510456681-2330135e5871?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]">
-          <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
-        </div>
-        <div class="max-w-xl">
-          <div class="mt-8 flex items-center gap-x-4 text-xs">
-            <time datetime="2020-03-16" class="text-gray-500">Mar 16, 2020</time>
-            <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Services</a>
-          </div>
-          <div class="group relative">
-            <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-              <a href="#">
-                <span class="absolute inset-0"></span>
-                Ventes de lasagnes
-              </a>
-            </h3>
-            <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.</p>
-          </div>
-          <div class="relative mt-8 flex items-center gap-x-4">
-            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="h-10 w-10 rounded-full bg-gray-100">
-            <div class="text-sm leading-6">
-              <p class="font-semibold text-gray-900">
-                <a href="#">
-                  <span class="absolute inset-0"></span>
-                  Zoran Caruso
-                </a>
-              </p>
-              <p class="text-gray-600">chef horizon</p>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- More posts... -->
     </div>
+  </div>
+  <!-- More Post -->
+  <div id="more_post" class="relative flex flex-col items-center justify-center overflow-hidden py-12 sm:py-24 bg-white">
+    <button id="more_post_button" type="button" class="rounded-md px-6 py-2.5 tracking-widest uppercase text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-50 animate__animated hidden">voir plus d'actualités</button>
   </div>
 </div>
 
 
-<!-- Meet -->
-<div class="bg-slate-100 py-24 sm:py-32 ">
-  <div class="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
-    <div class="max-w-2xl">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Rencontrez les chefs</h2>
-      <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres chefs.</p>
+
+<!-- Team -->
+<div class="bg-slate-100 py-24 sm:py-32 min-h-scren">
+  <div class="mx-auto max-w-7xl">
+    <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Rencontre des grands chefs</h2>
+      <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres chefs.</p> -->
     </div>
-    <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-      <li>
-        <div class="flex items-center gap-x-6">
-          <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-          <div>
-            <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900">Leslie Alexander</h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600">Co-Founder / CEO</p>
-          </div>
-        </div>
-      </li>
-
-      <li>
-        <div class="flex items-center gap-x-6">
-          <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-          <div>
-            <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900">Leslie Alexander</h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600">Co-Founder / CEO</p>
-          </div>
-        </div>
-      </li>
-
-
-      <li>
-        <div class="flex items-center gap-x-6">
-          <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-          <div>
-            <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900">Leslie Alexander</h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600">Co-Founder / CEO</p>
-          </div>
-        </div>
-      </li>
-
-
-      <!-- More people... -->
+    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 animate__animated animate__slow hidden">
+      <?php if (!empty($users) && is_array($users)) : ?>
+        <?php foreach ($users as $user) : ?>
+          <li>
+            <img class="mx-auto h-24 w-24 rounded-full" src="<?= $user->picture ?>" alt="">
+            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900"><?= $user->totem ?></h3>
+            <p class="text-sm font-semibold leading-6 text-indigo-600"><?= $user->user_type ?></p>
+          </li>
+        <?php endforeach ?>
+      <?php else : ?>
+        <li>
+          <p class="text-sm font-semibold leading-6 text-indigo-600">Aucun chef pour le moment</p>
+        </li>
+      <?php endif ?>
     </ul>
   </div>
-</div> 
+</div>
 
 <style>
   body {
@@ -229,5 +153,41 @@
   window.onload = function() {
     document.body.className += ' loaded'
   };
+
+  // When the user scrolls down designed px from the top of the document, show the button more post
+  window.onscroll = function() {
+    var widthConditionMMorePost = 600;
+    var widthConditionManager = 900;
+    var width = window.innerWidth;
+
+    if (width < 768) {
+      widthConditionMMorePost = 1200;
+      widthConditionManager = 1300;
+    }
+
+
+    if (document.body.scrollTop > widthConditionMMorePost || document.documentElement.scrollTop > widthConditionMMorePost) {
+      //Add class to the element with the id="more_post_button"
+      document.getElementById("more_post_button").classList.remove("hidden");
+      document.getElementById("more_post_button").classList.add("animate__fadeInUp");
+    }
+
+    if (document.body.scrollTop > widthConditionManager || document.documentElement.scrollTop > widthConditionManager) {
+      //Add class to the element with the id="team_list"
+      document.getElementById("team_list").classList.remove("hidden");
+      document.getElementById("team_list").classList.add("animate__fadeInUp");
+    }
+  };
+</script>
 </script>
 <?= $this->endSection() ?>
+
+
+<?php
+
+function getAnimateClass($index){
+  if($index % 2 == 0)
+    return "animate__bounceInLeft";
+  else
+    return "animate__bounceInRight";
+}

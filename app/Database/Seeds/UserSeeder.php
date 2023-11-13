@@ -9,52 +9,54 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        $faker = Factory::create();
+
         $super_admin = [
-            'totem' => 'SuperAdmin',
+            'totem' => 'Super admin',
             'name' => 'Cornez',
             'firstname' => 'Guillaume',
-            'phone' => "+324". "00" . "/" . "00" . "." . "00" . "." . "00",
-            'birthdate' => '1979-06-09 10:30:00',
-            'email' => 'superadmin@gmail.com',
-            'password' => password_hash('superAdmin@gmail.com', PASSWORD_DEFAULT),
-            'created_at' => '2024-01-01 00:00:00',
-            'updated_at' => '2024-01-01 00:00:00',
+            'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
+            'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
+            'email' => 'super_admin@gmail.com',
+            'password' => password_hash('super_admin@gmail.com', PASSWORD_DEFAULT),
+            'user_type_id' => 1,
+            'picture' => 'person1.jpg'
         ];
 
         $guide_admin = [
-            'totem' => 'GuideAdmin',
+            'totem' => 'Guide admin',
             'name' => 'Cornez',
             'firstname' => 'Guillaume',
-            'phone' => "+324". "00" . "/" . "00" . "." . "00" . "." . "00",
-            'birthdate' => '1979-06-09 10:30:00',
-            'email' => 'guideAdmin@gmail.com',
-            'password' => password_hash('guideAdmin@gmail.com', PASSWORD_DEFAULT),
-            'created_at' => '2024-01-01 00:00:00',
-            'updated_at' => '2024-01-01 00:00:00',
+            'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
+            'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
+            'email' => 'guide_admin@gmail.com',
+            'password' => password_hash('guide_admin@gmail.com', PASSWORD_DEFAULT),
+            'user_type_id' => 1,
+            'picture' => 'person2.jpg'
         ];
         
         $scout_admin = [
-            'totem' => 'ScoutAdmin',
+            'totem' => 'Scout admin',
             'name' => 'Cornez',
             'firstname' => 'Guillaume',
-            'phone' => "+324". "00" . "/" . "00" . "." . "00" . "." . "00",
-            'birthdate' => '1979-06-09 10:30:00',
+            'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
+            'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
             'email' => 'scoutAdmin@gmail.com',
-            'password' => password_hash('scoutAdmin@gmail.com', PASSWORD_DEFAULT),
-            'created_at' => '2024-01-01 00:00:00',
-            'updated_at' => '2024-01-01 00:00:00',
+            'password' => password_hash('scout_admin@gmail.com', PASSWORD_DEFAULT),
+            'user_type_id' => 1,
+            'picture' => 'person3.jpg'
         ];
 
         $asbl_admin = [
-            'totem' => 'AsblAdmin',
+            'totem' => 'Asbl admin',
             'name' => 'Cornez',
             'firstname' => 'Guillaume',
-            'phone' => "+324". "00" . "/" . "00" . "." . "00" . "." . "00",
-            'birthdate' => '1979-06-09 10:30:00',
-            'email' => 'asblAdmin@gmail.com',
-            'password' => password_hash('asblAdmin@gmail.com,', PASSWORD_DEFAULT),
-            'created_at' => '2024-01-01 00:00:00',
-            'updated_at' => '2024-01-01 00:00:00',
+            'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
+            'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
+            'email' => 'asbl_admin@gmail.com',
+            'password' => password_hash('asbl_admin@gmail.com,', PASSWORD_DEFAULT),
+            'user_type_id' => 2,
+            'picture' => 'person4.jpg'
         ];
         
         $this->db->table('user')->insert($super_admin);
@@ -79,8 +81,7 @@ class UserSeeder extends Seeder
             'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
             'email' => $faker->email(),
             'password' => password_hash('password', PASSWORD_DEFAULT),
-            'created_at' => $faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
-            'updated_at' => $faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
+            'user_type_id' => 5,
         ];
     }
 }

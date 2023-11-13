@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/animate.css') ?>">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="<?= base_url('assets/js/tailwind.js')?>"></script>
+    <script defer src="<?= base_url('assets/js/alpine-3.13.2.js')?>"></script>
 </head>
 
 <body>
@@ -17,6 +17,8 @@
     <?= $this->include('layout\menu.php') ?>
 
     <?= $this->renderSection('content') ?>
+    <?= $this->include('layout\footer.php') ?>
+
 </body>
 
 </html>
