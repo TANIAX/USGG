@@ -74,7 +74,7 @@
 <div class="bg-slate-100 py-24 sm:py-32 min-h-scren">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Rencontre des grands chefs</h2>
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des chefs</h2>
       <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres chefs.</p> -->
     </div>
     <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 animate__animated animate__slow hidden">
@@ -159,6 +159,7 @@
     var widthConditionMMorePost = 600;
     var widthConditionManager = 900;
     var width = window.innerWidth;
+    console.log(document.documentElement.scrollTop);
 
     if (width < 768) {
       widthConditionMMorePost = 1200;
@@ -184,7 +185,6 @@
 
 
 <?php
-
 function getAnimateClass($index){
   if($index % 2 == 0)
     return "animate__bounceInLeft";

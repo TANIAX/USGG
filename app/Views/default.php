@@ -14,9 +14,9 @@
 
 <body>
     <?= $this->include('layout\header.php') ?>
-    <?= $this->include('layout\menu.php') ?>
 
     <?= $this->renderSection('content') ?>
+    
     <?= $this->include('layout\footer.php') ?>
 
 </body>

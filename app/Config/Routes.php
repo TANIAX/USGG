@@ -42,6 +42,11 @@ $routes->set404Override();
 
 //! WEB ROUTES
 $routes->get('/', 'HomeController::index');
+$routes->get('/contact', 'HomeController::contact');
+
+$routes->group('auth', static function ($routes) {
+    $routes->get('login', 'AuthController::login');
+});
 
 //! API ROUTES
 $routes->group('api/v1', static function ($routes) {

@@ -14,7 +14,7 @@ use App\DTO\Response\User\UserListResponseDTO;
  *
  * @author   Guillaume cornez
  */
-class HomeController extends BaseController
+class AuthController extends BaseController
 {
     private $userRepository;
     private $newsRepository;
@@ -25,25 +25,8 @@ class HomeController extends BaseController
         $this->newsRepository =  service('Repository','News');
     }
 
-    /**
-     * 
-     * This method returns the landing page
-     *
-     * @author Guillaume cornez
-     */
-    public function index()
+    public function login()
     {
-        $users = $this->userRepository->GetAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
-        $news = $this->newsRepository->GetLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
-
-        return view('welcome_message', [
-            'users' => $users,
-            'news' => $news
-        ]);
-    }
-
-    public function contact()
-    {
-        return view('contact');
+        return view('auth/login');
     }
 }
