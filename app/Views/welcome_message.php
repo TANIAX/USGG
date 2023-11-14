@@ -154,6 +154,12 @@
     document.body.className += ' loaded'
   };
 </script>
+
+<?= $this->endSection() ?>
+
+
+<?= $this->section('page_title') ?>
+    Accueil
 <?= $this->endSection() ?>
 
 
@@ -164,3 +170,4 @@ function getAnimateClass($index){
   else
     return "animate__bounceInRight";
 }
+

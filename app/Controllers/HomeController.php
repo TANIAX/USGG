@@ -44,6 +44,8 @@ class HomeController extends BaseController
 
     public function contact()
     {
-        return view('contact');
+        return view('contact',[
+            'page_title' => 'Contact'
+        ]);
     }
 }

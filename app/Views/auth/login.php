@@ -56,3 +56,7 @@
 
 </section>
 <?= $this->endSection() ?>
+
+<?= $this->section('page_title') ?>
+    Login
+<?= $this->endSection() ?>

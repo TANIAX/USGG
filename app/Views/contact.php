@@ -72,3 +72,7 @@
 <!-- https://www.maps.ie/create-google-map/ -->
 
 <?= $this->endSection() ?>
+
+<?= $this->section('page_title') ?>
+    Contact
+<?= $this->endSection() ?>
