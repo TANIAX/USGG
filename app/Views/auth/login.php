@@ -6,11 +6,11 @@
     <div class="flex justify-center w-screen h-screen md:h-1/2 lg:m-24">
 
         <!-- Logo -->
-        <div class="hidden lg:block w-96 animate__animated animate__fadeInLeft animate__slow">
+        <div class="hidden lg:block w-96 shadow-xl animate__animated animate__fadeInLeft animate__slow">
             <img id="logo" class="bg-center h-full rounded-l-lg " src="<?= base_url('assets/img/login-cover.jpg') ?>">
         </div>
 
-        <div class="bg-white w-full lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg reveal">
+        <div class="bg-white w-full shadow-xl lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg reveal">
             <div class="w-full h-100">
                 <h1 class="text-xl md:text-2xl font-bold leading-tight mt-12">Connexion</h1>
                 <form class="mt-6" action="#" method="POST">
