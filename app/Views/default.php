@@ -10,13 +10,14 @@
 
     <script src="<?= base_url('assets/js/tailwind.js')?>"></script>
     <script defer src="<?= base_url('assets/js/alpine-3.13.2.js')?>"></script>
+    <script defer src="<?= base_url('assets/js/script.js')?>"></script>
 </head>
 
 <body>
     <?= $this->include('layout\header.php') ?>
-
+    <main class="min-h-screen">
     <?= $this->renderSection('content') ?>
-    
+    </main
     <?= $this->include('layout\footer.php') ?>
 
 </body>

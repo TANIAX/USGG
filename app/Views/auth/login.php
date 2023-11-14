@@ -3,14 +3,14 @@
 <?= $this->section('content') ?>
 
 <section class="flex">
-    <div class="flex justify-center w-screen h-screen md:h-1/2 m-24">
+    <div class="flex justify-center w-screen h-screen md:h-1/2 lg:m-24">
 
         <!-- Logo -->
-        <div class="bg-red-200 hidden md:block w-96 animate__animated animate__fadeInUp animate__slow">
+        <div class="hidden lg:block w-96 animate__animated animate__fadeInLeft animate__slow">
             <img id="logo" class="bg-center h-full rounded-l-lg " src="<?= base_url('assets/img/login-cover.jpg') ?>">
         </div>
 
-        <div class="bg-white w-full md:w-96 p-8 md:p-4 flex items-center justify-center border-2 rounded-r-lg animate__animated animate__fadeInRight animate__slow">
+        <div class="bg-white w-full lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg reveal">
             <div class="w-full h-100">
                 <h1 class="text-xl md:text-2xl font-bold leading-tight mt-12">Connexion</h1>
                 <form class="mt-6" action="#" method="POST">

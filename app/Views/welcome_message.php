@@ -64,7 +64,7 @@
   </div>
   <!-- More Post -->
   <div id="more_post" class="relative flex flex-col items-center justify-center overflow-hidden py-12 sm:py-24 bg-white">
-    <button id="more_post_button" type="button" class="rounded-md px-6 py-2.5 tracking-widest uppercase text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-50 animate__animated hidden">voir plus d'actualités</button>
+    <button id="more_post_button" type="button" class="rounded-md px-6 py-2.5 tracking-widest uppercase text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-50 reveal">voir plus d'actualités</button>
   </div>
 </div>
 
@@ -77,7 +77,7 @@
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des chefs</h2>
       <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres chefs.</p> -->
     </div>
-    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 animate__animated animate__slow hidden">
+    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 reveal">
       <?php if (!empty($users) && is_array($users)) : ?>
         <?php foreach ($users as $user) : ?>
           <li>
@@ -153,33 +153,6 @@
   window.onload = function() {
     document.body.className += ' loaded'
   };
-
-  // When the user scrolls down designed px from the top of the document, show the button more post
-  window.onscroll = function() {
-    var widthConditionMMorePost = 600;
-    var widthConditionManager = 900;
-    var width = window.innerWidth;
-    console.log(document.documentElement.scrollTop);
-
-    if (width < 768) {
-      widthConditionMMorePost = 1200;
-      widthConditionManager = 1300;
-    }
-
-
-    if (document.body.scrollTop > widthConditionMMorePost || document.documentElement.scrollTop > widthConditionMMorePost) {
-      //Add class to the element with the id="more_post_button"
-      document.getElementById("more_post_button").classList.remove("hidden");
-      document.getElementById("more_post_button").classList.add("animate__fadeInUp");
-    }
-
-    if (document.body.scrollTop > widthConditionManager || document.documentElement.scrollTop > widthConditionManager) {
-      //Add class to the element with the id="team_list"
-      document.getElementById("team_list").classList.remove("hidden");
-      document.getElementById("team_list").classList.add("animate__fadeInUp");
-    }
-  };
-</script>
 </script>
 <?= $this->endSection() ?>
 
