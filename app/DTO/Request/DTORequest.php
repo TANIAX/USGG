@@ -21,12 +21,13 @@ class DTORequest implements IValidator
      * @param string|null $json The JSON string to be decoded and used to populate the DTO properties.
      */
     public function __construct($json = null)
-    {
+    {   
         $this->validator = Validation::createValidator();
-        
+        $jsonArray = [];
+
         if($json != null)
         {
-            $jsonArray = json_decode($json, true);
+            !is_array($json) ? $jsonArray = json_decode($json, true) : $jsonArray = $json;
             foreach($jsonArray as $key=>$value)
                 $this->$key = $value;
         }            

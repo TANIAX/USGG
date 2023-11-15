@@ -1,18 +1,42 @@
 <?= $this->extend('default') ?>
+<?= $this->section('page_title') ?>Login<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-
 <section class="flex">
     <div class="flex justify-center w-screen h-screen md:h-1/2 lg:m-24">
 
         <!-- Logo -->
-        <div class="hidden lg:block w-96 shadow-xl animate__animated animate__fadeInLeft animate__slow">
+        <div class="hidden lg:block w-96 shadow-xl <?= !isset($errors) ? 'animate__animated animate__fadeInLeft animate__slow' : '' ?>">
             <img id="logo" class="bg-center h-full rounded-l-lg " src="<?= base_url('assets/img/login-cover.jpg') ?>">
         </div>
 
-        <div class="bg-white w-full shadow-xl lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg reveal">
+        <!-- Form -->
+        <div class="bg-white w-full shadow-xl lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg <?= !isset($errors) ? 'reveal' : '' ?>">
             <div class="w-full h-100">
-                <h1 class="text-xl md:text-2xl font-bold leading-tight mt-12">Connexion</h1>
+                <!-- Errors -->
+                <?php if(isset($errors)): ?>
+                <div class="rounded-md bg-red-50 p-2 reveal">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Erreur<?= count($errors) > 1 ? 's' : '' ?> détectée<?= count($errors) > 1 ? 's' : '' ?></h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul role="list" class="list-disc space-y-1 pl-5">
+                                    <?php foreach($errors as $error): ?>
+                                        <li><?= $error ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <h1 class="text-xl md:text-2xl font-bold leading-tight mt-6">Connexion</h1>
                 <form class="mt-6" action="#" method="POST">
                     <div>
                         <label class="block text-gray-700">Email</label>
@@ -21,7 +45,7 @@
 
                     <div class="mt-4">
                         <label class="block text-gray-700">Mot de passe</label>
-                        <input type="password" name="" id="" placeholder="" minlength="6" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required="">
+                        <input type="password" name="password" id="" placeholder="" minlength="6" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required="">
                     </div>
 
                     <div class="text-right mt-2">
@@ -55,8 +79,4 @@
     </div>
 
 </section>
-<?= $this->endSection() ?>
-
-<?= $this->section('page_title') ?>
-    Login
 <?= $this->endSection() ?>

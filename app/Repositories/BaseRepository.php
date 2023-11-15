@@ -17,91 +17,137 @@ abstract class BaseRepository implements IRepository
     public const RESULT_AS_ARRAY   = 2;
     public const RESULT_AS_CUSTOM  = 3;
 
+    protected $db;
+    protected $builder;
+
+    public function __construct()
+    {
+        $this->db = Database::connect();
+    }
+
     /**
-     * Get all records from the repository.
+     * getAll
      *
-     * @param int $result_type The type of result to return (self::RESULT_AS_OBJECT or self::RESULT_AS_ARRAY).
-     * @param string|null $result_class The class to use for each result object (only used if $result_type is self::RESULT_AS_OBJECT).
-     *
-     * @throws Exception if the method is not implemented.
-     *
-     * @return array|object[] The list of records.
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return array of objects
      */
     public function getAll($result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        throw new Exception('Not implemented');
+        $query = $this->builder->get();
+        return $this->getResultAs($query, $result_type, $result_class);
     }
-
+    
     /**
-     * Get an entity by its ID.
+     * getById
      *
-     * @param int $id The ID of the entity to retrieve.
-     * @param int $result_type The type of result to return (default: self::RESULT_AS_OBJECT).
-     * @param string|null $result_class The class name to use for the result (default: null).
-     * @return mixed The result of the query.
-     * @throws Exception If the method is not implemented.
+     * @param  int $id
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return object
      */
     public function getById($id, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        throw new Exception('Not implemented');
-    }
+        $query = $this->builder->where('id', $id)->get();
+        $data = $this->getResultAs($query, $result_type, $result_class);
 
+        if ($data)
+            return $data[0];
+        
+        return null;
+    }
+    
     /**
-     * Insert data into the repository.
+     * insert
      *
-     * @param mixed $data The data to be inserted.
-     * @param int $result_type The type of result to be returned. Default is RESULT_AS_OBJECT.
-     * @param string|null $result_class The class to be used for the result. Default is null.
-     * @throws Exception If the method is not implemented.
-     * @return mixed The result of the insertion.
+     * @param  object $data
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return bool whether the insert was successful or not
      */
-    public function insert($data, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function insert($data,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        throw new Exception('Not implemented');
+        return $this->builder->insert($data);
+    }
+    
+    /**
+     * update
+     *
+     * @param  int $id
+     * @param  object $data
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return bool whether the update was successful or not
+     */
+    public function update($id, $data,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    {
+        return $this->builder->where('id', $id)->update($data);
+    }
+    
+    /**
+     * delete
+     * @param  int $id
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return boolean
+     */
+    public function delete($id,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    {
+        return $this->builder->where('id', $id)->delete();
     }
 
     /**
-     * Update a record in the database.
+     * deleteRange
+     * @param  array $ids
+     * @param  int $result_type
+     * @param  object $result_class
+     * @return boolean
+     */
+    public function deleteRange($ids,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    {
+        return $this->builder->whereIn('id', $ids)->delete();
+    }
+
+    /**
+     * Find a single record by a given key-value pair.
      *
-     * @param int $id The ID of the record to update.
-     * @param array $data The data to update the record with.
+     * @param array $associativeArray The key/value pair to search for.
      * @param int $result_type The type of result to return (object or array).
      * @param string|null $result_class The class to use for the returned object.
-     * @throws Exception If the method is not implemented.
-     * @return mixed The updated record.
+     * @return mixed|null The result of the query, or null if no result is found.
      */
-    public function update($id, $data, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function findOneBy($associativeArray, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        throw new Exception('Not implemented');
+        $key = array_keys($associativeArray)[0];
+        $value = $associativeArray[$key];
+
+        if(!is_string($key) || !is_string($value))
+            throw new Exception('The associative array must contain string keys and values.');
+
+        $query = $this->builder->where($key,$value)->get();
+        $data = $this->getResultAs($query, $result_type, $result_class);
+
+        if ($data)
+            return $data[0];
+        
+        return null;
     }
 
     /**
-     * Delete a record from the database by ID.
-     *
-     * @param int $id The ID of the record to delete.
-     * @param int $result_type The type of result to return (default: self::RESULT_AS_OBJECT).
-     * @param string|null $result_class The class to use for the returned result (default: null).
-     * @throws Exception If the method is not implemented.
-     * @return mixed The result of the delete operation.
+     * getResultAs method
+     * 
+     * This method returns the result of a query in the specified format.
+     * 
+     * @param mixed $query The query to execute.
+     * @param string $result_type The format of the result. Possible values are: 
+     *                           - self::RESULT_AS_ARRAY: returns the result as an array.
+     *                           - self::RESULT_AS_OBJECT: returns the result as an object.
+     *                           - self::RESULT_AS_CUSTOM: returns the result as a custom object. 
+     *                             In this case, the $result_class parameter must be provided.
+     * @param string|null $result_class The name of the custom class to use when returning the result as a custom object.
+     * 
+     * @return mixed The result of the query in the specified format.
      */
-    public function delete($id, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
-    {
-        throw new Exception('Not implemented');
-    }
-
-    /**
-     * Deletes a range of records from the database.
-     *
-     * @param array $ids The IDs of the records to delete.
-     * @param int $result_type The type of result to return (object or array).
-     * @param string|null $result_class The class to use for the returned object(s).
-     * @throws Exception
-     */
-    public function deleteRange($ids, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
-    {
-        throw new Exception('Not implemented');
-    }
-
     public function getResultAs($query, $result_type, $result_class = null)
     {
         $data = null;

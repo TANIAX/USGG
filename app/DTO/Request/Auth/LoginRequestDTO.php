@@ -3,26 +3,15 @@
 namespace App\DTO\Request\Auth;
 
 use App\DTO\Request\DTORequest;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 
 /**
- * @OA\Schema(
- *     title="LoginRequestDTO",
- *     description="LoginRequestDTO",
- *     required={"username", "password"}
- * )
  * @author: Guillaume cornez
  */
 class LoginRequestDTO extends DTORequest
 {
-    /**
-     * @OA\Property(type="string", description="username", example="john.doe")
-     */
-    public string $username = '';
-
-    /**
-     * @OA\Property(type="string", description="Password", example="M0N_M0T_DE_P4SS3_leet")
-     */
+    public string $email = '';
     public string $password = '';
 
     /**
@@ -43,12 +32,14 @@ class LoginRequestDTO extends DTORequest
     public function validate() : iterable
     {
         $this->errors = [];
-        $this->violations[] = $this->validator->validate($this->username, [
-            new Length(['min' => 3, 'minMessage'=> 'Le login doit contenir au moins 3 caractères']),
+        $this->violations[] = $this->validator->validate($this->email, [
+            new Email(['message' => 'L\'adresse email n\'est pas valide'])
         ]); 
 
         $this->violations[] = $this->validator->validate($this->password, [
-            new Length(['min' => 3, 'minMessage'=> 'Le mot de passe doit contenir au moins 3 caractères']),
+            new Length(['min' => 8, 'minMessage'=> 'Le mot de passe doit contenir au moins 8 caractères']),
+            new Length(['max' => 16, 'maxMessage'=> 'Le mot de passe doit contenir au maximum 16 caractères']),
+
         ]); 
 
         foreach($this->violations as $violation)
@@ -56,7 +47,7 @@ class LoginRequestDTO extends DTORequest
             if(count($violation) > 0)
             {
                 foreach($violation as $error)
-                    $errors[] = $error->getMessage();
+                    $this->errors[] = $error->getMessage();
             }
         }
 

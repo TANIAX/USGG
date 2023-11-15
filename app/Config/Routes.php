@@ -46,6 +46,7 @@ $routes->get('/contact', 'HomeController::contact');
 
 $routes->group('auth', static function ($routes) {
     $routes->get('login', 'AuthController::login');
+    $routes->post('login', 'AuthController::login');
 });
 
 //! API ROUTES
