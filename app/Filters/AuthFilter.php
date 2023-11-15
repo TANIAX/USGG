@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use App\Helpers\SessionHelper;
 use CodeIgniter\Config\Services;
 use App\Libraries\HTTP\HttpResponse;
 use CodeIgniter\HTTP\RequestInterface;
@@ -12,33 +13,45 @@ use CodeIgniter\Filters\FilterInterface;
 
 /**
  * This class implements the FilterInterface and is responsible for authenticating requests.
+ * It checks if the user is authenticated and if he has the required roles to access the requested resource.
+ * If the user is not authenticated, he is redirected to the login page.
+ * If the user does not have the required roles, he is logged out and redirected to the login page.
  * 
  * @author: Guillaume cornez
  */
 class AuthFilter implements FilterInterface
 {
-    private const error_message = 'Unauthorized';
-
     public function before(RequestInterface $request, $args = null)
     {
-        $errorResponse = new HttpResponse(ResponseInterface::HTTP_FORBIDDEN,null,[self::error_message]);
+        //Get the user from the session
+        $session = session();
+        $user = $session->get(SessionHelper::USER_CONNECTED_SESSION_KEY);
 
-        //Return 403 if no token is provided
-        $authHeader = $request->getServer('HTTP_AUTHORIZATION');
-        if(!$authHeader) {
-            return Services::response()->setStatusCode(ResponseInterface::HTTP_FORBIDDEN)->setJSON($errorResponse);
-        }
-        
-        //Get the token from the header
-        $key        = getenv('JWT_SECRET');
-		$arr        = explode(' ', $authHeader);
-		$token      = $arr[1];
-        
-        //Decode the token
-        try{
-            JWT::decode($token, new Key($key, 'HS256'));
-        } catch (\Exception $e) {
-            return Services::response()->setStatusCode(ResponseInterface::HTTP_FORBIDDEN)->setJSON($errorResponse);
+        //If the user is not connected, we redirect him to the login page
+        if(!$user)
+            return redirect()->to('/auth/login');
+
+        //If the user is connected, we check if he has the required roles (if any)
+        if($args)
+        {
+            $roles = $user->getRolesAsStrings();
+            $hasRole = false;
+
+            foreach($args as $required_role)
+            {
+                if(in_array($required_role,$roles))
+                {
+                    $hasRole = true;
+                    break;
+                }
+            }
+
+            if(!$hasRole)
+            {
+                $session->remove(SessionHelper::USER_CONNECTED_SESSION_KEY);
+                return redirect()->to('/auth/login');
+            }
+   
         }
     }
 

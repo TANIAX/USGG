@@ -38,7 +38,7 @@ class LoginRequestDTO extends DTORequest
 
         $this->violations[] = $this->validator->validate($this->password, [
             new Length(['min' => 8, 'minMessage'=> 'Le mot de passe doit contenir au moins 8 caractères']),
-            new Length(['max' => 16, 'maxMessage'=> 'Le mot de passe doit contenir au maximum 16 caractères']),
+            new Length(['max' => 32, 'maxMessage'=> 'Le mot de passe doit contenir au maximum 32 caractères']),
 
         ]); 
 

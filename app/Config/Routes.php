@@ -42,11 +42,12 @@ $routes->set404Override();
 
 //! WEB ROUTES
 $routes->get('/', 'HomeController::index');
-$routes->get('/contact', 'HomeController::contact');
+$routes->get('/contact','HomeController::contact', ['filter' => 'auth:admin,super_admin']);
 
 $routes->group('auth', static function ($routes) {
     $routes->get('login', 'AuthController::login');
     $routes->post('login', 'AuthController::login');
+    $routes->get('logout', 'AuthController::logout');
 });
 
 //! API ROUTES

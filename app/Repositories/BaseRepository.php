@@ -54,7 +54,7 @@ abstract class BaseRepository implements IRepository
         if ($data)
             return $data[0];
         
-        return null;
+        throw new Exception('No result found for id ' . $id);
     }
     
     /**

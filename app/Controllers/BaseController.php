@@ -41,22 +41,23 @@ abstract class BaseController extends Controller
     protected $helpers = [];
 
     /**
+     * @var mixed $session The session object.
+     */
+    protected $session;
+
+    /**
      * Constructor.
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        // Preload any models, libraries, etc, here.
-
-        // E.g.: $this->session = \Config\Services::session();
+        $this->session = \Config\Services::session();
     }
 
         
     /**
-     * Contournement du problème de requête JSON stockée dans le champs "body" et du contenu de la requête "form-data" 
-     * stocké dans le champ "post". 
+     * Workaround for JSON request stored in "body" field and "form-data" request content  stored in the "post" field.
      *
      * @param  IncomingRequest $request
      * @param  bool $jsonFormat
@@ -71,7 +72,7 @@ abstract class BaseController extends Controller
             if ($jsonFormat) {
                 $input = $this->request->getBody();
             } else {
-                // Convertit le corps de la requête en tableau associatif 
+                // Convert the request body to an associative array
                 $input = json_decode($request->getBody(), true);
             }
         }

@@ -14,5 +14,5 @@ class UserListResponseDTO
     public DateTime $birthdate;
     public string $phone;
     public ?string $picture;
-    public string $user_type;
+    public mixed $user_type;
 }

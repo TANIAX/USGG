@@ -2,8 +2,9 @@
 
 namespace App\Entities;
 
-use CodeIgniter\Entity\Entity;
 use DateTime;
+use App\Entities\Role;
+use CodeIgniter\Entity\Entity;
 
 /**
  * User class for connecting user to the application.
@@ -24,7 +25,13 @@ class User extends Entity
     private DateTime $updated_at;
     private DateTime $created_at;
     private array $roles;
-    private UserType $userType;
+    private mixed $user_type;
+
+    #region getters/setters
+    /////////////////////////////
+    //          GETTERS        //
+    //          SETTERS        //
+    /////////////////////////////
 
     /**
      * Get the value of id
@@ -267,21 +274,21 @@ class User extends Entity
     }
 
     /**
-     * Get the value of userType
+     * Get the value of user_type
      */ 
-    public function getUserType()
+    public function getUser_type()
     {
-        return $this->userType;
+        return $this->user_type;
     }
 
     /**
-     * Set the value of userType
+     * Set the value of user_type
      *
      * @return  self
      */ 
-    public function setUserType($userType)
+    public function setUser_type($user_type)
     {
-        $this->userType = $userType;
+        $this->user_type = $user_type;
 
         return $this;
     }
@@ -304,5 +311,65 @@ class User extends Entity
         $this->exists = $exists;
 
         return $this;
+    }
+    #endregion
+    
+    /////////////////////////////
+    //          METHODS        //
+    /////////////////////////////
+
+    /*
+    * Get the full name of the user    
+    */
+    public function getFullName()
+    {
+        return $this->firstname . ' ' . $this->name;
+    }
+
+    /**
+     * Returns a new User object with restricted data for storing in session.
+     *
+     * @return User
+     */
+    public function getRestrictedUser()
+    {
+        $restrictedUser = new User();
+        $restrictedUser->setId($this->id);
+        $restrictedUser->setTotem($this->totem);
+        $restrictedUser->setEmail($this->email);
+        $restrictedUser->setName($this->name);
+        $restrictedUser->setFirstname($this->firstname);
+        $restrictedUser->setBirthdate($this->birthdate);
+        $restrictedUser->setPhone($this->phone);
+        $restrictedUser->setPicture($this->picture);
+        $restrictedUser->setUpdated_at($this->updated_at);
+        $restrictedUser->setCreated_at($this->created_at);
+        $restrictedUser->setRoles($this->roles);
+        $restrictedUser->setUser_type($this->user_type);
+        return $restrictedUser;
+    }
+
+    /**
+     * Returns the roles of the user as an array of strings.
+     *
+     * @return array
+     */
+    public function getRolesAsStrings()
+    {
+        $roles = [];
+        foreach ($this->roles as $role) {
+            if($role instanceof Role)
+                $roles[] = $role->getName();
+            else if(is_string($role))
+                $roles[] = $role;
+            else if(is_array($role))
+                $roles[] = $role['name'];
+            else if(is_object($role) && isset($role->name))
+                $roles[] = $role->name;
+            else
+                throw new Exception('The role is not a string or an instance of Role');
+                
+        }
+        return $roles;
     }
 }

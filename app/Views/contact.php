@@ -9,13 +9,13 @@
         <div class="bg-gray-50 px-6 py-16 lg:col-span-2 lg:px-8 lg:py-24 xl:pr-12 ">
             <div class="mx-auto max-w-lg">
                 <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Contactez nous</h2>
-                <p class="mt-3 text-lg leading-6 text-gray-500">Nous disposons d'un local situé dans le centre de gosselie.</p>
+                <p class="mt-3 text-lg leading-6 text-gray-500">Nous disposons d'un local situé dans le centre de gosselies.</p>
                 <dl class="mt-8 text-base text-gray-500">
                     <div>
                         <dt class="sr-only">Adresse postale</dt>
                         <dd>
-                            <p>742 Evergreen Terrace</p>
-                            <p>Springfield, OR 12345</p>
+                            <p>Rue Henri Belyn 77</p>
+                            <p>6041 Gosselies</p>
                         </dd>
                     </div>
                     <div class="mt-6">

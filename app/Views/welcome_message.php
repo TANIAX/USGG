@@ -1,4 +1,5 @@
 <?= $this->extend('default') ?>
+<?= $this->section('page_title') ?>Accueil<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
@@ -6,13 +7,13 @@
 <header class="banner hidden md:block">
   <span class="background"></span>
   <div class="animate__animated animate__slideInUp animate__slow">
-    <h1>UNITÉ SCOUT ET GUIDE DE GOSSELIES</h1>
+    <h1>UNITÉ GUIDE ET SCOUT DE GOSSELIES</h1>
   </div>
 </header>
 
 
 <!-- News -->
-<div class="bg-white py-8 sm:py-12 min-h-screen">
+<div class="bg-white py-8 sm:py-12">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Actualités</h2>
@@ -71,7 +72,7 @@
 
 
 <!-- Team -->
-<div class="bg-slate-100 py-24 sm:py-32 min-h-scren">
+<div class="bg-slate-100 py-24 sm:py-32">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des chefs</h2>
@@ -155,11 +156,6 @@
   };
 </script>
 
-<?= $this->endSection() ?>
-
-
-<?= $this->section('page_title') ?>
-    Accueil
 <?= $this->endSection() ?>
 
 

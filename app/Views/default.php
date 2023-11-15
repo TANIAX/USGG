@@ -15,7 +15,7 @@
 
 <body>
     <?= $this->include('layout\header.php') ?>
-    <main class="min-h-screen">
+    <main id="main">
         <?= $this->renderSection('content') ?>
     </main
     <?= $this->include('layout\footer.php') ?>
