@@ -24,4 +24,4 @@
   </div>
 </header>
 
-<?= $this->include('layout\menu.php') ?>
+<?= $this->include('layout/menu.php') ?>

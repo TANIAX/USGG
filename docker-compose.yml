@@ -1,0 +1,25 @@
+version: '3.1'
+services:
+    web_php:
+      build: 
+        context: ./
+        dockerfile: .docker/nginx/Dockerfile
+      container_name: usgg_nginx
+      ports:
+       - "8080:80"
+      volumes:
+       - ${CODEIGNITER_APP}:/var/www/html/
+      networks:
+       - code-network
+    php:
+      build: 
+        context: ./
+        dockerfile: .docker/php/Dockerfile
+      container_name: usgg_php
+      volumes:
+       - ${CODEIGNITER_APP}:/var/www/html/
+      networks:
+        - code-network
+networks:
+    code-network:
+        driver: bridge

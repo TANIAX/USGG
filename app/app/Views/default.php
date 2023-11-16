@@ -14,11 +14,11 @@
 </head>
 
 <body>
-    <?= $this->include('layout\header.php') ?>
+    <?= $this->include('layout/header.php') ?>
     <main id="main">
         <?= $this->renderSection('content') ?>
     </main
-    <?= $this->include('layout\footer.php') ?>
+    <?= $this->include('layout/footer.php') ?>
 
 </body>
 
