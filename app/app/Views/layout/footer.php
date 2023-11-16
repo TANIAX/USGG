@@ -3,8 +3,8 @@
   <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
     <div class="xl:grid xl:grid-cols-3 xl:gap-8">
       <div class="space-y-8">
-        <img class="h-12" src="<?= base_url('assets/img/logo.png') ?>" alt="Unité guide et scout de gosselies">
-        <p class="text-sm leading-6 text-gray-600">Unité guide et scout de gosselies.</p>
+        <img class="h-12" src="<?= base_url('assets/img/logo.png') ?>" alt="Unité scout et guide de gosselies">
+        <p class="text-sm leading-6 text-gray-600">Unité scout et guide de gosselies.</p>
         <div class="flex space-x-6">
           <a href="#" class="text-gray-400 hover:text-gray-500">
             <span class="sr-only">Facebook</span>
@@ -20,30 +20,6 @@
           </a>
         </div>
       </div>
-
-      <div class="mt-10 md:mt-0">
-            <h3 class="text-sm font-semibold leading-6 text-gray-900">Guide</h3>
-            <ul role="list" class="mt-6 space-y-4">
-              <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
-              </li>
-              <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sections</a>
-              </li>
-              <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
-              </li>
-              <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
-              </li>
-              <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Galeries photos</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        
       <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
@@ -66,7 +42,27 @@
               </li>
             </ul>
           </div>
-
+          <div class="mt-10 md:mt-0">
+            <h3 class="text-sm font-semibold leading-6 text-gray-900">Guide</h3>
+            <ul role="list" class="mt-6 space-y-4">
+              <li>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sections</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Galeries photos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
             <h3 class="text-sm font-semibold leading-6 text-gray-900">ASBL</h3>

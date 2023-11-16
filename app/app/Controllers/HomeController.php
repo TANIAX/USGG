@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
+use SQLite3;
 use App\Controllers\BaseController;
-use App\DTO\Response\News\NewsListResponseDTO;
 use App\Repositories\BaseRepository;
+use App\DTO\Response\News\NewsListResponseDTO;
 use App\DTO\Response\User\UserListResponseDTO;
 
 /**
@@ -33,10 +34,28 @@ class HomeController extends BaseController
      */
     public function index()
     {
+        // phpinfo();die();
+        //working
+        // $db = new SQLite3(WRITEPATH."database/sample.db");
+        // $result = $db->query("SELECT * FROM user");
+        
+        // while($data = $result->fetchArray()){
+
+        //     echo $data['id']."<hr>";
+        // }
+        //       die();
+
+            
+
+        // Inserer ici les requêtes
+
+        // Deconnexion
+        $bd = null;
+
         $users = $this->userRepository->GetAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
         $news = $this->newsRepository->GetLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
 
-        return view('welcome_message', [
+        return view('welcome_message',[
             'users' => $users,
             'news' => $news
         ]);
