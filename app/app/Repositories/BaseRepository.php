@@ -6,7 +6,7 @@ use Exception;
 use Config\Database;
 use ReflectionObject;
 use App\Interfaces\IRepository;
-use App\Libraries\CodeigniterExtension\Database\SQLite3\CustomResult;
+use App\Libraries\CodeIgniterExtension\Database\SQLite3\CustomResult;
 /**
  * Base class for all repositories.
  * @author Guillaume Cornez
