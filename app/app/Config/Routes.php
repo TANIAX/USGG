@@ -47,6 +47,7 @@ $routes->get('/contact','HomeController::contact', ['filter' => 'auth:admin,supe
 $routes->group('auth', static function ($routes) {
     $routes->get('login', 'AuthController::login');
     $routes->post('login', 'AuthController::login');
+    $routes->get('login-with-google', 'AuthController::loginWithGoogle');
     $routes->get('logout', 'AuthController::logout');
 });
 

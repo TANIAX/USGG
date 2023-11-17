@@ -1,5 +1,5 @@
 <?= $this->extend('default') ?>
-
+<?= $this->section('page_title') ?>Contact<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="relative bg-white">
     <div class="absolute inset-0">
@@ -73,6 +73,3 @@
 
 <?= $this->endSection() ?>
 
-<?= $this->section('page_title') ?>
-    Contact
-<?= $this->endSection() ?>

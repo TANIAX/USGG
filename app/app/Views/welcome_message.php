@@ -1,5 +1,5 @@
 <?= $this->extend('default') ?>
-<?= $this->section('page_title') ?>Accueil<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Acceuil<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 

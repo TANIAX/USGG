@@ -154,3 +154,10 @@ JWT_SECRET = 'MY_SECRET_KEY'
 #AD_DOMAIN_CONTROLLER    = '****';
 #AD_ADMIN_USERNAME       = '****';
 #AD_ADMIN_PASSWORD       = '****';
+
+
+#--------------------------------------------------------------------
+# GOOGLE
+#--------------------------------------------------------------------
+#GOOGLE_CLIENT_ID        = '****';
+#GOOGLE_CLIENT_SECRET    = '****';

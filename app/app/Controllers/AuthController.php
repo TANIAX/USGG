@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use Config\Services;
-use App\Entities\Role;
 use App\Entities\User;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
@@ -68,6 +66,11 @@ class AuthController extends BaseController
         }
 
         return view('auth/login');
+    }
+
+    public function loginWithGoogle()
+    {
+
     }
 
     public function logout()
