@@ -45,9 +45,15 @@ $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact', ['filter' => 'auth:admin,super_admin']);
 
 $routes->group('auth', static function ($routes) {
-    $routes->get('login', 'AuthController::login');
-    $routes->post('login', 'AuthController::login');
-    $routes->get('login-with-google', 'AuthController::loginWithGoogle');
+    $routes->group('login', static function ($routes){
+        $routes->get('', 'AuthController::login');
+        $routes->post('', 'AuthController::login');
+        $routes->group('google', static function ($routes){
+            $routes->get('callback', 'AuthController::loginWithGoogleCallback');
+        });
+    });
+    
+    
     $routes->get('logout', 'AuthController::logout');
 });
 
