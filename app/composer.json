@@ -10,7 +10,8 @@
         "firebase/php-jwt": "^6.3",
         "symfony/validator": "^6.2",
         "zircote/swagger-php": "^4.5",
-        "mark-gerarts/auto-mapper-plus": "^1.4"
+        "mark-gerarts/auto-mapper-plus": "^1.4",
+        "google/apiclient": "^2.15"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",
