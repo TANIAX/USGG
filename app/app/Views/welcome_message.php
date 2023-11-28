@@ -11,7 +11,90 @@
   </div>
 </header>
 
+<!-- Timeline -->
+<div class="bg-gray-100 py-8 sm:py-12 flex justify-center">
+  <div class="flex" style="min-width:50%;">
+    <div class="flex flex-col w-full">
+      <h1 class="mt-10 text-4xl font-bold tracking-tighter italic	uppercase mx-auto sm:text-6xl">Garçons</h1>
+      <div class="flow-root mt-4 p-8">
+        <ul role="list" class="-mb-8 flex flex-col items-center">
+          <li class="p-4 flex justify-between pt-24 pb-12" style="max-width:350px;">
+          <img src="<?= base_url('assets/img/logo-baladins.png') ?>" class="w-20 mx-4 rounded-full">
+            <div class="flex flex-col items-center justify-center">
+              <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight ">6 à 8 ans</label>
+              <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Baladins</span>
+            </div>
+          </li>
 
+
+          <li class="p-4 flex justify-between pb-12" style="max-width:350px;">
+          <img src="<?= base_url('assets/img/logo-louveteaux.png') ?>" class="w-20 mx-4 rounded-full">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">8 à 12 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Louvetaux</span>
+            </div>
+          </li>
+
+          <li class="p-4 flex justify-between pb-12" style="max-width:350px;">
+          <img src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" class="w-20 mx-4 rounded-full">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">12 à 16 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Éclaireurs</span>
+            </div>
+          </li>
+
+          <li class="p-4 flex justify-between" style="max-width:350px;">
+          <img src="<?= base_url('assets/img/logo-pionniers.png') ?>" class="w-20 mx-4 rounded-full">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight mx-auto">16 à 18 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Pionners</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col w-full">
+    <h1 class="mt-10 text-4xl font-bold tracking-tighter italic	uppercase mx-auto sm:text-6xl">Filles</h1>
+          <div class="flow-root mt-4 p-8">
+        <ul role="list" class="-mb-8 flex flex-col items-center ml-4">
+          <li class="p-4 flex justify-between pb-12" style="max-width:350px;">
+            <div class="flex flex-col items-center justify-center">
+              <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">5 à 7 ans</label>
+              <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Nuton</span>
+            </div>
+            <img src="<?= base_url('assets/img/logo-nutons.png') ?>" class="w-20 mx-4 rounded-full">
+          </li>
+
+
+          <li class="p-4 flex justify-between pb-12" style="max-width:350px;">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">7 à 11 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Lutin</span>
+            </div>
+            <img src="<?= base_url('assets/img/logo-lutins.png') ?>" class="w-20 mx-4 rounded-full">
+          </li>
+
+          <li class="p-4 flex justify-between pb-12" style="max-width:350px;">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">11 à 15 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Aventure</span>
+            </div>
+            <img src="<?= base_url('assets/img/logo-aventures.png') ?>" class="w-20 mx-4 rounded-full">
+          </li>
+
+          <li class="p-4 flex justify-between" style="max-width:350px;">
+            <div class="flex flex-col items-center justify-center">
+            <label class="font-bold text-2xl tracking-tighter italic uppercase leading-tight">15 à 17 ans</label>
+            <span class="font-bold text-gray-500 tracking-tigh italic uppercase">Horizon</span>
+            </div>
+            <img src="<?= base_url('assets/img/logo-horizons.png') ?>" class="w-20 mx-4 rounded-full">
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- News -->
 <div class="bg-white py-8 sm:py-12">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -21,45 +104,45 @@
     </div>
     <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 
-    <?php if (!empty($news) && is_array($news)) : ?>
-    <?php foreach ($news as $key=> $item) : ?>
-      <article class="flex flex-col items-start justify-between animate__animated <?= getAnimateClass($key) ?> animate__slow animate__delay-1s">
-        <div class="relative w-full">
-          <img src="<?= $item->picture ?>">
-          <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
-        </div>
-        <div class="max-w-xl">
-          <div class="mt-8 flex items-center gap-x-4 text-xs">
-            <p class="text-gray-500"><?= $item->created_at->format('d/m/Y') ?></time>
-            <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"><?= $item->category->name ?></a>
-          </div>
-          <div class="group relative">
-            <h3 class="mt-3 text-lg text-ellipsis whitespace-nowrap overflow-hidden font-semibold leading-6 text-gray-900 group-hover:text-gray-600" style="max-width: 350px;">
-              <a href="#">
-                <span class="absolute inset-0"></span>
-                <?= $item->title ?>
-              </a>
-            </h3>
-            <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600"><?= $item->content ?></p>
-          </div>
-          <div class="relative mt-8 flex items-center gap-x-4">
-            <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100">
-            <div class="text-sm leading-6">
-              <p class="font-semibold text-gray-900">
-                <a href="#">
-                  <span class="absolute inset-0"></span>
-                  <?= $item->author->totem ?>
-                </a>
-              </p>
-              <p class="text-sm font-semibold leading-6 text-indigo-600"><?= $item->author->user_type->name ?></p>
+      <?php if (!empty($news) && is_array($news)) : ?>
+        <?php foreach ($news as $key => $item) : ?>
+          <article class="flex flex-col items-start justify-between animate__animated <?= getAnimateClass($key) ?> animate__slow animate__delay-1s">
+            <div class="relative w-full">
+              <img src="<?= $item->picture ?>">
+              <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
             </div>
-          </div>
-        </div>
-      </article>
-      <?php endforeach ?>
-    <?php else : ?>
-      <p>Aucune actualité pour le moment</p>
-    <?php endif ?>
+            <div class="max-w-xl">
+              <div class="mt-8 flex items-center gap-x-4 text-xs">
+                <p class="text-gray-500"><?= $item->created_at->format('d/m/Y') ?></time>
+                  <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"><?= $item->category->name ?></a>
+              </div>
+              <div class="group relative">
+                <h3 class="mt-3 text-lg text-ellipsis whitespace-nowrap overflow-hidden font-semibold leading-6 text-gray-900 group-hover:text-gray-600" style="max-width: 350px;">
+                  <a href="#">
+                    <span class="absolute inset-0"></span>
+                    <?= $item->title ?>
+                  </a>
+                </h3>
+                <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600"><?= $item->content ?></p>
+              </div>
+              <div class="relative mt-8 flex items-center gap-x-4">
+                <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100">
+                <div class="text-sm leading-6">
+                  <p class="font-semibold text-gray-900">
+                    <a href="#">
+                      <span class="absolute inset-0"></span>
+                      <?= $item->author->totem ?>
+                    </a>
+                  </p>
+                  <p class="text-sm font-semibold leading-6 text-indigo-600"><?= $item->author->user_type->name ?></p>
+                </div>
+              </div>
+            </div>
+          </article>
+        <?php endforeach ?>
+      <?php else : ?>
+        <p>Aucune actualité pour le moment</p>
+      <?php endif ?>
 
     </div>
   </div>
@@ -160,10 +243,10 @@
 
 
 <?php
-function getAnimateClass($index){
-  if($index % 2 == 0)
+function getAnimateClass($index)
+{
+  if ($index % 2 == 0)
     return "animate__bounceInLeft";
   else
     return "animate__bounceInRight";
 }
-
