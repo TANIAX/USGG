@@ -37,7 +37,7 @@ class HomeController extends BaseController
         $users = $this->userRepository->GetAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
         $news = $this->newsRepository->GetLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
 
-        return view('welcome_message',[
+        return view('pages/welcome_message',[
             'users' => $users,
             'news' => $news
         ]);
@@ -45,6 +45,6 @@ class HomeController extends BaseController
 
     public function contact()
     {
-        return view('contact');
+        return view('pages/contact');
     }
 }

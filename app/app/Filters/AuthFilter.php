@@ -2,11 +2,7 @@
 
 namespace App\Filters;
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use App\Helpers\SessionHelper;
-use CodeIgniter\Config\Services;
-use App\Libraries\HTTP\HttpResponse;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
@@ -24,8 +20,7 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $args = null)
     {
         //Get the user from the session
-        $session = session();
-        $user = $session->get(SessionHelper::USER_CONNECTED_SESSION_KEY);
+        $user = SessionHelper::getUserConnected();
 
         //If the user is not connected, we redirect him to the login page
         if(!$user)
@@ -48,7 +43,7 @@ class AuthFilter implements FilterInterface
 
             if(!$hasRole)
             {
-                $session->remove(SessionHelper::USER_CONNECTED_SESSION_KEY);
+                SessionHelper::disconnectUser();
                 return redirect()->to('/auth/login');
             }
    

@@ -1,4 +1,4 @@
-<?= $this->extend('default') ?>
+<?= $this->extend('pages/default') ?>
 <?= $this->section('page_title') ?>Acceuil
 <?= $this->endSection() ?>
 

@@ -38,6 +38,8 @@ class AuthController extends BaseController
      */
     public function login()
     {
+        $authUrl = $this->googleClient->createAuthUrl();
+
         //If the user is already connected, we redirect him to the home page
         if ($this->session->get(SessionHelper::USER_CONNECTED_SESSION_KEY))
             return redirect()->to('/');
@@ -49,13 +51,13 @@ class AuthController extends BaseController
             $userLogin = new LoginRequestDTO($this->getRequestInput($this->request));
             $errors = $userLogin->validate();
             if (count($errors) > 0)
-                return view('auth/login', ['errors' => $errors]);
+                return view('auth/login', ['errors' => $errors, 'authUrl' => $authUrl]);
 
             $user = $this->userRepository->getFullUserBy(['email' => $userLogin->email], BaseRepository::RESULT_AS_CUSTOM, User::class);
             if (!$user)
-                return view('auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect']]);
+                return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
             if (!password_verify($userLogin->password, $user->getPassword()))
-                return view('auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect']]);
+                return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
 
 
             //Store the user in the session
@@ -63,8 +65,7 @@ class AuthController extends BaseController
             return redirect()->to('/');
         }
 
-        $authUrl = $this->googleClient->createAuthUrl();
-        return view('auth/login', [
+        return view('pages/auth/login', [
             'authUrl' => $authUrl
         ]);
     }
@@ -93,7 +94,7 @@ class AuthController extends BaseController
         //Get the user from the database        
         $user = $this->userRepository->getFullUserBy(['email' => $email], BaseRepository::RESULT_AS_CUSTOM, User::class);
         if (!$user) {
-            return view('/auth/login', [
+            return view('pages/auth/login', [
                 'errors' => ['L\'adresse email est inconnue de l\'application'],
                 'authUrl' => $this->googleClient->createAuthUrl()
             ]);
