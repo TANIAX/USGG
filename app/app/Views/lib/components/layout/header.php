@@ -3,7 +3,7 @@ use App\Helpers\SessionHelper;
 ?>
 
 <header>
-  <div class="flex items-center gap-x-6 bg-blue-800 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
+  <div class="flex items-center gap-x-6 bg-blue-400 px-6 py-2.5 sm:px-3.5 sm:before:flex-1" style="background-color: #03497A;">
     <div class="flex flex-1 justify-end md:px-12">
       <!-- Login -->
       <?php if(!SessionHelper::isUserConnected()) : ?>

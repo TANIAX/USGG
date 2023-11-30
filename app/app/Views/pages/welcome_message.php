@@ -20,7 +20,7 @@
     </div>
     <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
       <div class="md:col-span-3 p-4 reveal-reverse">
-        <img src="<?= base_url('assets/img/logo-scout.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px]"
+        <img src="<?= base_url('assets/img/logo-scout.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] w-[90vw] md:w-auto"
           alt="logo scouts">
 
         <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
@@ -75,7 +75,7 @@
       </div>
 
       <div class="hidden xl:block w-24 mt-[587px] ml-[1000px] absolute">
-        <h1 class="rotate-90 uppercase text-6xl font-bold p-2">Fille</h1>
+        <h1 class="rotate-90 uppercase text-6xl font-bold p-2">Filles</h1>
       </div>
       <div class="md:col-span-3 reveal">
         <img src="<?= base_url('assets/img/logo-guide.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] mt-4"
@@ -152,7 +152,7 @@
       <?php if (!empty($news) && is_array($news)): ?>
         <?php foreach ($news as $key => $item): ?>
           <article
-            class="flex flex-col items-start justify-between animate__animated <?= getAnimateClass($key) ?> animate__slow animate__delay-1s">
+            class="flex flex-col items-start justify-between <?= getAnimateClass($key) ?>">
             <div class="relative w-full">
               <img src="<?= $item->picture ?>">
               <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
@@ -217,7 +217,7 @@
 <div class="bg-slate-100 py-24 sm:py-32">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des responsables</h2>
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des responsables de section</h2>
       <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres responsables.</p> -->
     </div>
     <ul id="team_list" role="list"
@@ -236,7 +236,7 @@
         <?php endforeach ?>
       <?php else: ?>
         <li>
-          <p class="text-sm font-semibold leading-6 text-indigo-600">Aucun chef pour le moment</p>
+          <p class="text-sm font-semibold leading-6 text-indigo-600">Aucun responsable pour le moment</p>
         </li>
       <?php endif ?>
     </ul>
@@ -249,6 +249,7 @@
     opacity: 0;
     font: sofia;
   }
+  
 
   /* Loaded body */
   body.loaded {
@@ -319,7 +320,7 @@
 function getAnimateClass($index)
 {
   if ($index % 2 == 0)
-    return "animate__bounceInLeft";
+    return "reveal-left";
   else
-    return "animate__bounceInRight";
+    return "reveal";
 }

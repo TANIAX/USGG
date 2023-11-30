@@ -76,7 +76,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                 </svg>
                                 <div class="ml-4">
-                                    <p class="text-base font-medium text-gray-900">Galeries photos</p>
+                                    <p class="text-base font-medium text-gray-900">galerie photos</p>
                                 </div>
                             </a>
                         </li>
@@ -158,7 +158,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                 </svg>
                                 <div class="ml-4">
-                                    <p class="text-base font-medium text-gray-900">Galeries photos</p>
+                                    <p class="text-base font-medium text-gray-900">galerie photos</p>
                                 </div>
                             </a>
                         </li>

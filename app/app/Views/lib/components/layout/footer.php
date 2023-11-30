@@ -38,7 +38,7 @@
                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Galeries photos</a>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">galerie photos</a>
               </li>
             </ul>
           </div>
@@ -58,7 +58,7 @@
                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Galeries photos</a>
+                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">galerie photos</a>
               </li>
             </ul>
           </div>
