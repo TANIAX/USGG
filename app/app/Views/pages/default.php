@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/animate.css') ?>">
 
     <script src="<?= base_url('assets/js/tailwind.js')?>"></script>
-    <script defer src="<?= base_url('assets/js/alpine-3.13.2.js')?>"></script>
+    <script defer src="<?= base_url('assets/js/alpine-3.13.2.min.js')?>"></script>
     <script defer src="<?= base_url('assets/js/script.js')?>"></script>
+
+
 </head>
 
 <body>

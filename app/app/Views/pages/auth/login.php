@@ -7,7 +7,7 @@
 
         <!-- Logo -->
         <div class="hidden lg:block w-96 shadow-xl <?= !isset($errors) ? 'animate__animated animate__fadeInLeft animate__slow' : '' ?>">
-            <img id="logo" class="bg-center h-full rounded-l-lg " src="<?= base_url('assets/img/login-cover.jpg') ?>">
+            <img id="logo" class="bg-center h-full rounded-l-lg " src="<?= base_url('assets/img/login-cover.jpg') ?>" alt="login cover">
         </div>
 
         <!-- Form -->
