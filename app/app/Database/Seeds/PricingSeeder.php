@@ -2,7 +2,6 @@
 
 namespace App\Database\Seeds;
 
-use Faker\Factory;
 use CodeIgniter\Database\Seeder;
 
 class PricingSeeder extends Seeder
@@ -15,7 +14,7 @@ class PricingSeeder extends Seeder
             'tier_3' => 38,
             'reduction' => 5,
         ];
-        
+
         $this->db->table('pricing')->insert($price);
     }
 }

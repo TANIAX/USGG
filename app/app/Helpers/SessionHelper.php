@@ -2,9 +2,6 @@
 
 namespace App\Helpers;
 
-use Exception;
-use Firebase\JWT\JWT;
-
 
 /**
  * A helper class for handling session operations.

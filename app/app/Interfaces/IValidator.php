@@ -9,7 +9,7 @@ namespace App\Interfaces;
 interface IValidator
 {
     /**
-     * Validates the input data.
+     * Validates the data provided througth preperties.
      */
     public function validate();
 }

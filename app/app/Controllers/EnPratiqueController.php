@@ -21,13 +21,8 @@ class EnPratiqueController extends BaseController
     {
         $pricing = $this->pricingRepository->getPricing(BaseRepository::RESULT_AS_CUSTOM, Pricing::class);
 
-        return view('pages/en_pratique/cotisation',[
+        return view('pages/en_pratique/cotisation', [
             'pricing' => $pricing
         ]);
-    }
-
-    public function contact()
-    {        
-        return view('pages/contact');
     }
 }

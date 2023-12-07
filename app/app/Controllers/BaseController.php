@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Dto\Response\HttpResponse;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -55,7 +54,7 @@ abstract class BaseController extends Controller
         $this->session = \Config\Services::session();
     }
 
-        
+
     /**
      * Workaround for JSON request stored in "body" field and "form-data" request content  stored in the "post" field.
      *

@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Repositories\BaseRepository;
 use App\DTO\Response\News\NewsListResponseDTO;
 use App\DTO\Response\User\UserListResponseDTO;
+use App\Repositories\NewsRepository;
+use App\Repositories\UserRepository;
 
 /**
  * This class represents the Home Controller that handles the landing page and othet stuff.
@@ -16,13 +18,13 @@ use App\DTO\Response\User\UserListResponseDTO;
  */
 class HomeController extends BaseController
 {
-    private $userRepository;
-    private $newsRepository;
+    private UserRepository $userRepository;
+    private NewsRepository $newsRepository;
 
     public function __construct()
     {
-        $this->userRepository =  service('Repository','User');
-        $this->newsRepository =  service('Repository','News');
+        $this->userRepository = service('Repository', 'User');
+        $this->newsRepository = service('Repository', 'News');
     }
 
     /**
@@ -36,7 +38,7 @@ class HomeController extends BaseController
         $users = $this->userRepository->GetAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
         $news = $this->newsRepository->GetLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
 
-        return view('pages/welcome_message',[
+        return view('pages/welcome_message', [
             'users' => $users,
             'news' => $news
         ]);

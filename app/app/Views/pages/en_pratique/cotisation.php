@@ -118,7 +118,7 @@
       </div>
 
       <!-- Modalités de paiements  -->
-      <div class="mt-20 lg:mt-0 col-span-2">
+      <div class="mt-20 lg:mt-32 lg:mt-0 col-span-2">
         <h2 class="max-w-2xl text-xl font-bold tracking-tight text-gray-900 uppercase py-2 sm:text-4xl ">
           MODALITÉS DE PAIEMENT
         </h2>

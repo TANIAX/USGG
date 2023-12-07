@@ -2,7 +2,6 @@
 
 namespace App\Database\Seeds;
 
-use Faker\Factory;
 use CodeIgniter\Database\Seeder;
 
 class UserTypeSeeder extends Seeder

@@ -15,7 +15,7 @@ class LoginRequestDTO extends DTORequest
     public string $password = '';
 
     /**
-     * Constructeur de la classe - initialise le contenu du DTO
+     * Constructor of the DTO
      *
      * @return void
      */
@@ -25,9 +25,9 @@ class LoginRequestDTO extends DTORequest
     }
         
     /**
-     * Méthode de validation du DTO
+     * Validate the DTO
      *
-     * @return iterable message d'erreurs
+     * @return iterable errors messages
      */
     public function validate() : iterable
     {
@@ -42,15 +42,6 @@ class LoginRequestDTO extends DTORequest
 
         ]); 
 
-        foreach($this->violations as $violation)
-        {
-            if(count($violation) > 0)
-            {
-                foreach($violation as $error)
-                    $this->errors[] = $error->getMessage();
-            }
-        }
-
-        return $this->errors;
+        return $this->getErrors();
     }
 }

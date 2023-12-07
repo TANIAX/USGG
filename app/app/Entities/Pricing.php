@@ -3,7 +3,6 @@
 namespace App\Entities;
 
 use CodeIgniter\Entity\Entity;
-use DateTime;
 
 /**
  * Class for managing pricing in the application.
@@ -12,12 +11,51 @@ use DateTime;
 
 class Pricing extends Entity
 {
+    /**
+     * @var int The ID of the pricing.
+     */
     private int $id;
+
+    /**
+     * @var float The price for tier 1.
+     */
     private float $tier_1;
+
+    /**
+     * @var float The price for tier 2.
+     */
     private float $tier_2;
+
+    /**
+     * @var float The price for tier 3.
+     */
     private float $tier_3;
+
+    /**
+     * @var float The reduction percentage.
+     */
     private float $reduction;
 
+
+    #region Constructor
+    /**
+     * Pricing constructor.
+     *
+     * @param int $id The ID of the pricing entity.
+     * @param float $tier_1 The price for tier 1.
+     * @param float $tier_2 The price for tier 2.
+     * @param float $tier_3 The price for tier 3.
+     * @param float $reduction The reduction percentage.
+     */
+    public function __construct(int $id = 0, float $tier_1 = 0, float $tier_2 = 0, float $tier_3 = 0, float $reduction = 0)
+    {
+        $this->id = $id;
+        $this->tier_1 = $tier_1;
+        $this->tier_2 = $tier_2;
+        $this->tier_3 = $tier_3;
+        $this->reduction = $reduction;
+    }
+    #endregion
 
     #region Getters and Setters
     /**

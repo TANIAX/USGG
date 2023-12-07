@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use DateTime;
+use Exception;
 use App\Entities\Role;
 use CodeIgniter\Entity\Entity;
 
@@ -12,27 +13,98 @@ use CodeIgniter\Entity\Entity;
  */
 class User extends Entity
 {
+    /**
+    * @var int The ID of the user.
+    */
     private int $id;
+
+    /**
+    * @var string The totem of the user.
+    */
     private string $totem;
+
+    /**
+     * @var string The email of the user.
+     */
     private string $email;
+
+    /**
+     * @var string The password of the user.
+     */
     private string $password;
+
+    /**
+     * @var string The name of the user.
+     */
     private string $name;
+
+    /**
+     * @var string The firstname of the user.
+     */
     private string $firstname;
+
+    /**
+     * @var DateTime The birthdate of the user.
+     */
     private DateTime $birthdate;
+
+    /**
+     * @var string The phone number of the user.
+     */
     private string $phone;
+
+    /**
+     * @var string The picture URL of the user.
+     */
     private string $picture;
+
+    /**
+     * @var bool Indicates if the user exists.
+     */
     private bool $exists;
+
+    /**
+     * @var DateTime The date and time when the user was last updated.
+     */
     private DateTime $updated_at;
+
+    /**
+     * @var DateTime The date and time when the user was created.
+     */
     private DateTime $created_at;
+
+    /**
+     * @var array The roles of the user.
+     */
     private array $roles;
+
+    /**
+     * @var mixed The type of the user.
+     * @see UserRepository for more information about the type of this property.
+     */
     private mixed $user_type;
 
-    #region getters/setters
-    /////////////////////////////
-    //          GETTERS        //
-    //          SETTERS        //
-    /////////////////////////////
+    #region Constructor
+    public function __construct(int $id = 0, string $totem = "", string $email = "", string $password = "", string $name = "", string $firstname = "", DateTime $birthdate = null, string $phone = "", string $picture = "", bool $exists = false, DateTime $created_at = null, DateTime $updated_at = null, array $roles = [], mixed $user_type = null)
+    {
+        $this->id = $id;
+        $this->totem = $totem;
+        $this->email = $email;
+        $this->password = $password;
+        $this->name = $name;
+        $this->firstname = $firstname;
+        $this->birthdate = $birthdate;
+        $this->phone = $phone;
+        $this->picture = $picture;
+        $this->exists = $exists;
+        $this->created_at = $created_at;
+        $this->updated_at = $updated_at;
+        $this->roles = $roles;
+        $this->user_type = $user_type;
+    }
+    #endregion
 
+    #region getters/setters
     /**
      * Get the value of id
      */ 
@@ -40,7 +112,6 @@ class User extends Entity
     {
         return $this->id;
     }
-
     /**
      * Set the value of id
      *
@@ -60,7 +131,6 @@ class User extends Entity
     {
         return $this->totem;
     }
-
     /**
      * Set the value of totem
      *
@@ -80,7 +150,6 @@ class User extends Entity
     {
         return $this->email;
     }
-
     /**
      * Set the value of email
      *
@@ -100,7 +169,6 @@ class User extends Entity
     {
         return $this->password;
     }
-
     /**
      * Set the value of password
      *
@@ -120,7 +188,6 @@ class User extends Entity
     {
         return $this->name;
     }
-
     /**
      * Set the value of name
      *
@@ -140,7 +207,6 @@ class User extends Entity
     {
         return $this->firstname;
     }
-
     /**
      * Set the value of firstname
      *
@@ -160,7 +226,6 @@ class User extends Entity
     {
         return $this->birthdate;
     }
-
     /**
      * Set the value of birthdate
      *
@@ -180,7 +245,6 @@ class User extends Entity
     {
         return $this->phone;
     }
-
     /**
      * Set the value of phone
      *
@@ -200,7 +264,6 @@ class User extends Entity
     {
         return $this->picture;
     }
-
     /**
      * Set the value of picture
      *
@@ -220,7 +283,6 @@ class User extends Entity
     {
         return $this->updated_at;
     }
-
     /**
      * Set the value of updated_at
      *
@@ -240,7 +302,6 @@ class User extends Entity
     {
         return $this->created_at;
     }
-
     /**
      * Set the value of created_at
      *
@@ -260,7 +321,6 @@ class User extends Entity
     {
         return $this->roles;
     }
-
     /**
      * Set the value of roles
      *
@@ -280,7 +340,6 @@ class User extends Entity
     {
         return $this->user_type;
     }
-
     /**
      * Set the value of user_type
      *
@@ -300,7 +359,6 @@ class User extends Entity
     {
         return $this->exists;
     }
-
     /**
      * Set the value of exists
      *
@@ -314,10 +372,8 @@ class User extends Entity
     }
     #endregion
     
-    /////////////////////////////
-    //          METHODS        //
-    /////////////////////////////
-
+   
+    #region Methods
     /*
     * Get the full name of the user    
     */
@@ -372,4 +428,5 @@ class User extends Entity
         }
         return $roles;
     }
+    #endregion
 }

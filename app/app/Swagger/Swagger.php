@@ -5,7 +5,7 @@ namespace App\Swagger;
 use OpenApi\Annotations as OA;
 
 /**
- * @OA\Info(title="PHP REST TEMPLATE",version="1", description="API documentation")
+ * @OA\Info(title="U.S.G.G.",version="1", description="API documentation")
  * @OA\Server(url="http://localhost:8081", description="Local server")
  * @OA\Server(url="http://localhost:81", description="docker server")
  * @OA\SecurityScheme(
