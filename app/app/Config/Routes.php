@@ -52,11 +52,13 @@ $routes->group('auth', static function ($routes) {
             $routes->get('callback', 'AuthController::loginWithGoogleCallback');
         });
     });
-    
-    
     $routes->get('logout', 'AuthController::logout');
 });
 
+
+$routes->group('en-pratique', static function ($routes) {
+    $routes->get('cotisation', 'EnPratiqueController::cotisation');
+});
 //! API ROUTES
 $routes->group('api/v1', static function ($routes) {
     $routes->setDefaultNamespace('App\Controllers\API\V1');
