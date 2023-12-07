@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Entities\User;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
 use Google\Service\Oauth2;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
@@ -18,14 +20,14 @@ use App\DTO\Request\Auth\LoginRequestDTO;
  */
 class AuthController extends BaseController
 {
-    private $userRepository;
-    private $roleRepository;
-    private $googleClient;
+    private UserRepository $userRepository;
+    private RoleRepository $roleRepository;
+    private \Google\Client $googleClient;
 
     public function __construct()
     {
-        $this->userRepository =  service('Repository', 'User');
-        $this->roleRepository =  service('Repository', 'Role');
+        $this->userRepository = service('Repository', 'User');
+        $this->roleRepository = service('Repository', 'Role');
         $this->initGoogleClient();
     }
 
@@ -53,6 +55,7 @@ class AuthController extends BaseController
             if (count($errors) > 0)
                 return view('auth/login', ['errors' => $errors, 'authUrl' => $authUrl]);
 
+            //Get the user from the database
             $user = $this->userRepository->getFullUserBy(['email' => $userLogin->email], BaseRepository::RESULT_AS_CUSTOM, User::class);
             if (!$user)
                 return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);

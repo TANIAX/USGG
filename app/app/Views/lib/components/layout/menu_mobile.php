@@ -109,16 +109,16 @@
                             </button>
                             <ul class="mt-1 px-2" id="sub-menu-1" x-show="open_en_pratique">
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Inscription</a>
+                                    <a href="/en-pratique/inscription" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Inscription</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Cotisation</a>
+                                    <a href="/en-pratique/cotisation" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Cotisation</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Agenda</a>
+                                    <a href="/en-pratique/agenda" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Agenda</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Bon à savoir</a>
+                                    <a href="/en-pratique/bon-a-savoir" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Bon à savoir</a>
                                 </li>
                             </ul>
                         </div>
