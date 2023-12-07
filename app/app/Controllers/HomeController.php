@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use SQLite3;
 use App\Controllers\BaseController;
 use App\Repositories\BaseRepository;
 use App\DTO\Response\News\NewsListResponseDTO;

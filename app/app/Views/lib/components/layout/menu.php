@@ -1,6 +1,6 @@
 <nav class="flex justify-around	md:justify-start" x-data="{ open_guide: false, open_scout: false, open_asbl: false, open_en_pratique : false }">
     <!-- LOGO -->
-    <div class="relative flex hidden md:block md:ml-32 md:mr-24">
+    <div class="relative flex hidden md:block lg:ml-32 md:mr-24">
         <a href="<?= base_url() ?>">
             <img src="<?= base_url('assets/img/logo.png') ?>" alt="Logo" class="min-h-32 h-32">
         </a>
@@ -248,7 +248,7 @@
                         </li>
 
                         <li class="py-4 pl-2 md:pl-64 hover:bg-gray-50 rounded-lg">
-                            <a href="#" class="-m-3 flex items-start rounded-lg p-3">
+                            <a href="/en-pratique/cotisation" class="-m-3 flex items-start rounded-lg p-3">
                                 <svg class="h-2 w-2 mt-2 flex-shrink-0 text-template-secondary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-2 h-2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                 </svg>
