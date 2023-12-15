@@ -25,4 +25,9 @@ class EnPratiqueController extends BaseController
             'pricing' => $pricing
         ]);
     }
+
+    public function inscription()
+    {
+        return view('pages/en_pratique/inscription');
+    }
 }

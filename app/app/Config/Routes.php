@@ -57,6 +57,7 @@ $routes->group('auth', static function ($routes) {
 
 
 $routes->group('en-pratique', static function ($routes) {
+    $routes->get('inscription', 'EnPratiqueController::inscription');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
 });
 //! API ROUTES

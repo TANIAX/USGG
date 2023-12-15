@@ -38,6 +38,15 @@ class Role extends Entity
         private DateTime $created_at;
 
         #region Constructor
+        /**
+         * Role constructor.
+         *
+         * @param int $id The ID of the role.
+         * @param string $name The name of the role.
+         * @param bool $exists Indicates if the role exists.
+         * @param DateTime|null $created_at The date and time when the role was created.
+         * @param DateTime|null $updated_at The date and time when the role was last updated.
+         */
         public function __construct(int $id = 0, string $name = "", bool $exists = false, DateTime $created_at = null, DateTime $updated_at = null)
         {
                 $this->id = $id;

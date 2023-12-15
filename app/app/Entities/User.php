@@ -85,6 +85,24 @@ class User extends Entity
     private mixed $user_type;
 
     #region Constructor
+    /**
+     * User constructor.
+     *
+     * @param int $id
+     * @param string $totem
+     * @param string $email
+     * @param string $password
+     * @param string $name
+     * @param string $firstname
+     * @param DateTime|null $birthdate
+     * @param string $phone
+     * @param string $picture
+     * @param bool $exists
+     * @param DateTime|null $created_at
+     * @param DateTime|null $updated_at
+     * @param array $roles
+     * @param mixed|null $user_type
+     */
     public function __construct(int $id = 0, string $totem = "", string $email = "", string $password = "", string $name = "", string $firstname = "", DateTime $birthdate = null, string $phone = "", string $picture = "", bool $exists = false, DateTime $created_at = null, DateTime $updated_at = null, array $roles = [], mixed $user_type = null)
     {
         $this->id = $id;

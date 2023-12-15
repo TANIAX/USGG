@@ -58,7 +58,7 @@
                       personne
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900">53€</span> par personne</td>
+                        class="font-medium text-gray-900"><?= $pricing->getTier1() ?>€</span> par personne</td>
                   </tr>
 
                   <tr>
@@ -66,7 +66,7 @@
                       personnes
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900">43€</span> par personne</td>
+                        class="font-medium text-gray-900"><?= $pricing->getTier2() ?>€</span> par personne</td>
                   </tr>
 
                   <tr>
@@ -74,7 +74,7 @@
                       personnes
                       ou plus</td>
                     <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900">38€</span> par personne</td>
+                        class="font-medium text-gray-900"><?= $pricing->getTier3() ?>€</span> par personne</td>
                   </tr>
 
                   <tr>
