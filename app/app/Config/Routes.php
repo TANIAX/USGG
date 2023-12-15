@@ -44,6 +44,7 @@ $routes->set404Override();
 $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact');
 
+//? Auth
 $routes->group('auth', static function ($routes) {
     $routes->group('login', static function ($routes){
         $routes->get('', 'AuthController::login');
@@ -55,17 +56,25 @@ $routes->group('auth', static function ($routes) {
     $routes->get('logout', 'AuthController::logout');
 });
 
-
+//? En-pratique
 $routes->group('en-pratique', static function ($routes) {
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
+    $routes->get('agenda', 'EnPratiqueController::agenda');
 });
+
+
 //! API ROUTES
 $routes->group('api/v1', static function ($routes) {
     $routes->setDefaultNamespace('App\Controllers\API\V1');
 
-    ///? Auth
+    //? Auth
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
+    });
+
+    //? agenda
+    $routes->group('agenda', static function ($routes) {
+        $routes->get('dates/(:num)/(:num)', 'DatesController::getAgendaDates/$1/$2');
     });
 });
 

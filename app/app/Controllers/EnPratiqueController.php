@@ -25,4 +25,9 @@ class EnPratiqueController extends BaseController
             'pricing' => $pricing
         ]);
     }
+
+    public function agenda()
+    {
+        return view('pages/en_pratique/agenda');
+    }
 }
