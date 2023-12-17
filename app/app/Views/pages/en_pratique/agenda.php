@@ -4,12 +4,12 @@
 
 <?= $this->section('content') ?>
 
-<div class="mx-auto max-w-7xl px-8" x-data="app()" x-cloak
+<div class="mx-auto max-w-7xl px-8 mt-8" x-data="app()" x-cloak
     x-init="getDates();datesChanged();$watch('dates', () => datesChanged() )">
     <div
     class="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96 hidden lg:block "
     aria-hidden="true"></div>
-    <h1 class="font-bold text-2xl uppercase md:text-4xl">AGENDA DES ACTIVITÉS</h1>
+    <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">AGENDA DES ACTIVITÉS</h1>
     <h2 class="font-semibold leading-6 text-gray-900 text-xl md:text-2xl mt-4 md:mt-12">Prochains évenements</h2>
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">

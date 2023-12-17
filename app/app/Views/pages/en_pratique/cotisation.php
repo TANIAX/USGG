@@ -13,7 +13,7 @@
     <div class="mx-auto max-w-2xl xl:mx-0 grid grid-cols-2 gap-4 xl:max-w-none">
       <!-- Introduction -->
       <div class="mt-6 max-w-xl lg:mt-0 col-span-2 xl:col-span-1">
-        <h1 class="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Cotisations</h1>
+        <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">Cotisations</h1>
         <p class="text-lg leading-8 text-gray-600 py-4 mt-8">
           Comme chaque année, nous vous demandons de payer une cotisation annuelle pour inscrire votre enfant chez les
           Guides et les Scouts de Gosselies. Cette cotisation sert à fournir aux membres une assurance pour les
@@ -25,7 +25,7 @@
       <!-- Récap cotisation -->
       <div class="mt-6 max-w-xl lg:mt-0 col-span-2 xl:col-span-1">
         <h2
-          class="max-w-2xl text-xl font-bold tracking-tight text-gray-900 uppercase  py-2 sm:text-4xl lg:col-span-2 xl:col-auto">
+          class="max-w-2xl text-xl font-bold tracking-tight text-gray-900 uppercase  py-2 sm:text-2xl lg:col-span-2 xl:col-auto">
           COMBIEN COÛTE LA COTISATION ?
         </h2>
         <p class="text-lg leading-8 text-gray-600 py-4 mt-8">
@@ -119,7 +119,7 @@
 
       <!-- Modalités de paiements  -->
       <div class="mt-20 lg:mt-32 lg:mt-0 col-span-2">
-        <h2 class="max-w-2xl text-xl font-bold tracking-tight text-gray-900 uppercase py-2 sm:text-4xl ">
+        <h2 class="max-w-2xl text-xl font-bold tracking-tight text-gray-900 uppercase py-2 sm:text-2xl ">
           MODALITÉS DE PAIEMENT
         </h2>
         <p class="text-lg leading-8 text-gray-600 py-4 mt-8">
