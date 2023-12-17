@@ -97,9 +97,6 @@
               <li>
                 <a href="/en-pratique/agenda" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Agenda</a>
               </li>
-              <li>
-                <a href="/en-pratique/bon-a-savoir" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Bon à savoir</a>
-              </li>
             </ul>
           </div>
         </div>
