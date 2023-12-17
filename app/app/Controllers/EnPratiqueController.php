@@ -26,6 +26,11 @@ class EnPratiqueController extends BaseController
         ]);
     }
 
+    public function agenda()
+    {
+        return view('pages/en_pratique/agenda');
+    }
+
     public function inscription()
     {
         return view('pages/en_pratique/inscription');

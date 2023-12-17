@@ -2,7 +2,6 @@
 
 namespace Config;
 
-use App\Controllers\IndividuController;
 
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
@@ -44,6 +43,7 @@ $routes->set404Override();
 $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact');
 
+//? Auth
 $routes->group('auth', static function ($routes) {
     $routes->group('login', static function ($routes){
         $routes->get('', 'AuthController::login');
@@ -55,16 +55,19 @@ $routes->group('auth', static function ($routes) {
     $routes->get('logout', 'AuthController::logout');
 });
 
-
 $routes->group('en-pratique', static function ($routes) {
     $routes->get('inscription', 'EnPratiqueController::inscription');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
+    $routes->get('agenda', 'EnPratiqueController::agenda');
 });
+
+
+
 //! API ROUTES
 $routes->group('api/v1', static function ($routes) {
     $routes->setDefaultNamespace('App\Controllers\API\V1');
 
-    ///? Auth
+    //? Auth
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
     });

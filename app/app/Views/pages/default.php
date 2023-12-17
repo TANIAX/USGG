@@ -10,7 +10,7 @@
 
     <script src="<?= base_url('assets/js/tailwind.js')?>"></script>
     <script defer src="<?= base_url('assets/js/alpine-3.13.2.min.js')?>"></script>
-    <script defer src="<?= base_url('assets/js/script.js')?>"></script>
+    <script src="<?= base_url('assets/js/script.js')?>"></script>
 
 
 </head>
