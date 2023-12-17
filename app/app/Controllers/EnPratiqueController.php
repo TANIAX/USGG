@@ -30,4 +30,9 @@ class EnPratiqueController extends BaseController
     {
         return view('pages/en_pratique/agenda');
     }
+
+    public function inscription()
+    {
+        return view('pages/en_pratique/inscription');
+    }
 }

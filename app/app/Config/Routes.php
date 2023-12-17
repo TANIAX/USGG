@@ -55,11 +55,12 @@ $routes->group('auth', static function ($routes) {
     $routes->get('logout', 'AuthController::logout');
 });
 
-//? En-pratique
-$routes->group('en-pratique',static function ($routes) {
+$routes->group('en-pratique', static function ($routes) {
+    $routes->get('inscription', 'EnPratiqueController::inscription');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
     $routes->get('agenda', 'EnPratiqueController::agenda');
 });
+
 
 
 //! API ROUTES
