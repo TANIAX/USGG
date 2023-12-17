@@ -2,7 +2,6 @@
 
 namespace Config;
 
-use App\Controllers\IndividuController;
 
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
@@ -57,7 +56,7 @@ $routes->group('auth', static function ($routes) {
 });
 
 //? En-pratique
-$routes->group('en-pratique', static function ($routes) {
+$routes->group('en-pratique',static function ($routes) {
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
     $routes->get('agenda', 'EnPratiqueController::agenda');
 });
@@ -70,11 +69,6 @@ $routes->group('api/v1', static function ($routes) {
     //? Auth
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
-    });
-
-    //? agenda
-    $routes->group('agenda', static function ($routes) {
-        $routes->get('dates/(:num)/(:num)', 'DatesController::getAgendaDates/$1/$2');
     });
 });
 
