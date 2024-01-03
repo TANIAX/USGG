@@ -26,7 +26,7 @@ function reveal() {
 function moveMagnet(event) {
   let magnetButton = event.currentTarget;
   let bounding = magnetButton.getBoundingClientRect();
-
+  let strength = 50;
   TweenMax.to(magnetButton, 1, {
     x:
       ((event.clientX - bounding.left) / magnetButton.offsetWidth - 0.5) *
@@ -123,11 +123,19 @@ function getLastSaturday(lastDate) {
 
 window.addEventListener("scroll", reveal);
 reveal();
-let magnets = document.querySelectorAll(".magnetic");
-let strength = 50;
-magnets.forEach((magnet) => {
-  magnet.addEventListener("mousemove", moveMagnet);
-  magnet.addEventListener("mouseout", function (event) {
-    TweenMax.to(event.currentTarget, 1, { x: 0, y: 0, ease: Power4.easeOut });
+
+
+
+//When page is loaded 
+document.addEventListener("DOMContentLoaded", function () {
+  let magnets = document.querySelectorAll(".magnetic");
+  console.log("magnets", magnets);
+  magnets.forEach((magnet) => {
+    console.log(magnet);
+    magnet.addEventListener("mousemove", moveMagnet);
+    magnet.addEventListener("mouseout", function (event) {
+      TweenMax.to(event.currentTarget, 1, { x: 0, y: 0, ease: Power4.easeOut });
+    });
   });
+  
 });
