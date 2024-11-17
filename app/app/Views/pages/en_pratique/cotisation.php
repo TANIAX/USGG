@@ -1,5 +1,6 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Cotisations
+<?= $this->section('page_title') ?>
+  Guides et scoutes de Gosselies - Cotisations
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 
@@ -133,7 +134,7 @@
         <p class="text-xl leading-8 text-gray-600 py-2 mt-8 font-medium">Le prix des cotisations ne doit pas être un
           frein pour nous rejoindre.</p>
         <p class="text-lg text-gray-600"><a href="/contact"
-            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Contactez-nous</a> si vous avez le
+            class="font-medium link">Contactez-nous</a> si vous avez le
           moindre problème de paiement, nous trouverons une solution ensemble.</p>
       </div>
     </div>

@@ -46,7 +46,7 @@ class User extends Entity
     /**
      * @var DateTime The birthdate of the user.
      */
-    private DateTime $birthdate;
+    private ?DateTime $birthdate;
 
     /**
      * @var string The phone number of the user.
@@ -66,12 +66,12 @@ class User extends Entity
     /**
      * @var DateTime The date and time when the user was last updated.
      */
-    private DateTime $updated_at;
+    private ?DateTime $updated_at;
 
     /**
      * @var DateTime The date and time when the user was created.
      */
-    private DateTime $created_at;
+    private ?DateTime $created_at;
 
     /**
      * @var array The roles of the user.
@@ -103,7 +103,7 @@ class User extends Entity
      * @param array $roles
      * @param mixed|null $user_type
      */
-    public function __construct(int $id = 0, string $totem = "", string $email = "", string $password = "", string $name = "", string $firstname = "", DateTime $birthdate = null, string $phone = "", string $picture = "", bool $exists = false, DateTime $created_at = null, DateTime $updated_at = null, array $roles = [], mixed $user_type = null)
+    public function __construct(int $id = 0, string $totem = "", string $email = "", string $password = "", string $name = "", string $firstname = "", DateTime $birthdate = null, string $phone = "", string $picture = "", bool $exists = true, DateTime $created_at = null, DateTime $updated_at = null, array $roles = [], mixed $user_type = null)
     {
         $this->id = $id;
         $this->totem = $totem;

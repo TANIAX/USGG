@@ -45,25 +45,27 @@ interface IRepository
      * @param null $result_class
      * @return bool whether the update was successful or not
      */
-    public function update($id, $data,$result_type = 1, $result_class = null);
+    public function update($id, $data, $result_type = 1, $result_class = null);
 
     /**
      * Delete a record from the repository by its ID.
      *
      * @param $id
+     * @param $force
      * @param int $result_type
      * @param null $result_class
      * @return bool whether the delete was successful or not
      */
-    public function delete($id,$result_type = 1, $result_class = null);
+    public function delete($id, $force, $result_type = 1, $result_class = null);
 
     /**
      * Delete a range of records from the repository by their IDs.
      *
      * @param $ids
+     * @param bool $force
      * @param int $result_type
      * @param null $result_class
      * @return bool whether the delete was successful or not
      */
-    public function deleteRange($ids,$result_type = 1, $result_class = null);
+    public function deleteRange($ids, $force ,$result_type = 1, $result_class = null);
 }

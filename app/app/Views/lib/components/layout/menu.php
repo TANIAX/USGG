@@ -39,7 +39,7 @@
                                     <h3 class="text-sm font-medium leading-6 text-gray-500">Rubrique</h3>
                                     <div class="mt-6 flow-root">
                                         <div class="-my-2">
-                                            <a href="#"
+                                            <a href="/guide"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"aria-hidden="true">
@@ -47,7 +47,7 @@
                                                    </svg>
                                                 Présentation  
                                             </a>
-                                            <a href="#"
+                                            <a href="#2"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -56,7 +56,7 @@
                                                 Staff
                                             </a>
 
-                                            <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
+                                            <a href="/guide/document" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                 </svg>
@@ -77,19 +77,19 @@
                                     <h3 class="text-sm font-medium leading-6 text-gray-500">Sections</h3>
                                     <div class="mt-6 flow-root">
                                         <div class="-my-2">
-                                            <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
+                                            <a href="/guide/#nutons" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                             <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="Nutons">
                                                 Nuton
                                             </a>
-                                            <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
+                                            <a href="/guide/#lutins" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-lutins.png') ?>" alt="Lutins">
                                                 Lutin
                                             </a>
-                                            <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
+                                            <a href="/guide/#aventures" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="Aventures">
                                                 Aventure
                                             </a>
-                                            <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
+                                            <a href="/guide/#horizons" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="Horizons">
                                                 Horizon
                                             </a>
@@ -137,7 +137,7 @@
                                     <h3 class="text-sm font-medium leading-6 text-gray-500">Rubrique</h3>
                                     <div class="mt-6 flow-root">
                                         <div class="-my-2">
-                                            <a href="#"
+                                            <a href="#1"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"aria-hidden="true">
@@ -145,7 +145,7 @@
                                                    </svg>
                                                 Présentation  
                                             </a>
-                                            <a href="#"
+                                            <a href="#2"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">

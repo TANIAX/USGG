@@ -1,5 +1,6 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Agenda
+<?= $this->section('page_title') ?>
+    Guides et scoutes de Gosselies - Agenda
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

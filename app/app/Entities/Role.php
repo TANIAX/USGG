@@ -35,7 +35,7 @@ class Role extends Entity
         /**
          * @var DateTime The date and time when the role was created.
          */
-        private DateTime $created_at;
+        private ?DateTime $created_at;
 
         #region Constructor
         /**
@@ -47,7 +47,7 @@ class Role extends Entity
          * @param DateTime|null $created_at The date and time when the role was created.
          * @param DateTime|null $updated_at The date and time when the role was last updated.
          */
-        public function __construct(int $id = 0, string $name = "", bool $exists = false, DateTime $created_at = null, DateTime $updated_at = null)
+        public function __construct(int $id = 0, string $name = "", bool $exists = true, DateTime $created_at = null, DateTime $updated_at = null)
         {
                 $this->id = $id;
                 $this->name = $name;

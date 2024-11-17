@@ -1,6 +1,7 @@
 <?php
 
 namespace Config;
+use App\Controllers\HomeController;
 
 
 // Create a new instance of our RouteCollection class.
@@ -43,6 +44,7 @@ $routes->set404Override();
 $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact');
 
+
 //? Auth
 $routes->group('auth', static function ($routes) {
     $routes->group('login', static function ($routes){
@@ -60,6 +62,31 @@ $routes->group('en-pratique', static function ($routes) {
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
     $routes->get('agenda', 'EnPratiqueController::agenda');
 });
+
+
+$routes->group('admin',['filter' => 'auth:admin,super_admin'], static function ($routes) {
+    $routes->group('article',  static function ($routes) {
+        $routes->get('', 'ArticleController::index');
+        //Route that mach with 4 digits 
+        $routes->get('([0-9]{4})', 'ArticleController::index/$1');
+        $routes->get('create', 'ArticleController::create');
+        $routes->post('upload','ArticleController::upload');
+    });
+
+    $routes->group('document',  static function ($routes) {
+        $routes->get('', 'DocumentController::index');
+        $routes->get('create', 'DocumentController::create');
+        $routes->post('upload','DocumentController::upload');
+        $routes->get('delete/(:any)','DocumentController::delete/$1');
+    });
+});
+
+$routes->group('guide', static function ($routes) {
+    $routes->get('', 'GuideController::index');
+    $routes->get('document', 'GuideController::documents');
+    $routes->get('document/(:num)', 'GuideController::document/$1');
+});
+
 
 
 

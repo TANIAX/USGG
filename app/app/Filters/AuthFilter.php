@@ -24,7 +24,7 @@ class AuthFilter implements FilterInterface
 
         //If the user is not connected, we redirect him to the login page
         if(!$user)
-            return redirect()->to('/auth/login');
+            return redirect()->to(base_url('/auth/login'));
 
         //If the user is connected, we check if he has the required roles (if any)
         if($args)
@@ -44,7 +44,7 @@ class AuthFilter implements FilterInterface
             if(!$hasRole)
             {
                 SessionHelper::disconnectUser();
-                return redirect()->to('/auth/login');
+                return redirect()->route(base_url('/auth/login'));
             }
    
         }

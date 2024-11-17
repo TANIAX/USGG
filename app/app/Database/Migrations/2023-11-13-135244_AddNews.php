@@ -21,6 +21,12 @@ class AddNews extends Migration
                 'null' => false,
                 'unique' => true
             ],
+            'slug' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => false,
+                'unique' => true
+            ],
             'content' => [
                 'type' => 'TEXT',
                 'null' => false,

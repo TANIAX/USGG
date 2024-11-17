@@ -21,6 +21,8 @@ class FileHelper
     const NEWS_PICTURE_DIRECTORY = 'uploads/news/';
     const DEFAULT_NEWS_PICTURE = 'assets/img/question-mark.jpg';//TODO CHANGE ME 
 
+    const DOCUMENTS_DIRECTORY = 'uploads/documents/';
+
     /**
      * Converts a file to a base64 encoded string
      *

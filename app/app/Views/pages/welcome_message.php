@@ -1,5 +1,6 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Acceuil
+<?= $this->section('page_title') ?>
+  Guides et scoute de Gosselies
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -104,10 +105,10 @@
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
             <img src="<?= base_url('assets/img/logo-nutons.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo nuton">
           </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
+          <a href="/guide/#nutons" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">5 à 7 ans</label>
             <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Nutons</span>
-          </div>
+          </a>
         </div>
 
         <hr>
@@ -116,10 +117,10 @@
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
             <img src="<?= base_url('assets/img/logo-lutins.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo lutin">
           </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
+          <a href="/guide/#lutins" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">8 à 11 ans</label>
             <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">lutins</span>
-          </div>
+          </a>
         </div>
 
         <hr>
@@ -128,10 +129,10 @@
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
             <img src="<?= base_url('assets/img/logo-aventures.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo aventures">
           </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
+          <a href="/guide/#aventures" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">11 à 15 ans</label>
             <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Aventures</span>
-          </div>
+          </a>
         </div>
 
         <hr>
@@ -140,10 +141,10 @@
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
             <img src="<?= base_url('assets/img/logo-horizons.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo horizons">
           </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
+          <a href="/guide/#horizons" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">16 à 18 ans</label>
             <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Horizons</span>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -172,8 +173,9 @@
             </div>
             <div class="max-w-xl">
               <div class="mt-8 flex items-center gap-x-4 text-xs">
-                <p class="text-gray-500">
-                  <?= $item->created_at->format('d/m/Y') ?></time>
+                <time class="text-gray-500">
+                  <?= $item->created_at->format('d/m/Y') ?>
+                </time>
                   <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
                     <?= $item->category->name ?>
                   </a>

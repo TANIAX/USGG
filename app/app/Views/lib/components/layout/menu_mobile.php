@@ -4,9 +4,23 @@
     open_scout: false,
     open_asbl: false,
     open_en_pratique: false,
-}" class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 fixed min-h-screen min-w-[50%] z-50">
-    <div class="flex h-16 shrink-0 items-center">
+}" class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 fixed min-h-screen min-w-[50%] z-50 top-0">
+    <div class="flex h-16 shrink-0 justify-between items-center">
         <img class="h-12 w-auto" src="<?= base_url('assets/img/logo.png') ?>" alt="logo USGG">
+
+        <div class="flex py-2.5">
+            <div class="sm:w-full cursor-pointer md:hidden" @click="open = !open">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black"
+                    class="w-6 h-6" x-bind:class="open ? 'hidden' : ''">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black"
+                    class="w-6 h-6" x-bind:class="open ? '' : 'hidden'">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+        </div>
     </div>
     <nav class="flex flex-1 flex-col">
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -14,7 +28,7 @@
                 <ul role="list" class="-mx-2 space-y-1">
                     <!-- Accueil -->
                     <li>
-                        <a href="/" class="bg-gray-50 block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold text-gray-700">Accueil</a>
+                        <a href="/" class="block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold text-gray-700 hover:bg-gray-50">Accueil</a>
                     </li>
 
                     <!-- Guides -->
@@ -28,16 +42,13 @@
                             </button>
                             <ul class="mt-1 px-2" id="sub-menu-1" x-show="open_guide">
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Sections</a>
+                                    <a href="/guide" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation des sections</a>
                                 </li>
                                 <li>
                                     <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
+                                    <a href="/guide/document" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
                                 </li>
                                 <li>
                                     <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
@@ -57,10 +68,7 @@
                             </button>
                             <ul class="mt-1 px-2" id="sub-menu-1" x-show="open_scout">
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Sections</a>
+                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation des sections</a>
                                 </li>
                                 <li>
                                     <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>

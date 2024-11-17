@@ -1,9 +1,10 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Connexion
+<?= $this->section('page_title') ?>
+    Guides et scoutes de Gosselies - Connexion
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<section class="flex" x-data="{ errors : <?= isset($errors) ?> }">
+<section class="flex" x-data="{ errors : <?= isset($errors) ? 'true' : 'false'  ?> }">
     <div class="flex justify-center w-screen h-screen md:h-1/2 lg:m-24">
 
         <!-- Logo -->
@@ -14,11 +15,11 @@
         </div>
 
         <!-- Form -->
-        <div class="bg-white w-full shadow-xl lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg <?= !isset($errors) ? 'reveal' : '' ?>">
+        <div class="bg-white w-full shadow-xl lg:w-96 p-8 md:p-12 lg:p-4 flex justify-center border-0 lg:border-2 lg:rounded-r-lg <?= !isset($errors) ? 'animate__animated animate__fadeInUp animate__slow' : '' ?>">
             <div class="w-full h-100">
                 <!-- Errors -->
                 <?php if (isset($errors)): ?>
-                    <div class="rounded-md bg-red-50 p-2 reveal" x-show="errors">
+                    <div class="rounded-md bg-red-50 p-2" x-show="errors">
                         <div class="flex">
                             <div @click="errors = false" class="flex-shrink-0 cursor-pointer">
                                 <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"

@@ -34,7 +34,7 @@ abstract class BaseRepository implements IRepository
      */
     public function getAll($result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        $query = $this->builder->get();
+        $query = $this->builder->where('exists', true)->get();
         return $this->getResultAs($query, $result_type, $result_class);
     }
     
@@ -48,13 +48,16 @@ abstract class BaseRepository implements IRepository
      */
     public function getById($id, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        $query = $this->builder->where('id', $id)->get();
+        $query = $this->builder
+        ->where('id', $id)
+        ->where('exists', true)
+        ->get();
         $data = $this->getResultAs($query, $result_type, $result_class);
 
         if ($data)
             return $data[0];
         
-        throw new Exception('No result found for id ' . $id);
+        return null;
     }
     
     /**
@@ -81,31 +84,41 @@ abstract class BaseRepository implements IRepository
      */
     public function update($id, $data,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        return $this->builder->where('id', $id)->update($data);
+        return $this->builder
+        ->where('id', $id)
+        ->update($data);
     }
     
     /**
      * delete
      * @param  int $id
+     * @param  bool $force
      * @param  int $result_type
      * @param  object $result_class
      * @return boolean
      */
-    public function delete($id,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function delete($id,$force,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        return $this->builder->where('id', $id)->delete();
+        if($force)
+            return $this->builder->where('id', $id)->delete();
+        else
+            return $this->builder->where('id', $id)->update(['exists' => false]);
     }
 
     /**
      * deleteRange
      * @param  array $ids
+     * @param  bool $force
      * @param  int $result_type
      * @param  object $result_class
      * @return boolean
      */
-    public function deleteRange($ids,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function deleteRange($ids,$force,$result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
-        return $this->builder->whereIn('id', $ids)->delete();
+        if($force)
+            return $this->builder->whereIn('id', $ids)->delete();
+        else
+            return $this->builder->whereIn('id', $ids)->update(['exists' => false]);
     }
 
     /**
@@ -124,11 +137,34 @@ abstract class BaseRepository implements IRepository
         if(!is_string($key) || !is_string($value))
             throw new Exception('The associative array must contain string keys and values.');
 
-        $query = $this->builder->where($key,$value)->get();
+        $query = $this->builder
+        ->where($key,$value)
+        ->where('exists', true)
+        ->get();
         $data = $this->getResultAs($query, $result_type, $result_class);
 
         if ($data)
             return $data[0];
+        
+        return null;
+    }
+
+    public function findBy($associativeArray, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    {
+        $key = array_keys($associativeArray)[0];
+        $value = $associativeArray[$key];
+
+        if(!is_string($key) || !is_string($value))
+            throw new Exception('The associative array must contain string keys and values.');
+
+        $query = $this->builder
+        ->where($key,$value)
+        ->where('exists', true)
+        ->get();
+        $data = $this->getResultAs($query, $result_type, $result_class);
+
+        if ($data)
+            return $data;
         
         return null;
     }
