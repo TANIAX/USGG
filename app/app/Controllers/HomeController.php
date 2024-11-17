@@ -35,8 +35,8 @@ class HomeController extends BaseController
      */
     public function index()
     {
-        $users = $this->userRepository->GetAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
-        $news = $this->newsRepository->GetLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
+        $users = $this->userRepository->getAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
+        $news = $this->newsRepository->getLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
 
         return view('pages/welcome_message', [
             'users' => $users,

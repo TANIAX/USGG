@@ -38,7 +38,7 @@ class UserRepository extends BaseRepository
      * @param  object $result_class
      * @return array of objects
      */
-    public function GetAllMainLeaders($result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function getAllMainLeaders($result_type = self::RESULT_AS_OBJECT, $result_class = null)
     {
         $query = $this->builder
         ->select('user.user_type_id AS user_type')

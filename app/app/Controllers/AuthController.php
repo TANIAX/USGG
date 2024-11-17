@@ -14,7 +14,6 @@ use App\DTO\Request\Auth\LoginRequestDTO;
 /**
  * 
  * This class represents the AuthController which is responsible for handling authentication related requests.
- * It extends the BaseController class and has two private properties: $userRepository and $newsRepository.
  * The constructor initializes these properties by getting the User and News repositories from the service container.
  * @author Guillaume cornez
  */
@@ -44,7 +43,7 @@ class AuthController extends BaseController
 
         //If the user is already connected, we redirect him to the home page
         if ($this->session->get(SessionHelper::USER_CONNECTED_SESSION_KEY))
-            return redirect()->to('/');
+            return redirect()->to(base_url('/'));
 
 
         //If the request is a POST request, we validate the data and try to log the user in.
@@ -65,7 +64,7 @@ class AuthController extends BaseController
 
             //Store the user in the session
             $this->session->set(SessionHelper::USER_CONNECTED_SESSION_KEY, $user->getRestrictedUser());
-            return redirect()->to('/');
+            return redirect()->to(base_url('/'));
         }
 
         return view('pages/auth/login', [
@@ -105,7 +104,7 @@ class AuthController extends BaseController
 
         //Store the user in the session
         $this->session->set(SessionHelper::USER_CONNECTED_SESSION_KEY, $user->getRestrictedUser());
-        return redirect()->to('/');
+        return redirect()->to(base_url('/'));
     }
 
     /**
@@ -114,7 +113,7 @@ class AuthController extends BaseController
     public function logout()
     {
         $this->session->remove(SessionHelper::USER_CONNECTED_SESSION_KEY);
-        return redirect()->to('/auth/login');
+        return redirect()->to(base_url('/auth/login'));
     }
 
     /**

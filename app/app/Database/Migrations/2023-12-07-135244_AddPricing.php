@@ -35,6 +35,11 @@ class AddPricing extends Migration
                 'constraint' => 5,
                 'unsigned' => true,
             ],
+            'exists' => [
+                'type' => 'BOOLEAN',
+                'null' => false,
+                'default' => true,
+            ],
         'created_at datetime default current_timestamp',
         ]);
         $this->forge->addPrimaryKey('id');

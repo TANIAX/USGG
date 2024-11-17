@@ -1,5 +1,6 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Inscription
+<?= $this->section('page_title') ?>
+  Guides et scoutes de Gosselies - Inscription
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <section>

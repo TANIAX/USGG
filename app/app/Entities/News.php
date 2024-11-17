@@ -23,6 +23,11 @@ class News extends Entity
         private string $title;
 
         /**
+         * @var string The slug of the news.
+         */
+        private string $slug;
+
+        /**
          * @var string The content of the news.
          */
         private string $content;
@@ -55,7 +60,7 @@ class News extends Entity
         /**
          * @var DateTime The date and time when the news was created.
          */
-        private DateTime $created_at;
+        private ?DateTime $created_at;
 
 
         #region Constructor
@@ -72,10 +77,11 @@ class News extends Entity
          * @param DateTime|null $created_at The creation date of the news.
          * @param DateTime|null $updated_at The last update date of the news.
          */
-        public function __construct(int $id = 0, string $title = "", string $content = "", string $picture = "", bool $exists = false, User $user = null, Category $category = null, DateTime $created_at = null, DateTime $updated_at = null)
+        public function __construct(int $id = 0, string $title = "", string $slug = "", string $content = "", string $picture = "", bool $exists = true, User $user = null, Category $category = null, DateTime $created_at = null, DateTime $updated_at = null)
         {
                 $this->id = $id;
                 $this->title = $title;
+                $this->slug = $slug;
                 $this->content = $content;
                 $this->picture = $picture;
                 $this->exists = $exists;
@@ -121,6 +127,25 @@ class News extends Entity
         public function setTitle($title)
         {
                 $this->title = $title;
+
+                return $this;
+        }
+
+          /**
+         * Get the value of slug
+         */
+        public function getSlug()
+        {
+                return $this->slug;
+        }
+        /**
+         * Set the value of slug
+         *
+         * @return  self
+         */
+        public function setSlug($slug)
+        {
+                $this->slug = $slug;
 
                 return $this;
         }

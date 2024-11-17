@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use \Config\Services;
 
 /**
  * A helper class for handling session operations.
@@ -19,7 +20,7 @@ class SessionHelper
      */
     public static function isUserConnected()
     {
-        return isset($_SESSION[self::USER_CONNECTED_SESSION_KEY]);
+        return session()->get(self::USER_CONNECTED_SESSION_KEY) != null;
     }
 
     /**
@@ -29,7 +30,7 @@ class SessionHelper
      */
     public static function getUserConnected()
     {
-        return $_SESSION[self::USER_CONNECTED_SESSION_KEY];
+        return session()->get(self::USER_CONNECTED_SESSION_KEY);
     }
 
     /**
@@ -40,7 +41,7 @@ class SessionHelper
      */
     public static function connectUser($user)
     {
-        $_SESSION[self::USER_CONNECTED_SESSION_KEY] = $user;
+        session()->set(self::USER_CONNECTED_SESSION_KEY,$user);
     }
 
     /**
@@ -50,7 +51,7 @@ class SessionHelper
      */
     public static function disconnectUser()
     {
-        unset($_SESSION[self::USER_CONNECTED_SESSION_KEY]);
+        session()->remove(self::USER_CONNECTED_SESSION_KEY);
     }
 
 

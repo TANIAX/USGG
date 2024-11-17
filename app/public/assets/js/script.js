@@ -129,9 +129,7 @@ reveal();
 //When page is loaded 
 document.addEventListener("DOMContentLoaded", function () {
   let magnets = document.querySelectorAll(".magnetic");
-  console.log("magnets", magnets);
   magnets.forEach((magnet) => {
-    console.log(magnet);
     magnet.addEventListener("mousemove", moveMagnet);
     magnet.addEventListener("mouseout", function (event) {
       TweenMax.to(event.currentTarget, 1, { x: 0, y: 0, ease: Power4.easeOut });

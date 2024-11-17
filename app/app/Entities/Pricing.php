@@ -36,6 +36,11 @@ class Pricing extends Entity
      */
     private float $reduction;
 
+    /**
+    * @var bool exist.
+    */
+    private bool $exists; 
+
 
     #region Constructor
     /**
@@ -46,14 +51,17 @@ class Pricing extends Entity
      * @param float $tier_2 The price for tier 2.
      * @param float $tier_3 The price for tier 3.
      * @param float $reduction The reduction percentage.
+     * @param~bool $exists
+     * @return void
      */
-    public function __construct(int $id = 0, float $tier_1 = 0, float $tier_2 = 0, float $tier_3 = 0, float $reduction = 0)
+    public function __construct(int $id = 0, float $tier_1 = 0, float $tier_2 = 0, float $tier_3 = 0, float $reduction = 0, bool $exists = true)
     {
         $this->id = $id;
         $this->tier_1 = $tier_1;
         $this->tier_2 = $tier_2;
         $this->tier_3 = $tier_3;
         $this->reduction = $reduction;
+        $this->exists = $exists;
     }
     #endregion
 
@@ -150,6 +158,26 @@ class Pricing extends Entity
     public function setReduction(float $reduction): self
     {
         $this->reduction = $reduction;
+        return $this;
+    }
+
+    /**
+     * Get the value of exists
+     */
+    public function getExists(): bool
+    {
+        return $this->exists;
+    }
+
+    /**
+     * Set the value of exists
+     *
+     * @param bool $exists
+     * @return self
+     */
+    public function setExists(bool $exists): self
+    {
+        $this->exists = $exists;
         return $this;
     }
     #endregion
