@@ -52,7 +52,7 @@ class DocumentController extends BaseController
             }
 
             if (file_exists($path)) {
-                unlink($path);
+                $deleted = unlink($path);
             }
 
             $this->fileRepository->delete($id, true);
@@ -87,12 +87,10 @@ class DocumentController extends BaseController
         ];
 
         
-        if (! $this->validateData($data, $rules)) {
-            //TODO: Handle errors
-            echo '<pre>';
-            print_r($this->validator->getErrors());
-            echo '</pre>';
-            die();
+        if (!$this->validateData($data, $rules)) {
+            $errors = $this->validator->getErrors();
+            $this->session->setFlashdata('errors', $errors);
+            return redirect()->to(base_url('/admin/document/create'));
         }
 
         //Set the path where the file will be stored
@@ -115,7 +113,7 @@ class DocumentController extends BaseController
         //Move the file to the folder
         if($data['file']->move($path, $data['name'] . '.' . $data['file']->getExtension())) {
             $this->fileRepository->insert([
-                'name' => $data['name'],
+                'name' => $data['name'] . '.' . $data['file']->getExtension(),
                 'path' => strtolower($data['file_type']),
                 'file_type' => $data['file_type'],
             ]);
