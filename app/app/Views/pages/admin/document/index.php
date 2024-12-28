@@ -12,6 +12,7 @@ Guides et scoutes de Gosselies - Documents
             <h1 class="font-semibold text-4xl leading-6 text-gray-900">Documents</h1>
          </div>
       </div>
+
       <!-- Search bar & file type selection -->
       <div class="mb-8 grid grid-cols-4 gap-4">
          <!-- search -->
@@ -57,71 +58,70 @@ Guides et scoutes de Gosselies - Documents
             </div>
          </div>
       </div>
-      <!-- List -->
-      <div x-show="filteredData.length > 0" class="mt-8 flow-root">
-         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-               <div class="relative">
-                  <!-- delete all button - only appears if one is selected  -->
-                  <div x-show="rowSelected()"
-                     class="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
-                     <button type="button"
-                        @click="deleteSelected(filteredData.filter((file) => file.selected))"
-                        class="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">Supprimer
-                     tout</button>
-                  </div>
-                  <table class="min-w-full table-fixed divide-y divide-gray-300">
-                     <thead>
-                        <tr>
-                           <!-- master checkbox -->
-                           <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
-                              <input type="checkbox" @click="masterCheckbox()"
-                                 class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                           </th>
-                           <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                              Nom
-                           </th>
-                           <th scope="col"
-                              class="w-[8rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
-                              Date de création
-                           </th>
-                           <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                              Type de document
-                           </th>
-                           <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-3">
-                              <span class="sr-only">Supprimer</span>
-                           </th>
-                        </tr>
-                     </thead>
-                     <tbody class="divide-y divide-gray-200 bg-white">
-                        <template x-for="file in filteredData">
-                           <tr :class="file.selected ? 'bg-gray-50' : ''">
-                              <td class="relative px-7 sm:w-12 sm:px-6">
-                                 <div x-show="file.selected"
-                                    class="absolute inset-y-0 left-0 w-0.5 bg-indigo-600"></div>
-                                 <input type="checkbox" @click="file.selected = !file.selected"
-                                    x-bind:checked="file.selected"
-                                    class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                              </td>
-                              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                                 x-text="file.name"></td>
-                              <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium"
-                                 :class="file.selected ? 'text-indigo-600' : 'text-gray-500'"
-                                 x-text="formatDate(file.created_at.date,'DD/MM/YYYY')"></td>
-                              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                                 x-text="file.file_type"></td>
-                              <td
-                                 class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                                 <button type="button"
-                                    @click="deleteSelected([file])" 
-                                    class="text-red-600 hover:text-indigo-900">Supprimer</button>
-                              </td>
-                           </tr>
-                        </template>
-                     </tbody>
-                  </table>
-                  <!-- Add button -->
-                  <div class="sm:flex justify-end sm:items-center mt-8">
+
+      <!-- Responsive Table -->
+      <div x-show="filteredData.length > 0" class="-mx-4 mt-8 sm:-mx-0">
+         <div class="relative">
+            <!-- delete all button - only appears if one is selected  -->
+            <div x-show="rowSelected()"
+               class="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
+               <button type="button"
+                  @click="deleteSelected(filteredData.filter((file) => file.selected))"
+                  class="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">
+                  Supprimer tout
+               </button>
+            </div>
+
+            <table class="min-w-full divide-y divide-gray-300">
+               <thead>
+                  <tr>
+                     <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
+                        <input type="checkbox" @click="masterCheckbox()"
+                           class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                     </th>
+                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Nom</th>
+                     <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
+                        Date de création
+                     </th>
+                     <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
+                        Type de document
+                     </th>
+                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                        <span class="sr-only">Supprimer</span>
+                     </th>
+                  </tr>
+               </thead>
+               <tbody class="divide-y divide-gray-200 bg-white">
+                  <template x-for="file in filteredData">
+                     <tr :class="file.selected ? 'bg-gray-50' : ''">
+                        <td class="relative px-7 sm:w-12 sm:px-6">
+                           <div x-show="file.selected" class="absolute inset-y-0 left-0 w-0.5 bg-indigo-600"></div>
+                           <input type="checkbox" @click="file.selected = !file.selected"
+                              x-bind:checked="file.selected"
+                              class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                        </td>
+                        <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0">
+                           <span x-text="file.name"></span>
+                           <!-- Mobile-only information -->
+                           <dl class="font-normal lg:hidden">
+                              <dt class="sr-only">Date de création</dt>
+                              <dd class="mt-1 truncate text-gray-700" x-text="formatDate(file.created_at.date,'DD/MM/YYYY')"></dd>
+                              <dt class="sr-only sm:hidden">Type de document</dt>
+                              <dd class="mt-1 truncate text-gray-500 sm:hidden" x-text="file.file_type"></dd>
+                           </dl>
+                        </td>
+                        <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell" x-text="formatDate(file.created_at.date,'DD/MM/YYYY')"></td>
+                        <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell" x-text="file.file_type"></td>
+                        <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                           <button type="button" @click="deleteSelected([file])" 
+                              class="text-red-600 hover:text-indigo-900">Supprimer</button>
+                        </td>
+                     </tr>
+                  </template>
+               </tbody>
+            </table>
+            <!-- Add button -->
+            <div class="sm:flex justify-end sm:items-center mt-8">
                      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                         <a href="/admin/document/create">
                         <button type="button"
@@ -131,10 +131,10 @@ Guides et scoutes de Gosselies - Documents
                         </a>
                      </div>
                   </div>
-               </div>
-            </div>
          </div>
       </div>
+
+      <!-- Empty state -->
       <div x-show="filteredData.length == 0">
          <div class="text-center">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -157,6 +157,7 @@ Guides et scoutes de Gosselies - Documents
       </div>
    </div>
 </div>
+
 <script src="<?= base_url('assets/js/moment.js')?>"></script>
 <script>
    function app() {

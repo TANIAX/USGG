@@ -37,10 +37,32 @@ use App\Helpers\SessionHelper;
           </svg>
         </a>
       <?php else: ?>
-        <a href="/auth/logout"
-          class="text-white hover:text-gray-200 px-2 uppercase text-xs tracking-widest sofia font-bold">
-          <?= SessionHelper::getUserConnected()->totem ?>
-        </a>
+        <div x-data="{ open: false }" class="relative">
+          <button
+            @click="open = true"
+            class="flex items-center text-white hover:text-gray-200 px-2 uppercase text-xs tracking-widest sofia font-bold"
+            type="button">
+            <span class="mr-1"><?= SessionHelper::getUserConnected()->totem ?></span>
+            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+            </svg>
+          </button>
+          <ul
+            x-show="open"
+            @click.away="open = false"
+            class="bg-white text-gray-700 rounded shadow-lg absolute py-2 min-w-24 mt-1 right-0 z-[99]">
+            <li>
+              <a href="/admin/document" class="block hover:bg-gray-200 py-2 px-4 font-medium">
+                Documents
+              </a>
+            </li>
+            <li>
+              <a href="/auth/logout" class="block hover:bg-gray-200 py-2 px-4 font-medium">
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
       <?php endif ?>
 
       <break class="border border-white" style="height: 16px;"></break>
