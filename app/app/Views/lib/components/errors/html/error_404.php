@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="color-scheme" content="only light">
     <meta charset="utf-8">
     <title>404 Page Not Found</title>
 

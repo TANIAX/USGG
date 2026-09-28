@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+    <meta name="color-scheme" content="only light">
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
 

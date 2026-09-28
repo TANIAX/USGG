@@ -77,9 +77,9 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-24 lg:mx-0 lg:max-w-none lg:grid-cols-2">
                 <!-- Desktop Image Container -->
-                <div class="hidden md:block md:mt-14 lg:pr-4">
-                    <div class="relative overflow-hidden rounded-3xl px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
-                    <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="logo-nuton">
+                <div class="hidden lg:block lg:mt-14 lg:pr-4">
+                    <div class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+                    <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="logo-nuton">
                     </div>
                 </div>
                 <!-- Text and Mobile Image Container -->
@@ -89,8 +89,8 @@
                         Nutons ami de tous
                     </h1>
                     <!-- Mobile Image -->
-                    <div class="relative overflow-hidden rounded-3xl my-6 pt-32 shadow-2xl w-2/3 mx-auto lg:hidden">
-                        <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="logo-nuton">
+                    <div class="relative mx-auto my-6 aspect-square w-48 overflow-hidden rounded-3xl bg-white shadow-xl sm:w-56 lg:hidden">
+                        <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="logo-nuton">
                     </div>
                     <!-- Description -->
                     <div class="max-w-xl">
@@ -125,8 +125,8 @@
                      Lutins de notre mieux
                   </h1>
                     <!-- Mobile Image -->
-                    <div class="relative overflow-hidden rounded-3xl my-6 pt-32 shadow-2xl w-2/3 mx-auto lg:hidden">
-                        <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-lutins.png') ?>" alt="logo-lutins">
+                    <div class="relative mx-auto my-6 aspect-square w-48 overflow-hidden rounded-3xl bg-white shadow-xl sm:w-56 lg:hidden">
+                        <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-lutins.png') ?>" alt="logo-lutins">
                     </div>
                   <div class="max-w-xl">
                      <p class="mt-6">Le passage de la Chaumière à la Ronde se fait à 7 ans. Les objectifs des
@@ -146,9 +146,9 @@
                </div>
             </div>
                <!-- Desktop Image Container -->
-            <div class="hidden md:block md:mt-24 lg:pr-4">
-               <div class="relative overflow-hidden rounded-3xl px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
-                  <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-lutins.png') ?>"
+            <div class="hidden lg:block lg:mt-24 lg:pr-4">
+               <div class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+                  <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-lutins.png') ?>"
                      alt="logo=lutins">
                </div>
             </div>
@@ -161,10 +161,10 @@
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
          <div class="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-24 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             <!-- Desktop Image Container -->
-            <div class="hidden md:block md:mt-24 lg:pr-4">
+            <div class="hidden lg:block lg:mt-24 lg:pr-4">
                <div
-                  class="relative overflow-hidden rounded-3xl px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
-                  <img class="absolute inset-0 h-full w-full"
+                  class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+                  <img class="absolute inset-0 h-full w-full object-contain"
                      src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="logo=aventures">
                </div>
             </div>
@@ -174,8 +174,8 @@
                   <h1 class="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
                      Aventures toujours prêt
                   </h1>
-                  <div class="relative overflow-hidden rounded-3xl my-6 pt-32 shadow-2xl w-2/3 mx-auto lg:hidden">
-                        <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="logo-aventure">
+                  <div class="relative mx-auto my-6 aspect-square w-48 overflow-hidden rounded-3xl bg-white shadow-xl sm:w-56 lg:hidden">
+                        <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="logo-aventure">
                     </div>
                   <div class="max-w-xl">
                      <p class="mt-6">Bienvenue chez les aventures à partir de 11ans. Le groupe s’appelle la
@@ -210,8 +210,8 @@
                   <h1 class="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
                      Horizons entreprendre
                   </h1>
-                  <div class="relative overflow-hidden rounded-3xl my-6 pt-32 shadow-2xl w-2/3 mx-auto lg:hidden">
-                        <img class="absolute inset-0 h-full w-full" src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="logo-horizons">
+                  <div class="relative mx-auto my-6 aspect-square w-48 overflow-hidden rounded-3xl bg-white shadow-xl sm:w-56 lg:hidden">
+                        <img class="absolute inset-0 h-full w-full object-contain" src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="logo-horizons">
                     </div>
                   <div class="max-w-xl">
                      <p class="mt-6">A 15 ans, les Horizons prennent le relais. Les jeunes intègrent la Chaine.
@@ -236,10 +236,10 @@
             </div>
            <!-- Desktop Image Container -->
 
-            <div class="hidden md:block md:mt-40 lg:pr-4">
+            <div class="hidden lg:block lg:mt-40 lg:pr-4">
                <div
-                  class="relative overflow-hidden rounded-3xl px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10">
-                  <img class="absolute inset-0 h-full w-full"
+                  class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+                  <img class="absolute inset-0 h-full w-full object-contain"
                      src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="logo=horizons">
                </div>
             </div>

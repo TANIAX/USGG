@@ -1,9 +1,10 @@
 <nav class="flex justify-around	md:justify-start"
     x-data="{ open_guide: false, open_scout: false, open_asbl: false, open_en_pratique : false }">
     <!-- LOGO -->
-    <div class="relative flex hidden md:block lg:ml-32 md:mr-24">
+    <!-- shrink-0: the logo keeps its proportions, it is smaller on tablets to leave room for the menu -->
+    <div class="relative hidden shrink-0 md:block md:mr-8 lg:ml-32 lg:mr-24">
         <a href="<?= base_url() ?>">
-            <img src="<?= base_url('assets/img/logo.png') ?>" alt="Logo" class="min-h-32 h-32">
+            <img src="<?= base_url('assets/img/logo.png') ?>" alt="Logo" class="h-20 w-auto max-w-none lg:h-32">
         </a>
     </div>
 
@@ -78,19 +79,19 @@
                                     <div class="mt-6 flow-root">
                                         <div class="-my-2">
                                             <a href="/guide/#nutons" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                            <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="Nutons">
+                                            <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-nutons.png') ?>" alt="Nutons">
                                                 Nuton
                                             </a>
                                             <a href="/guide/#lutins" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-lutins.png') ?>" alt="Lutins">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-lutins.png') ?>" alt="Lutins">
                                                 Lutin
                                             </a>
                                             <a href="/guide/#aventures" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="Aventures">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-aventures.png') ?>" alt="Aventures">
                                                 Aventure
                                             </a>
                                             <a href="/guide/#horizons" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="Horizons">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-horizons.png') ?>" alt="Horizons">
                                                 Horizon
                                             </a>
                                         </div>
@@ -176,19 +177,19 @@
                                     <div class="mt-6 flow-root">
                                         <div class="-my-2">
                                             <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                            <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-baladins.png') ?>" alt="Baladins">
+                                            <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-baladins.png') ?>" alt="Baladins">
                                                 Baladin
                                             </a>
                                             <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-louveteaux.png') ?>" alt="Louveteaux">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-louveteaux.png') ?>" alt="Louveteaux">
                                                 Louveteau
                                             </a>
                                             <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" alt="Éclaireurs">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" alt="Éclaireurs">
                                                 Éclaireur
                                             </a>
                                             <a href="#" class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
-                                                <img class="h-6 w-6 flex-none text-gray-400 rounded-full" src="<?= base_url('assets/img/logo-pionniers.png') ?>" alt="Pionniers">
+                                                <img class="h-6 w-6 flex-none rounded-full bg-white object-contain" src="<?= base_url('assets/img/logo-pionniers.png') ?>" alt="Pionniers">
                                                 Pionnier
                                             </a>
                                         </div>
