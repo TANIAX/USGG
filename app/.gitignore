@@ -128,3 +128,4 @@ nb-configuration.xml
 
 # Images uploaded from the administration
 public/uploads/events/*
+public/uploads/pp/*
