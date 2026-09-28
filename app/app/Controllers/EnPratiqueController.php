@@ -6,15 +6,18 @@ use App\Entities\Pricing;
 use App\Controllers\BaseController;
 use App\Repositories\BaseRepository;
 use App\Repositories\PricingRepository;
+use App\Repositories\SectionRepository;
 
 
 class EnPratiqueController extends BaseController
 {
     private PricingRepository $pricingRepository;
+    private SectionRepository $sectionRepository;
 
     public function __construct()
     {
         $this->pricingRepository = service('repository', 'Pricing');
+        $this->sectionRepository = service('repository', 'Section');
     }
 
     public function cotisation()
@@ -28,7 +31,11 @@ class EnPratiqueController extends BaseController
 
     public function agenda()
     {
-        return view('pages/en_pratique/agenda');
+        $sections = $this->sectionRepository->getAllOrdered();
+
+        return view('pages/en_pratique/agenda', [
+            'sections' => json_encode($sections, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+        ]);
     }
 
     public function inscription()
