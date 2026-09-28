@@ -1,5 +1,5 @@
 <?= $this->extend('pages/default') ?>
-<?= $this->section('page_title') ?>Contact
+<?= $this->section('page_title') ?>Guides et scoutes de Gosselies - Contact
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <div class="relative bg-white">

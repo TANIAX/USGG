@@ -3,27 +3,31 @@ use App\Helpers\SessionHelper;
 
 ?>
 
+<!-- 768px = "md" breakpoint of Tailwind: the desktop menu is shown from 768px, like the CSS (md:block / md:hidden) -->
 <header
-  x-data="{ open: false, hide_menu: ((window.innerWidth > 0) ? window.innerWidth : screen.width) > 768 ? false : true}"
+  x-data="{ open: false, hide_menu: ((window.innerWidth > 0) ? window.innerWidth : screen.width) >= 768 ? false : true}"
+  x-effect="document.body.style.overflow = open ? 'hidden' : ''"
+  @keydown.escape.window="open = false"
   @resize.window=" width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-                        if (width > 768) {
+                        if (width >= 768) {
                           open = false
                           hide_menu = false
                         } else {
                           hide_menu = true
                         }">
   <div class="flex gap-x-6 bg-blue-400 px-6 py-2.5 sm:px-3.5 sm:before:flex-1" style="background-color: #03497A;">
-    <div class="sm:w-full cursor-pointer md:hidden" @click="open = !open">
+    <button type="button" class="sm:w-full cursor-pointer text-left md:hidden" @click="open = !open"
+      :aria-expanded="open.toString()" :aria-label="open ? 'Fermer le menu' : 'Ouvrir le menu'">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
-        class="w-6 h-6" x-bind:class="open ? 'hidden' : ''">
+        class="w-6 h-6" x-bind:class="open ? 'hidden' : ''" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
 
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
-        class="w-6 h-6" x-bind:class="open ? '' : 'hidden'">
+        class="w-6 h-6" x-bind:class="open ? '' : 'hidden'" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
-    </div>
+    </button>
 
 
     <div class="flex flex-1 items-center justify-end md:px-12">
@@ -90,4 +94,6 @@ use App\Helpers\SessionHelper;
   <template x-if="open">
     <?= $this->include('lib/components/layout/menu_mobile.php') ?>
   </template>
+  <!-- Covers the page behind the mobile menu: a tap next to the menu closes it -->
+  <div x-show="open" x-transition.opacity @click="open = false" class="fixed inset-0 z-40 bg-gray-900/50 md:hidden" aria-hidden="true"></div>
 </header>
