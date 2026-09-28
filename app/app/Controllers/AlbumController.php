@@ -103,21 +103,34 @@ class AlbumController extends BaseController
     }
 
     /**
-     * Makes all the photos of an album public or private.
+     * Applies an action to several photos of an album (called in javascript):
+     * "public" / "private" (visibility) or "delete".
      */
-    public function visibility($id)
+    public function photos($id)
     {
         $album = $this->getManageableAlbum((int) $id);
         if ($album === null)
-            return $this->denied();
+            return $this->jsonError(403, 'Vous ne pouvez pas modifier cet album.');
 
-        $isPublic = $this->request->getPost('is_public') === '1';
-        $this->photoRepository->setAlbumVisibility($album->id, $isPublic);
+        $action = $this->request->getPost('action');
+        if (!in_array($action, ['public', 'private', 'delete'], true))
+            return $this->jsonError(400, 'Action inconnue.');
 
-        $this->session->setFlashdata('success', $isPublic
-            ? 'Toutes les photos de l\'album sont maintenant visibles sans compte.'
-            : 'Toutes les photos de l\'album sont maintenant réservées aux personnes connectées.');
-        return redirect()->to(base_url('/admin/galerie/album/' . $album->id));
+        //Only the photos of this album are kept, whatever ids are sent
+        $ids = array_map('intval', (array) $this->request->getPost('ids'));
+        $photos = $this->photoRepository->getInAlbum($album->id, $ids);
+        $photoIds = array_map(fn($photo) => (int) $photo->id, $photos);
+
+        if ($action === 'delete') {
+            $this->photoRepository->deleteIds($photoIds);
+            foreach ($photos as $photo) {
+                GalleryHelper::deletePhotoFiles($album->id, $photo->filename);
+            }
+        } else {
+            $this->photoRepository->setVisibilityForIds($photoIds, $action === 'public');
+        }
+
+        return $this->response->setJSON(['success' => true, 'ids' => $photoIds]);
     }
 
     /**
@@ -128,6 +141,10 @@ class AlbumController extends BaseController
         $album = $this->getManageableAlbum((int) $id);
         if ($album === null)
             return $this->jsonError(403, 'Vous ne pouvez pas ajouter de photos à cet album.');
+
+        $userId = SessionHelper::getUserConnected()->getId();
+        //Releases the session lock: otherwise the photos sent in parallel are processed one after the other
+        session_write_close();
 
         $file = $this->request->getFile('photo');
         if ($file === null || !$file->isValid())
@@ -159,7 +176,7 @@ class AlbumController extends BaseController
         $photoId = $this->photoRepository->add($stored + [
             'album_id' => $album->id,
             'is_public' => $isPublic,
-            'user_id' => SessionHelper::getUserConnected()->getId(),
+            'user_id' => $userId,
         ]);
 
         return $this->response->setJSON([

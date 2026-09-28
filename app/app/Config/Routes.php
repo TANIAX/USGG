@@ -99,7 +99,7 @@ $routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout
     $routes->get('album/(:num)', 'AlbumController::album/$1');
     $routes->post('album/(:num)/update', 'AlbumController::update/$1');
     $routes->post('album/(:num)/delete', 'AlbumController::delete/$1');
-    $routes->post('album/(:num)/visibility', 'AlbumController::visibility/$1');
+    $routes->post('album/(:num)/photos', 'AlbumController::photos/$1');
     $routes->post('album/(:num)/upload', 'AlbumController::upload/$1');
     $routes->post('photo/(:num)/visibility', 'AlbumController::photoVisibility/$1');
     $routes->post('photo/(:num)/delete', 'AlbumController::deletePhoto/$1');

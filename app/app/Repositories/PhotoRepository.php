@@ -100,9 +100,32 @@ class PhotoRepository extends BaseRepository
         return $this->builder->where('id', $id)->update(['is_public' => $isPublic]);
     }
 
-    public function setAlbumVisibility(int $albumId, bool $isPublic)
+    /**
+     * Gets the photos of an album among the given ids (ids of other albums are ignored).
+     *
+     * @return array of objects (id, filename)
+     */
+    public function getInAlbum(int $albumId, array $ids)
     {
-        return $this->builder->where('album_id', $albumId)->update(['is_public' => $isPublic]);
+        if (!$ids)
+            return [];
+
+        return $this->builder
+                    ->select('id, filename')
+                    ->where('album_id', $albumId)
+                    ->whereIn('id', $ids)
+                    ->get()
+                    ->getResultObject();
+    }
+
+    public function setVisibilityForIds(array $ids, bool $isPublic)
+    {
+        return $ids ? $this->builder->whereIn('id', $ids)->update(['is_public' => $isPublic]) : true;
+    }
+
+    public function deleteIds(array $ids)
+    {
+        return $ids ? $this->builder->whereIn('id', $ids)->delete() : true;
     }
 
     public function deletePhoto(int $id)
