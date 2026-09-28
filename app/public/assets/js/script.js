@@ -181,3 +181,60 @@ function formatEventPeriod(event) {
 
   return "Du " + day(start, !sameYear) + " à " + time(start) + " au " + day(end, true) + " à " + time(end);
 }
+
+/**
+ * Alpine component: automatic carousel (crossfade) of the photos of an album cover.
+ * - a photo is only loaded just before being displayed,
+ * - the animation stops when the cover is not on screen or the tab is hidden,
+ * - nothing moves if the user asked the system to reduce the animations.
+ * @param {Array<number>} ids - The ids of the photos of the cover.
+ * @param {number} delay - The time (ms) each photo is displayed.
+ * @returns {Object} - The Alpine component.
+ */
+function coverCarousel(ids, delay = 4000) {
+  return {
+    ids: ids,
+    current: 0,
+    loaded: [0],
+    timer: null,
+    onScreen: false,
+
+    init() {
+      if (this.ids.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      new IntersectionObserver((entries) => {
+        this.onScreen = entries[0].isIntersecting;
+        this.onScreen ? this.start() : this.stop();
+      }).observe(this.$el);
+
+      document.addEventListener("visibilitychange", () => {
+        document.hidden ? this.stop() : this.onScreen && this.start();
+      });
+    },
+
+    start() {
+      if (this.timer) return;
+      this.load(this.current + 1);
+      // Random extra time so that the covers of the page do not all change together
+      this.timer = setTimeout(() => {
+        this.timer = null;
+        this.current = (this.current + 1) % this.ids.length;
+        this.start();
+      }, delay + Math.random() * 2000);
+    },
+
+    stop() {
+      clearTimeout(this.timer);
+      this.timer = null;
+    },
+
+    load(index) {
+      index = index % this.ids.length;
+      if (!this.loaded.includes(index)) this.loaded.push(index);
+    },
+
+    url(id) {
+      return "/galerie/photo/" + id + "/miniature";
+    },
+  };
+}

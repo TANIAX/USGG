@@ -62,7 +62,7 @@
                                                 </svg>
                                                 Documents
                                             </a>
-                                            <a href="#"
+                                            <a href="/galerie/guide"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -160,7 +160,7 @@
                                                 </svg>
                                                 Documents
                                             </a>
-                                            <a href="#"
+                                            <a href="/galerie/scout"
                                                 class="flex gap-x-4 py-2 text-sm font-semibold leading-6 text-gray-900">
                                                 <svg class="h-6 w-6 flex-none text-gray-400" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">

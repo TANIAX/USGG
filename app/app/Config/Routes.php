@@ -91,6 +91,28 @@ $routes->group('admin/agenda', ['filter' => 'auth:admin,super_admin,guide_admin,
     $routes->post('delete/(:num)', 'AgendaController::delete/$1');
 });
 
+//Gallery management: guide admins manage the guide albums, scout admins the scout albums, the super admin both
+$routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout_admin'], static function ($routes) {
+    $routes->get('', 'AlbumController::index');
+    $routes->get('create', 'AlbumController::create');
+    $routes->post('store', 'AlbumController::store');
+    $routes->get('album/(:num)', 'AlbumController::album/$1');
+    $routes->post('album/(:num)/update', 'AlbumController::update/$1');
+    $routes->post('album/(:num)/delete', 'AlbumController::delete/$1');
+    $routes->post('album/(:num)/photos', 'AlbumController::photos/$1');
+    $routes->post('album/(:num)/upload', 'AlbumController::upload/$1');
+    $routes->post('photo/(:num)/visibility', 'AlbumController::photoVisibility/$1');
+    $routes->post('photo/(:num)/delete', 'AlbumController::deletePhoto/$1');
+});
+
+$routes->group('galerie', static function ($routes) {
+    $routes->get('', 'GalleryController::index');
+    $routes->get('(guide|scout)', 'GalleryController::index/$1');
+    $routes->get('album/(:num)', 'GalleryController::album/$1');
+    $routes->get('photo/(:num)', 'GalleryController::photo/$1');
+    $routes->get('photo/(:num)/(miniature)', 'GalleryController::photo/$1/$2');
+});
+
 $routes->group('guide', static function ($routes) {
     $routes->get('', 'GuideController::index');
     $routes->get('document', 'GuideController::documents');
