@@ -72,13 +72,15 @@ $routes->group('en-pratique', static function ($routes) {
 });
 
 
-$routes->group('admin',['filter' => 'auth:admin,super_admin'], static function ($routes) {
-    $routes->group('document',  static function ($routes) {
-        $routes->get('', 'DocumentController::index');
-        $routes->get('create', 'DocumentController::create');
-        $routes->post('upload','DocumentController::upload');
-        $routes->get('delete/(:any)','DocumentController::delete/$1');
-    });
+//Documents: guide admins manage the guide documents, scout admins the scout documents, the super admin both
+$routes->group('admin/document', ['filter' => 'auth:super_admin,guide_admin,scout_admin'], static function ($routes) {
+    $routes->get('', 'DocumentController::index');
+    $routes->get('create', 'DocumentController::create');
+    $routes->post('store', 'DocumentController::store');
+    $routes->get('edit/(:num)', 'DocumentController::edit/$1');
+    $routes->post('update/(:num)', 'DocumentController::update/$1');
+    $routes->get('download/(:num)', 'DocumentController::download/$1');
+    $routes->post('bulk', 'DocumentController::bulk');
 });
 
 //Agenda management is open to every administrator role (guide, scout, asbl and super admin)

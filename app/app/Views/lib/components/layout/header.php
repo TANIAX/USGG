@@ -59,7 +59,7 @@ use App\Helpers\SessionHelper;
               // Only the administration pages allowed by the roles of the user (same roles as the filters of app/Config/Routes.php)
               $roles = SessionHelper::getUserConnected()->getRolesAsStrings();
               $adminLinks = [
-                ['/admin/document', 'Documents', ['admin', 'super_admin']],
+                ['/admin/document', 'Documents', ['super_admin', 'guide_admin', 'scout_admin']],
                 ['/admin/agenda', 'Agenda', ['admin', 'super_admin', 'guide_admin', 'scout_admin', 'asbl_admin']],
                 ['/admin/galerie', 'Galerie', ['super_admin', 'guide_admin', 'scout_admin']],
                 ['/admin/responsables', 'Responsables', ['super_admin']],

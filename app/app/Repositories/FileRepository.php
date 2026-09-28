@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Helpers\FileHelper;
 use App\Repositories\BaseRepository;
 
 /**
@@ -29,22 +28,98 @@ class FileRepository extends BaseRepository
         $this->builder = $this->db->table('file');
     }
     
+    private const FIELDS = 'id, name, path, file_type, is_active, stored_name, mime_type, size, created_at, updated_at';
+
     /**
-     * getLast3News
+     * Active documents of a type, for the public pages.
      *
-     * @param  int $result_type
-     * @param  string $result_class
      * @return array of objects
      */
-    public function getAllFor($file_type, $result_type = self::RESULT_AS_OBJECT, $result_class = null)
+    public function getPublicFor(string $fileType)
     {
-        $query = $this->builder
-                    ->select('id, name, created_at')
-                    ->where('file_type', $file_type)
+        return $this->cast($this->builder
+                    ->select(self::FIELDS)
+                    ->where('file_type', $fileType)
+                    ->where('exists', true)
+                    ->where('is_active', true)
+                    ->orderBy('name', 'ASC')
+                    ->get()
+                    ->getResultObject());
+    }
+
+    /**
+     * All the documents (active or not) of the given types, for the administration.
+     *
+     * @return array of objects
+     */
+    public function getForAdmin(array $fileTypes)
+    {
+        if (!$fileTypes)
+            return [];
+
+        return $this->cast($this->builder
+                    ->select(self::FIELDS)
+                    ->whereIn('file_type', $fileTypes)
                     ->where('exists', true)
                     ->orderBy('created_at', 'DESC')
-                    ->get();
-        return $this->getResultAs($query, $result_type, $result_class);
+                    ->orderBy('id', 'DESC')
+                    ->get()
+                    ->getResultObject());
+    }
+
+    /**
+     * @return object|null
+     */
+    public function getDocument(int $id)
+    {
+        return $this->cast($this->builder
+                    ->select(self::FIELDS)
+                    ->where('id', $id)
+                    ->where('exists', true)
+                    ->get()
+                    ->getResultObject())[0] ?? null;
+    }
+
+    /**
+     * @return array of objects
+     */
+    public function getDocuments(array $ids)
+    {
+        if (!$ids)
+            return [];
+
+        return $this->cast($this->builder
+                    ->select(self::FIELDS)
+                    ->whereIn('id', $ids)
+                    ->where('exists', true)
+                    ->get()
+                    ->getResultObject());
+    }
+
+    public function create(array $data)
+    {
+        $this->builder->insert($data + ['exists' => true, 'created_at' => date('Y-m-d H:i:s')]);
+        return (int) $this->db->insertID();
+    }
+
+    public function updateDocument(int $id, array $data)
+    {
+        return $this->builder->where('id', $id)->update($data + ['updated_at' => date('Y-m-d H:i:s')]);
+    }
+
+    public function deleteDocument(int $id)
+    {
+        return $this->builder->where('id', $id)->delete();
+    }
+
+    private function cast(array $documents)
+    {
+        foreach ($documents as $document) {
+            $document->id = (int) $document->id;
+            $document->is_active = (bool) $document->is_active;
+            $document->size = $document->size === null ? null : (int) $document->size;
+            $document->extension = strtolower(pathinfo($document->name, PATHINFO_EXTENSION));
+        }
+        return $documents;
     }
 }
-
