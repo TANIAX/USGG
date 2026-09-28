@@ -76,6 +76,8 @@
                         connecter</button>
                 </form>
 
+                <?php // Connexion Google désactivée temporairement (token OAuth expiré) : passer à true pour la réactiver ?>
+                <?php if (false): ?>
                 <hr class="my-6 border-gray-300 w-full">
 
                 <button type="button"
@@ -101,6 +103,7 @@
                         </a>
                     </div>
                 </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
