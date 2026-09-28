@@ -25,7 +25,7 @@
                     class="flex items-center gap-x-2 rounded-full bg-white py-1 pl-1 pr-3 text-sm font-medium text-gray-700 ring-1 ring-inset hover:bg-gray-50"
                     :class="isSectionSelected(section) ? 'ring-2' : 'ring-gray-300'"
                     :style="isSectionSelected(section) ? `--tw-ring-color: ${section.color}` : ''">
-                    <img class="h-6 w-6 rounded-full object-cover" :src="assetUrl(section.logo)" :alt="section.name">
+                    <img x-show="section.logo" class="h-7 w-7 rounded-full bg-white object-contain p-0.5 ring-1 ring-gray-200" :src="assetUrl(section.logo)" :alt="section.name" @error="$el.style.display = 'none'">
                     <span class="h-2 w-2 rounded-full" :style="`background-color: ${section.color}`"></span>
                     <span x-text="section.name"></span>
                 </button>
@@ -214,7 +214,7 @@
                             <div class="mt-3 flex flex-wrap gap-2">
                                 <template x-for="section in openedEvent.sections" :key="section.id">
                                     <span class="inline-flex items-center gap-x-2 rounded-full py-0.5 pl-0.5 pr-2.5 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200">
-                                        <img class="h-6 w-6 rounded-full object-cover" :src="assetUrl(section.logo)" alt="">
+                                        <img x-show="section.logo" class="h-7 w-7 rounded-full bg-white object-contain p-0.5 ring-1 ring-gray-200" :src="assetUrl(section.logo)" alt="" @error="$el.style.display = 'none'">
                                         <span x-text="section.name"></span>
                                     </span>
                                 </template>

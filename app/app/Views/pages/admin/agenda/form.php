@@ -42,7 +42,7 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
                      :style="values.sections.includes(section.id) ? `--tw-ring-color: ${section.color}` : ''">
                      <input type="checkbox" name="sections[]" :value="section.id" x-model.number="values.sections"
                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                     <img class="h-8 w-8 rounded-full object-cover" :src="assetUrl(section.logo)" alt="">
+                     <img x-show="section.logo" class="h-9 w-9 rounded-full bg-white object-contain p-0.5 ring-1 ring-gray-200" :src="assetUrl(section.logo)" alt="" @error="$el.style.display = 'none'">
                      <span class="text-sm font-medium text-gray-900" x-text="section.name"></span>
                      <span class="ml-auto h-2.5 w-2.5 rounded-full" :style="`background-color: ${section.color}`"></span>
                   </label>

@@ -10,7 +10,7 @@ class AddSection extends Migration
      * Sections of the unit. They are inserted here (and not in a seeder) because the agenda can not work without them.
      */
     private const SECTIONS = [
-        ['name' => 'Unité',      'slug' => 'unite',      'branch' => 'UNITE',  'color' => '#1f2937', 'logo' => 'assets/img/logo.png'],
+        ['name' => 'Unité',      'slug' => 'unite',      'branch' => 'UNITE',  'color' => '#1f2937', 'logo' => 'assets/img/logo-unite.png'],
         ['name' => 'Nutons',     'slug' => 'nutons',     'branch' => 'GUIDE',  'color' => '#ea580c', 'logo' => 'assets/img/logo-nutons.png'],
         ['name' => 'Lutins',     'slug' => 'lutins',     'branch' => 'GUIDE',  'color' => '#2563eb', 'logo' => 'assets/img/logo-lutins.png'],
         ['name' => 'Aventures',  'slug' => 'aventures',  'branch' => 'GUIDE',  'color' => '#7c3aed', 'logo' => 'assets/img/logo-aventures.png'],
