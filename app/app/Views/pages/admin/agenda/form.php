@@ -14,7 +14,7 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
          </div>
       </div>
 
-      <?= $this->include('pages/admin/agenda/messages') ?>
+      <?= $this->include('pages/admin/messages') ?>
 
       <form method="POST" action="<?= $event ? base_url('admin/agenda/update/' . $event->id) : base_url('admin/agenda/store') ?>"
          class="max-w-3xl space-y-8">

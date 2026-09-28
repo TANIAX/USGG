@@ -206,14 +206,14 @@ class AgendaController extends BaseController
         }
 
         $startDate = $post['start_date'];
-        $endDate = $post['end_date'] ?: $startDate;
+        $endDate = ($post['end_date'] ?? '') ?: $startDate;
 
         if ($allDay) {
             $startAt = $startDate . ' 00:00:00';
             $endAt = $endDate . ' 23:59:59';
         } else {
             $startAt = $startDate . ' ' . $post['start_time'] . ':00';
-            $endAt = $endDate . ' ' . ($post['end_time'] ?: $post['start_time']) . ':00';
+            $endAt = $endDate . ' ' . (($post['end_time'] ?? '') ?: $post['start_time']) . ':00';
         }
 
         $errors = [];

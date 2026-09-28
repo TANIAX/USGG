@@ -23,7 +23,7 @@ Guides et scoutes de Gosselies - Agenda
          </div>
       </div>
 
-      <?= $this->include('pages/admin/agenda/messages') ?>
+      <?= $this->include('pages/admin/messages') ?>
 
       <!-- Period & search -->
       <div class="mb-6 sm:flex sm:items-end sm:justify-between gap-4">

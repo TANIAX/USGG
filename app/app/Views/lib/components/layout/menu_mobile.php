@@ -51,7 +51,7 @@
                                     <a href="/guide/document" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
+                                    <a href="/galerie/guide" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
                                 </li>
                             </ul>
                         </div>
@@ -77,7 +77,7 @@
                                     <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
+                                    <a href="/galerie/scout" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
                                 </li>
                             </ul>
                         </div>
