@@ -260,29 +260,28 @@
 
 
 
-<!-- Team -->
-<article class="bg-slate-100 py-24 sm:py-32">
+<!-- Team: the section leaders (admin/responsables) -->
+<article id="responsables" class="bg-slate-100 py-24 sm:py-32">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des responsables de section</h2>
-      <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres responsables.</p> -->
     </div>
-    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 reveal">
-      <?php if (!empty($users) && is_array($users)) : ?>
-        <?php foreach ($users as $user) : ?>
+    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 px-6 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:px-8 xl:grid-cols-6 reveal">
+      <?php if (!empty($leaders)) : ?>
+        <?php foreach ($leaders as $leader) : ?>
           <li>
-            <img class="mx-auto h-24 w-24 rounded-full object-cover" src="<?= $user->picture ?>" alt="">
-            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">
-              <?= $user->totem ?>
-            </h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600">
-              <?= $user->user_type ?>
+            <img class="mx-auto h-24 w-24 rounded-full bg-white object-cover" src="<?= esc($leader->picture_url ?? base_url('assets/img/question-mark.jpg'), 'attr') ?>" alt="">
+            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900"><?= esc($leader->display_name) ?></h3>
+            <p class="text-sm font-semibold leading-6 text-indigo-600"><?= esc($leader->function ?? '') ?></p>
+            <p class="mt-1 inline-flex items-center gap-x-1.5 text-xs text-gray-500">
+              <span class="h-1.5 w-1.5 rounded-full" style="background-color: <?= esc($leader->section_color, 'attr') ?>"></span>
+              <?= esc($leader->section_name) ?>
             </p>
           </li>
         <?php endforeach ?>
       <?php else : ?>
-        <li>
-          <p class="text-sm font-semibold leading-6 text-indigo-600">Aucun responsable pour le moment</p>
+        <li class="col-span-full">
+          <p class="text-sm font-semibold leading-6 text-indigo-600">Les responsables seront bientôt présentés ici.</p>
         </li>
       <?php endif ?>
     </ul>

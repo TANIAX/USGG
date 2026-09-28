@@ -1033,6 +1033,10 @@ input:where([type='file']):focus {
   margin-top: -5rem;
 }
 
+.-mt-3 {
+  margin-top: -0.75rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -1320,6 +1324,10 @@ input:where([type='file']):focus {
   height: 1.75rem;
 }
 
+.h-8 {
+  height: 2rem;
+}
+
 .h-9 {
   height: 2.25rem;
 }
@@ -1400,6 +1408,10 @@ input:where([type='file']):focus {
   width: 0.625rem;
 }
 
+.w-20 {
+  width: 5rem;
+}
+
 .w-24 {
   width: 6rem;
 }
@@ -1438,6 +1450,10 @@ input:where([type='file']):focus {
 
 .w-7 {
   width: 1.75rem;
+}
+
+.w-8 {
+  width: 2rem;
 }
 
 .w-9 {
@@ -1865,6 +1881,12 @@ input:where([type='file']):focus {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+
+.space-y-10 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(2.5rem * var(--tw-space-y-reverse));
 }
 
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
@@ -2443,6 +2465,10 @@ input:where([type='file']):focus {
 
 .\!pb-2 {
   padding-bottom: 0.5rem !important;
+}
+
+.pb-16 {
+  padding-bottom: 4rem;
 }
 
 .pb-2 {
@@ -3486,6 +3512,10 @@ input:where([type='file']):focus {
 
   .sm\:h-32 {
     height: 8rem;
+  }
+
+  .sm\:w-1\/3 {
+    width: 33.333333%;
   }
 
   .sm\:w-12 {

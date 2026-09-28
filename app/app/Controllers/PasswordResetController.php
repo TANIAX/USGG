@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\MailHelper;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
 use App\Repositories\BaseRepository;
@@ -68,7 +69,7 @@ class PasswordResetController extends BaseController
 
         if ($user !== null && !$this->passwordResetRepository->hasRecentRequest((int) $user->id, self::DELAY_BETWEEN_EMAILS)) {
             $token = $this->passwordResetRepository->createToken((int) $user->id, $this->request->getIPAddress());
-            $this->sendEmail($user->email, 'Réinitialisation de votre mot de passe', 'emails/password_reset', [
+            MailHelper::send($user->email, 'Réinitialisation de votre mot de passe', 'emails/password_reset', [
                 'totem' => $user->totem,
                 'link' => base_url('auth/reinitialiser/' . $token),
                 'lifetime' => PasswordResetRepository::LIFETIME / 60,
@@ -129,35 +130,12 @@ class PasswordResetController extends BaseController
         // The link (and any other link sent before) can not be used anymore
         $this->passwordResetRepository->invalidateForUser((int) $reset->user_id);
 
-        $this->sendEmail($reset->email, 'Votre mot de passe a été modifié', 'emails/password_changed', [
+        MailHelper::send($reset->email, 'Votre mot de passe a été modifié', 'emails/password_changed', [
             'totem' => $reset->totem,
             'forgotLink' => base_url('auth/mot-de-passe-oublie'),
         ]);
 
         $this->session->setFlashdata('success', 'Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.');
         return redirect()->to(base_url('/auth/login'));
-    }
-
-    /**
-     * Sends an HTML e-mail. A failure is logged but not shown: the visitor gets the same answer in any case.
-     */
-    private function sendEmail(string $to, string $subject, string $view, array $data)
-    {
-        $email = service('email');
-        //Sender: "email.fromEmail" / "email.fromName" in the .env file
-        $config = config('Email');
-        $email->setFrom($config->fromEmail ?: 'noreply@gsgosselies.be', $config->fromName ?: 'Guides et Scouts de Gosselies');
-        $email->setTo($to);
-        $email->setSubject($subject);
-        $html = view($view, $data + ['subject' => $subject]);
-        $email->setMailType('html');
-        $email->setMessage($html);
-        //Text version for the mail clients that do not display HTML
-        $text = preg_replace('#<head>.*?</head>#s', '', $html);
-        $text = html_entity_decode(strip_tags(str_replace(['<br>', '</p>', '</tr>'], "\n", $text)), ENT_QUOTES, 'UTF-8');
-        $email->setAltMessage(trim(preg_replace("/\n\s*\n+/", "\n\n", $text)));
-
-        if (!$email->send(false))
-            log_message('error', 'Password reset e-mail not sent to {to}: {debug}', ['to' => $to, 'debug' => $email->printDebugger(['headers'])]);
     }
 }

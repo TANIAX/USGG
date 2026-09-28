@@ -113,6 +113,18 @@ $routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout
     $routes->post('photo/(:num)/delete', 'AlbumController::deletePhoto/$1');
 });
 
+//Section leaders (portraits of the home page): super admin only
+$routes->group('admin/responsables', ['filter' => 'auth:super_admin'], static function ($routes) {
+    $routes->get('', 'LeaderController::index');
+    $routes->get('create', 'LeaderController::create');
+    $routes->get('compte', 'LeaderController::account');
+    $routes->post('store', 'LeaderController::store');
+    $routes->get('edit/(:num)', 'LeaderController::edit/$1');
+    $routes->post('update/(:num)', 'LeaderController::update/$1');
+    $routes->post('delete/(:num)', 'LeaderController::delete/$1');
+    $routes->post('move/(:num)', 'LeaderController::move/$1');
+});
+
 $routes->group('galerie', static function ($routes) {
     $routes->get('', 'GalleryController::index');
     $routes->get('(guide|scout)', 'GalleryController::index/$1');
