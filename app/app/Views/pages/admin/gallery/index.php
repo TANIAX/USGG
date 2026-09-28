@@ -37,12 +37,22 @@ Guides et scoutes de Gosselies - Galerie photos
             <li class="overflow-hidden rounded-lg bg-white shadow ring-1 ring-gray-200">
                <a :href="`/admin/galerie/album/${album.id}`" class="block group">
                   <div class="aspect-[4/3] bg-gray-100">
-                     <template x-if="album.cover_id">
-                        <img :src="`/galerie/photo/${album.cover_id}/miniature`" alt="" class="h-full w-full object-cover group-hover:opacity-90" loading="lazy">
-                     </template>
-                     <template x-if="!album.cover_id">
-                        <div class="flex h-full items-center justify-center text-sm text-gray-400">Aucune photo</div>
-                     </template>
+                     <div x-show="album.cover_ids.length > 0" class="relative h-full w-full group-hover:opacity-90" x-data="coverCarousel(album.cover_ids)">
+                        <template x-for="(id, index) in ids" :key="id">
+                            <template x-if="loaded.includes(index)">
+                                <img :src="url(id)" alt="" loading="lazy"
+                                    class="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+                                    :class="index === current ? 'opacity-100' : 'opacity-0'">
+                            </template>
+                        </template>
+                        <!-- Position in the carousel -->
+                        <div x-show="ids.length > 1" class="absolute inset-x-0 bottom-2 flex justify-center gap-1.5" aria-hidden="true">
+                            <template x-for="(id, index) in ids" :key="id">
+                                <span class="h-1.5 w-1.5 rounded-full shadow transition-colors" :class="index === current ? 'bg-white' : 'bg-white/50'"></span>
+                            </template>
+                        </div>
+                     </div>
+                     <div x-show="album.cover_ids.length === 0" class="flex h-full items-center justify-center text-sm text-gray-400">Aucune photo</div>
                   </div>
                   <div class="p-4">
                      <div class="flex items-center justify-between gap-x-2">

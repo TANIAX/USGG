@@ -13,6 +13,11 @@ use App\Repositories\BaseRepository;
  */
 class AlbumRepository extends BaseRepository
 {
+    /**
+     * Number of photos shown in turn on the cover of an album.
+     */
+    public const COVER_PHOTOS = 3;
+
     public function __construct()
     {
         parent::__construct();
@@ -38,7 +43,6 @@ class AlbumRepository extends BaseRepository
                     ->select('album.id, album.title, album.description, album.branch, album.album_date, album.created_at')
                     ->select('(SELECT COUNT(*) FROM photo WHERE photo.album_id = album.id' . $visibility . ') AS photo_count', false)
                     ->select('(SELECT COUNT(*) FROM photo WHERE photo.album_id = album.id AND photo.is_public = 0) AS private_count', false)
-                    ->select('(SELECT photo.id FROM photo WHERE photo.album_id = album.id' . $visibility . ' ORDER BY photo.position, photo.id LIMIT 1) AS cover_id', false)
                     ->whereIn('album.branch', $branches)
                     ->orderBy('album.album_date IS NULL', 'ASC', false)
                     ->orderBy('album.album_date', 'DESC')
@@ -47,6 +51,10 @@ class AlbumRepository extends BaseRepository
                     ->getResultObject();
 
         $albums = array_map([$this, 'castAlbum'], $albums);
+        $coverIds = $this->getCoverIds(array_column($albums, 'id'), $withPrivatePhotos);
+        foreach ($albums as $album) {
+            $album->cover_ids = $coverIds[$album->id] ?? [];
+        }
 
         if ($onlyNotEmpty)
             $albums = array_values(array_filter($albums, fn($album) => $album->photo_count > 0));
@@ -88,10 +96,44 @@ class AlbumRepository extends BaseRepository
         return $this->builder->where('id', $id)->delete();
     }
 
+    /**
+     * Picks the photos of the cover of each album: spread over the album (beginning, middle, end)
+     * rather than the first ones, which are often very similar.
+     *
+     * @param  array $albumIds
+     * @param  bool $withPrivatePhotos
+     * @return array [album id => [photo ids]]
+     */
+    private function getCoverIds(array $albumIds, bool $withPrivatePhotos)
+    {
+        if (!$albumIds)
+            return [];
+
+        $builder = $this->db->table('photo')->select('id, album_id')->whereIn('album_id', $albumIds);
+        if (!$withPrivatePhotos)
+            $builder->where('is_public', true);
+
+        $photosByAlbum = [];
+        foreach ($builder->orderBy('album_id')->orderBy('position')->orderBy('id')->get()->getResultArray() as $photo) {
+            $photosByAlbum[$photo['album_id']][] = (int) $photo['id'];
+        }
+
+        $coverIds = [];
+        foreach ($photosByAlbum as $albumId => $photoIds) {
+            $count = count($photoIds);
+            $picked = min($count, self::COVER_PHOTOS);
+            for ($i = 0; $i < $picked; $i++) {
+                $coverIds[$albumId][] = $photoIds[intdiv($i * $count, $picked)];
+            }
+        }
+
+        return $coverIds;
+    }
+
     private function castAlbum($album)
     {
         $album->id = (int) $album->id;
-        foreach (['photo_count', 'private_count', 'cover_id'] as $field) {
+        foreach (['photo_count', 'private_count'] as $field) {
             if (property_exists($album, $field))
                 $album->$field = $album->$field === null ? null : (int) $album->$field;
         }

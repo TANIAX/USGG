@@ -32,8 +32,22 @@
                 <li>
                     <a href="/galerie/album/<?= $album->id ?>" class="group block">
                         <div class="aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
-                            <img src="/galerie/photo/<?= $album->cover_id ?>/miniature" alt="" loading="lazy"
-                                class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
+                            <!-- Photos of the cover shown in turn -->
+                            <div class="relative h-full w-full transition duration-300 group-hover:scale-105" x-data="coverCarousel(<?= json_encode($album->cover_ids) ?>)">
+                                <template x-for="(id, index) in ids" :key="id">
+                                    <template x-if="loaded.includes(index)">
+                                        <img :src="url(id)" alt="" loading="lazy"
+                                            class="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+                                            :class="index === current ? 'opacity-100' : 'opacity-0'">
+                                    </template>
+                                </template>
+                                <!-- Position in the carousel -->
+                                <div x-show="ids.length > 1" class="absolute inset-x-0 bottom-2 flex justify-center gap-1.5" aria-hidden="true">
+                                    <template x-for="(id, index) in ids" :key="id">
+                                        <span class="h-1.5 w-1.5 rounded-full shadow transition-colors" :class="index === current ? 'bg-white' : 'bg-white/50'"></span>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
                         <div class="mt-3 flex items-start justify-between gap-x-3">
                             <h2 class="font-semibold text-gray-900 group-hover:text-indigo-600"><?= esc($album->title) ?></h2>
