@@ -57,6 +57,11 @@ use App\Helpers\SessionHelper;
               </a>
             </li>
             <li>
+              <a href="/admin/agenda" class="block hover:bg-gray-200 py-2 px-4 font-medium">
+                Agenda
+              </a>
+            </li>
+            <li>
               <a href="/auth/logout" class="block hover:bg-gray-200 py-2 px-4 font-medium">
                 Logout
               </a>

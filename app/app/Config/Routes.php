@@ -81,6 +81,16 @@ $routes->group('admin',['filter' => 'auth:admin,super_admin'], static function (
     });
 });
 
+//Agenda management is open to every administrator role (guide, scout, asbl and super admin)
+$routes->group('admin/agenda', ['filter' => 'auth:admin,super_admin,guide_admin,scout_admin,asbl_admin'], static function ($routes) {
+    $routes->get('', 'AgendaController::index');
+    $routes->get('create', 'AgendaController::create');
+    $routes->post('store', 'AgendaController::store');
+    $routes->get('edit/(:num)', 'AgendaController::edit/$1');
+    $routes->post('update/(:num)', 'AgendaController::update/$1');
+    $routes->post('delete/(:num)', 'AgendaController::delete/$1');
+});
+
 $routes->group('guide', static function ($routes) {
     $routes->get('', 'GuideController::index');
     $routes->get('document', 'GuideController::documents');
