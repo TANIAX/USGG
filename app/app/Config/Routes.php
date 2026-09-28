@@ -98,6 +98,12 @@ $routes->group('api/v1', static function ($routes) {
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
     });
+
+    //? Agenda
+    $routes->group('agenda', static function ($routes) {
+        $routes->get('', 'AgendaController::index');
+        $routes->get('(:num)', 'AgendaController::show/$1');
+    });
 });
 
 

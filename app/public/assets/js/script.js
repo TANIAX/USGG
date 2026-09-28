@@ -144,3 +144,40 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   
 });
+
+/**
+ * Parses a date coming from the database ("YYYY-MM-DD HH:MM:SS") as a local date.
+ * @param {string} value - The date to parse.
+ * @returns {Date} - The parsed date.
+ */
+function parseEventDate(value) {
+  let [date, time = "00:00:00"] = value.split(" ");
+  let [year, month, day] = date.split("-").map(Number);
+  let [hours, minutes] = time.split(":").map(Number);
+
+  return new Date(year, month - 1, day, hours, minutes);
+}
+
+/**
+ * Returns a human readable (french) period for an agenda event.
+ * e.g. "Samedi 3 octobre 2026, de 14:00 à 17:00" or "Du samedi 3 octobre au dimanche 4 octobre 2026"
+ * @param {Object} event - The event ({start_at, end_at, all_day}).
+ * @returns {string} - The formatted period.
+ */
+function formatEventPeriod(event) {
+  let start = parseEventDate(event.start_at);
+  let end = parseEventDate(event.end_at);
+  let sameDay = toDateKey(start) === toDateKey(end);
+  let sameYear = start.getFullYear() === end.getFullYear();
+  let capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+  let day = (date, withYear) =>
+    date.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long", year: withYear ? "numeric" : undefined });
+  let time = (date) => date.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+
+  if (sameDay && event.all_day) return capitalize(day(start, true)) + " (toute la journée)";
+  if (sameDay && start.getTime() === end.getTime()) return capitalize(day(start, true)) + " à " + time(start);
+  if (sameDay) return capitalize(day(start, true)) + ", de " + time(start) + " à " + time(end);
+  if (event.all_day) return "Du " + day(start, !sameYear) + " au " + day(end, true);
+
+  return "Du " + day(start, !sameYear) + " à " + time(start) + " au " + day(end, true) + " à " + time(end);
+}
