@@ -17,7 +17,7 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
       <?= $this->include('pages/admin/messages') ?>
 
       <form method="POST" action="<?= $event ? base_url('admin/agenda/update/' . $event->id) : base_url('admin/agenda/store') ?>"
-         class="max-w-3xl space-y-8">
+         enctype="multipart/form-data" class="max-w-3xl space-y-8" @submit="submitting = true">
 
          <!-- Title -->
          <div>
@@ -113,12 +113,37 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
             </p>
          </div>
 
+         <!-- Image (shown in the news of the home page and in the agenda) -->
+         <div>
+            <span class="block text-sm font-medium leading-6 text-gray-900">Image</span>
+            <div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start">
+               <div class="aspect-[16/9] w-full max-w-xs overflow-hidden rounded-lg bg-gray-100 ring-1 ring-gray-200">
+                  <img x-show="imagePreview && !removeImage" :src="imagePreview" alt="" class="h-full w-full object-cover">
+                  <div x-show="!imagePreview || removeImage" class="flex h-full items-center justify-center px-4 text-center text-sm text-gray-400">
+                     Sans image, le logo des sections est affiché.
+                  </div>
+               </div>
+               <div class="space-y-3 text-sm">
+                  <label class="inline-block cursor-pointer rounded-md bg-white px-3 py-2 font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                     <span x-text="imagePreview && !removeImage ? 'Changer l\'image' : 'Choisir une image'"></span>
+                     <input type="file" name="image" accept="image/*" class="sr-only" @change="chooseImage($event.target)">
+                  </label>
+                  <label x-show="hasCurrentImage" class="flex items-center gap-x-2 text-gray-700">
+                     <input type="checkbox" name="remove_image" value="1" x-model="removeImage" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                     Retirer l'image actuelle
+                  </label>
+                  <p class="text-gray-500" x-show="reducing">Préparation de l'image…</p>
+                  <p class="text-gray-500">Facultatif. Format paysage conseillé (16/9). La photo est réduite avant l'envoi.</p>
+               </div>
+            </div>
+         </div>
+
          <div class="flex justify-end gap-x-3 border-t pt-6">
             <a href="/admin/agenda"
                class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                Annuler
             </a>
-            <button type="submit"
+            <button type="submit" :disabled="reducing || submitting"
                class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                Enregistrer
             </button>
@@ -133,6 +158,23 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
          baseUrl: '<?= rtrim(base_url(), '/') ?>/',
          sections: <?= $sections ?>,
          values: <?= $values ?>,
+         imagePreview: <?= json_encode($imageUrl ?? null) ?>,
+         hasCurrentImage: <?= !empty($imageUrl) ? 'true' : 'false' ?>,
+         removeImage: false,
+         reducing: false,
+         submitting: false,
+
+         // The photo is reduced in the browser (script.js) before being sent with the form
+         async chooseImage(input) {
+            if (!input.files.length)
+               return;
+            this.reducing = true;
+            const file = await reduceInputPhoto(input, 1600);
+            this.reducing = false;
+            this.removeImage = false;
+            if (file)
+               this.imagePreview = URL.createObjectURL(file);
+         },
 
          // Readable summary of the dates, with the same format as the public agenda
          get preview() {

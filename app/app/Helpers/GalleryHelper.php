@@ -35,7 +35,6 @@ class GalleryHelper
      */
     public const PHOTO_MAX_SIZE = 2000;
     public const THUMBNAIL_MAX_SIZE = 600;
-    private const JPEG_QUALITY = 85;
 
     /**
      * Returns the branches the connected user can manage.
@@ -90,34 +89,21 @@ class GalleryHelper
      */
     public static function storePhoto(string $source, int $albumId)
     {
-        //Big pictures (smartphones) need a lot of memory once decoded
-        ini_set('memory_limit', '512M');
+        $image = ImageHelper::open($source);
+        $filename = ImageHelper::randomName();
 
-        $image = @imagecreatefromstring((string) file_get_contents($source));
-        if ($image === false)
-            throw new Exception('Le fichier n\'est pas une image valide.');
+        $photo = ImageHelper::fit($image, self::PHOTO_MAX_SIZE);
+        $thumbnail = ImageHelper::fit($photo, self::THUMBNAIL_MAX_SIZE);
 
-        $image = self::applyExifOrientation($image, $source);
-
-        $filename = bin2hex(random_bytes(16));
-        $directory = self::getAlbumDirectory($albumId);
-        if (!is_dir($directory . 'thumbnails'))
-            mkdir($directory . 'thumbnails', 0775, true);
-
-        $photo = self::resize($image, self::PHOTO_MAX_SIZE);
-        $thumbnail = self::resize($photo, self::THUMBNAIL_MAX_SIZE);
-
-        $saved = imagejpeg($photo, self::getPhotoPath($albumId, $filename), self::JPEG_QUALITY)
-            && imagejpeg($thumbnail, self::getPhotoPath($albumId, $filename, true), self::JPEG_QUALITY);
-
-        $result = ['filename' => $filename, 'width' => imagesx($photo), 'height' => imagesy($photo)];
-
-        if (!$saved) {
+        try {
+            ImageHelper::saveJpeg($photo, self::getPhotoPath($albumId, $filename));
+            ImageHelper::saveJpeg($thumbnail, self::getPhotoPath($albumId, $filename, true));
+        } catch (Exception $exception) {
             self::deletePhotoFiles($albumId, $filename);
             throw new Exception('Impossible d\'enregistrer la photo sur le serveur.');
         }
 
-        return $result;
+        return ['filename' => $filename, 'width' => imagesx($photo), 'height' => imagesy($photo)];
     }
 
     public static function deletePhotoFiles(int $albumId, string $filename)
@@ -140,45 +126,5 @@ class GalleryHelper
             }
             @rmdir($folder);
         }
-    }
-
-    /**
-     * Returns a copy of the image fitting in a square of $maxSize px (on a white background, for transparent PNG).
-     */
-    private static function resize($image, int $maxSize)
-    {
-        $width = imagesx($image);
-        $height = imagesy($image);
-        $ratio = min(1, $maxSize / max($width, $height));
-        $newWidth = max(1, (int) round($width * $ratio));
-        $newHeight = max(1, (int) round($height * $ratio));
-
-        $result = imagecreatetruecolor($newWidth, $newHeight);
-        imagefill($result, 0, 0, imagecolorallocate($result, 255, 255, 255));
-        imagecopyresampled($result, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-
-        return $result;
-    }
-
-    /**
-     * Turns the image according to the EXIF orientation set by the camera.
-     */
-    private static function applyExifOrientation($image, string $source)
-    {
-        if (!function_exists('exif_read_data'))
-            return $image;
-
-        $exif = @exif_read_data($source);
-        switch ($exif['Orientation'] ?? 1) {
-            case 2: imageflip($image, IMG_FLIP_HORIZONTAL); break;
-            case 3: $image = imagerotate($image, 180, 0); break;
-            case 4: imageflip($image, IMG_FLIP_VERTICAL); break;
-            case 5: $image = imagerotate($image, -90, 0); imageflip($image, IMG_FLIP_HORIZONTAL); break;
-            case 6: $image = imagerotate($image, -90, 0); break;
-            case 7: $image = imagerotate($image, 90, 0); imageflip($image, IMG_FLIP_HORIZONTAL); break;
-            case 8: $image = imagerotate($image, 90, 0); break;
-        }
-
-        return $image;
     }
 }

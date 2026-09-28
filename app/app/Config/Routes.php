@@ -63,6 +63,8 @@ $routes->group('auth', static function ($routes) {
     $routes->post('reinitialiser/(:segment)', 'PasswordResetController::update/$1');
 });
 
+$routes->get('actualites/(:num)', 'NewsController::show/$1');
+
 $routes->group('en-pratique', static function ($routes) {
     $routes->get('inscription', 'EnPratiqueController::inscription');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
@@ -149,6 +151,9 @@ $routes->group('api/v1', static function ($routes) {
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
     });
+
+    //? News (upcoming events of the agenda)
+    $routes->get('actualites', 'NewsController::index');
 
     //? Agenda
     $routes->group('agenda', static function ($routes) {

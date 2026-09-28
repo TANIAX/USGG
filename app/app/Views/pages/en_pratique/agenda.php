@@ -200,6 +200,7 @@
                                 <span class="flex-1" :style="`background-color: ${section.color}`"></span>
                             </template>
                         </div>
+                        <img x-show="openedEvent.image_url" :src="openedEvent.image_url" alt="" class="aspect-[16/9] w-full object-cover">
                         <div class="px-6 pb-6 pt-5">
                             <div class="flex items-start justify-between gap-x-4">
                                 <h3 id="event-title" class="text-xl font-semibold text-gray-900" x-text="openedEvent.title"></h3>
@@ -251,6 +252,8 @@
 
                             <p x-show="openedEvent.description" class="mt-5 whitespace-pre-line text-sm leading-6 text-gray-600"
                                 x-text="openedEvent.description"></p>
+                            <p class="mt-5 text-xs text-gray-500" x-show="openedEvent.author" x-text="'Publié par ' + (openedEvent.author ? openedEvent.author.name : '')"></p>
+                            <a :href="`/actualites/${openedEvent.id}`" class="mt-2 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-500">Voir la page de l'événement</a>
 
                             <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                                 <button type="button" @click="closeEvent()"

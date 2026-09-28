@@ -4,14 +4,14 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Repositories\BaseRepository;
-use App\DTO\Response\News\NewsListResponseDTO;
 use App\DTO\Response\User\UserListResponseDTO;
-use App\Repositories\NewsRepository;
+use App\Repositories\EventRepository;
+use App\Controllers\API\V1\NewsController;
 use App\Repositories\UserRepository;
 
 /**
  * This class represents the Home Controller that handles the landing page and othet stuff.
- * It retrieves the main leaders and the last 3 news from their respective repositories
+ * It retrieves the main leaders and the first upcoming events of the agenda (news)
  * and passes them to the welcome_message view.
  *
  * @author   Guillaume cornez
@@ -19,12 +19,12 @@ use App\Repositories\UserRepository;
 class HomeController extends BaseController
 {
     private UserRepository $userRepository;
-    private NewsRepository $newsRepository;
+    private EventRepository $eventRepository;
 
     public function __construct()
     {
         $this->userRepository = service('Repository', 'User');
-        $this->newsRepository = service('Repository', 'News');
+        $this->eventRepository = service('Repository', 'Event');
     }
 
     /**
@@ -36,11 +36,12 @@ class HomeController extends BaseController
     public function index()
     {
         $users = $this->userRepository->getAllMainLeaders(BaseRepository::RESULT_AS_CUSTOM, UserListResponseDTO::class);
-        $news = $this->newsRepository->getLast3News(BaseRepository::RESULT_AS_CUSTOM, NewsListResponseDTO::class);
+        // News = upcoming events of the agenda, the next ones are loaded 3 by 3 (api/v1/actualites)
+        $news = $this->eventRepository->getUpcoming(0, NewsController::PAGE_SIZE);
 
         return view('pages/welcome_message', [
             'users' => $users,
-            'news' => $news
+            'news' => json_encode(['items' => $news['events'], 'has_more' => $news['has_more']], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
     }
 

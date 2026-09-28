@@ -65,6 +65,7 @@ Guides et scoutes de Gosselies - Agenda
                      <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm sm:w-auto sm:max-w-none sm:pl-0">
                         <p class="font-medium text-gray-900" x-text="event.title"></p>
                         <p class="mt-1 text-gray-500" x-show="event.location" x-text="event.location"></p>
+                        <p class="mt-1 text-xs text-gray-400" x-text="'Par ' + event.author.name + (event.image_url ? ' · avec image' : '')"></p>
                         <!-- Mobile-only information -->
                         <dl class="font-normal lg:hidden">
                            <dt class="sr-only">Date</dt>
