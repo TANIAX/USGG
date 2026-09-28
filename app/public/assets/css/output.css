@@ -1968,6 +1968,10 @@ input:where([type='file']):focus {
   text-wrap: pretty;
 }
 
+.break-words {
+  overflow-wrap: break-word;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -2426,6 +2430,11 @@ input:where([type='file']):focus {
   padding-bottom: 1.25rem;
 }
 
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -2441,6 +2450,10 @@ input:where([type='file']):focus {
 
 .pb-2\.5 {
   padding-bottom: 0.625rem;
+}
+
+.pb-20 {
+  padding-bottom: 5rem;
 }
 
 .pb-32 {
@@ -3564,6 +3577,11 @@ input:where([type='file']):focus {
     padding-bottom: 3rem;
   }
 
+  .sm\:py-20 {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
   .sm\:py-24 {
     padding-top: 6rem;
     padding-bottom: 6rem;
@@ -3796,6 +3814,10 @@ input:where([type='file']):focus {
 }
 
 @media (min-width: 1024px) {
+  .lg\:order-last {
+    order: 9999;
+  }
+
   .lg\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -3944,6 +3966,10 @@ input:where([type='file']):focus {
 
   .lg\:items-center {
     align-items: center;
+  }
+
+  .lg\:gap-12 {
+    gap: 3rem;
   }
 
   .lg\:gap-6 {
@@ -4192,6 +4218,11 @@ input:where([type='file']):focus {
   .xl\:py-20 {
     padding-top: 5rem;
     padding-bottom: 5rem;
+  }
+
+  .xl\:py-24 {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
 
   .xl\:py-36 {

@@ -36,7 +36,20 @@ class GuideController extends BaseController
     public function documents()
     {
         $files = $this->fileRepository->getAllFor(FileRepository::FILE_TYPE_GUIDE, BaseRepository::RESULT_AS_CUSTOM, File::class) ?? [];
-        return view('pages/guide/document', ['files' => $files]);
+        return view('pages/unit/documents', [
+            'files' => $files,
+            'unitName' => 'Guides',
+            'unitLabel' => 'l\'unité guide',
+            'documentUrl' => '/guide/document',
+        ]);
+    }
+
+    /**
+     * Presentation of the staff of the guide unit.
+     */
+    public function staff()
+    {
+        return view('pages/unit/staff', ['branch' => 'guide']);
     }
 
     /**
@@ -47,7 +60,8 @@ class GuideController extends BaseController
     public function document(int $id)
     {
         $file = $this->fileRepository->getById($id, BaseRepository::RESULT_AS_CUSTOM, File::class);
-        if ($file === null) {
+        //Only the guide documents are downloaded from this page
+        if ($file === null || $file->file_type !== FileRepository::FILE_TYPE_GUIDE) {
             return redirect()->to(base_url('/guide/document'));
         }
 

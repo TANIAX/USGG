@@ -48,6 +48,11 @@
                     </div>
                 <?php endif; ?>
 
+                <!-- Message after a password change -->
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="rounded-md bg-green-50 p-3 text-sm font-medium text-green-800"><?= esc(session()->getFlashdata('success')) ?></div>
+                <?php endif; ?>
+
                 <h1 class="text-xl md:text-2xl font-bold leading-tight mt-6">Connexion</h1>
                 <form class="mt-6" action="/auth/login" method="post">
                     <div>
@@ -66,9 +71,9 @@
                     </div>
 
                     <div class="text-right mt-2">
-                        <a href="#"
+                        <a href="/auth/mot-de-passe-oublie"
                             class="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Mot de
-                            passe oublié?</a>
+                            passe oublié ?</a>
                     </div>
 
                     <button type="submit"

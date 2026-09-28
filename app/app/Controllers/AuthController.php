@@ -52,7 +52,7 @@ class AuthController extends BaseController
             $userLogin = new LoginRequestDTO($this->getRequestInput($this->request));
             $errors = $userLogin->validate();
             if (count($errors) > 0)
-                return view('auth/login', ['errors' => $errors, 'authUrl' => $authUrl]);
+                return view('pages/auth/login', ['errors' => $errors, 'authUrl' => $authUrl]);
 
             //Get the user from the database
             $user = $this->userRepository->getFullUserBy(['email' => $userLogin->email], BaseRepository::RESULT_AS_CUSTOM, User::class);

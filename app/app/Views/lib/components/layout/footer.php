@@ -31,16 +31,16 @@
             <h3 class="text-sm font-semibold leading-6 text-gray-900">Scouts</h3>
             <ul role="list" class="mt-6 space-y-4">
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
+                <a href="/scout" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sections</a>
+                <a href="/scout#baladins" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sections</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
+                <a href="/scout/staff" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
+                <a href="/scout/document" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
               </li>
               <li>
                 <a href="/galerie/scout" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Galerie photos</a>
@@ -57,7 +57,7 @@
                 <a href="/guide#nutons" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sections</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
+                <a href="/guide/staff" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Staff d'unité</a>
               </li>
               <li>
                 <a href="/guide/document" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Documents</a>
@@ -74,10 +74,10 @@
             <h3 class="text-sm font-semibold leading-6 text-gray-900">ASBL</h3>
             <ul role="list" class="mt-6 space-y-4">
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
+                <a href="/asbl" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Présentation</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Événements</a>
+                <a href="/asbl/evenements" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Événements</a>
               </li>
               <li class="!mb-28 !pb-2 md:mt-0">
                 <a href="/contact" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Contact</a>

@@ -55,6 +55,12 @@ $routes->group('auth', static function ($routes) {
         });
     });
     $routes->get('logout', 'AuthController::logout');
+
+    //? Forgotten password
+    $routes->get('mot-de-passe-oublie', 'PasswordResetController::forgot');
+    $routes->post('mot-de-passe-oublie', 'PasswordResetController::sendLink');
+    $routes->get('reinitialiser/(:segment)', 'PasswordResetController::reset/$1');
+    $routes->post('reinitialiser/(:segment)', 'PasswordResetController::update/$1');
 });
 
 $routes->group('en-pratique', static function ($routes) {
@@ -115,8 +121,21 @@ $routes->group('galerie', static function ($routes) {
 
 $routes->group('guide', static function ($routes) {
     $routes->get('', 'GuideController::index');
+    $routes->get('staff', 'GuideController::staff');
     $routes->get('document', 'GuideController::documents');
     $routes->get('document/(:num)', 'GuideController::document/$1');
+});
+
+$routes->group('scout', static function ($routes) {
+    $routes->get('', 'ScoutController::index');
+    $routes->get('staff', 'ScoutController::staff');
+    $routes->get('document', 'ScoutController::documents');
+    $routes->get('document/(:num)', 'ScoutController::document/$1');
+});
+
+$routes->group('asbl', static function ($routes) {
+    $routes->get('', 'AsblController::index');
+    $routes->get('evenements', 'AsblController::events');
 });
 
 

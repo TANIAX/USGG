@@ -45,7 +45,7 @@
                                     <a href="/guide" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation des sections</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>
+                                    <a href="/guide/staff" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>
                                 </li>
                                 <li>
                                     <a href="/guide/document" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
@@ -68,13 +68,13 @@
                             </button>
                             <ul class="mt-1 px-2" id="sub-menu-1" x-show="open_scout">
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation des sections</a>
+                                    <a href="/scout" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation des sections</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>
+                                    <a href="/scout/staff" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Staff d'unité</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
+                                    <a href="/scout/document" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Documents</a>
                                 </li>
                                 <li>
                                     <a href="/galerie/scout" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Galerie photos</a>
@@ -94,10 +94,10 @@
                             </button>
                             <ul class="mt-1 px-2" id="sub-menu-1" x-show="open_asbl">
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation</a>
+                                    <a href="/asbl" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Présentation</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Événements</a>
+                                    <a href="/asbl/evenements" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Événements</a>
                                 </li>
                                 <li>
                                     <a href="/contact" class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Contact</a>
