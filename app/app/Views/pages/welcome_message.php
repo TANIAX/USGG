@@ -1,6 +1,6 @@
 <?= $this->extend('pages/default') ?>
 <?= $this->section('page_title') ?>
-  Guides et scoute de Gosselies
+  Guides et scoutes de Gosselies
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -46,11 +46,11 @@
     </div>
     <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
       <div class="md:col-span-3 p-4 reveal-reverse">
-        <img src="<?= base_url('assets/img/logo-scout.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] w-[90vw] md:w-auto" alt="logo scouts">
+        <img src="<?= base_url('assets/img/logo-scout.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] object-contain w-[90vw] md:w-auto" alt="logo scouts">
 
         <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-baladins.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom rotate-4 shadow-md" alt="logo baladins">
+            <img src="<?= base_url('assets/img/logo-baladins.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo baladins">
           </div>
           <div class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">6 à 8 ans</label>
@@ -62,7 +62,7 @@
 
         <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-louveteaux.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom rotate-4 shadow-md" alt="logo louvetaux">
+            <img src="<?= base_url('assets/img/logo-louveteaux.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo louvetaux">
           </div>
           <div class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">8 à 12 ans</label>
@@ -74,7 +74,7 @@
 
         <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom rotate-4 shadow-md" alt="logo éclaireurs">
+            <img src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo éclaireurs">
           </div>
           <div class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">12 à 16 ans</label>
@@ -86,7 +86,7 @@
 
         <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-pionniers.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom rotate-4 shadow-md" alt="logo pionners">
+            <img src="<?= base_url('assets/img/logo-pionniers.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo pionners">
           </div>
           <div class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">16 à 18 ans</label>
@@ -99,11 +99,11 @@
         <h1 class="rotate-90 uppercase text-6xl font-bold p-2">Filles</h1>
       </div>
       <div class="md:col-span-3 reveal">
-        <img src="<?= base_url('assets/img/logo-guide.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] mt-4" alt="logo guide">
+        <img src="<?= base_url('assets/img/logo-guide.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] object-contain mt-4" alt="logo guide">
 
         <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-nutons.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo nuton">
+            <img src="<?= base_url('assets/img/logo-nutons.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo nuton">
           </div>
           <a href="/guide/#nutons" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">5 à 7 ans</label>
@@ -115,7 +115,7 @@
 
         <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-lutins.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo lutin">
+            <img src="<?= base_url('assets/img/logo-lutins.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo lutin">
           </div>
           <a href="/guide/#lutins" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">8 à 11 ans</label>
@@ -127,7 +127,7 @@
 
         <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-aventures.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo aventures">
+            <img src="<?= base_url('assets/img/logo-aventures.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo aventures">
           </div>
           <a href="/guide/#aventures" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">11 à 15 ans</label>
@@ -139,7 +139,7 @@
 
         <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
           <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-horizons.png') ?>" class="w-28 h-28 bg-gray-100 origin-bottom -rotate-4 shadow-md" alt="logo horizons">
+            <img src="<?= base_url('assets/img/logo-horizons.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo horizons">
           </div>
           <a href="/guide/#horizons" class="flex flex-col items-center justify-center p-8 magnetic">
             <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">16 à 18 ans</label>
@@ -168,7 +168,7 @@
         <?php foreach ($news as $key => $item) : ?>
           <article class="flex flex-col items-start justify-between <?= getAnimateClass($key) ?>">
             <div class="relative w-full">
-              <img src="<?= $item->picture ?>">
+              <img src="<?= $item->picture ?>" alt="<?= esc($item->title ?? '') ?>" class="aspect-[16/9] w-full rounded-2xl object-cover">
               <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
             </div>
             <div class="max-w-xl">
@@ -192,7 +192,7 @@
                 </p>
               </div>
               <div class="relative mt-8 flex items-center gap-x-4">
-                <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100">
+                <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100 object-cover">
                 <div class="text-sm leading-6">
                   <p class="font-semibold text-gray-900">
                     <a href="#">
@@ -234,7 +234,7 @@
       <?php if (!empty($users) && is_array($users)) : ?>
         <?php foreach ($users as $user) : ?>
           <li>
-            <img class="mx-auto h-24 w-24 rounded-full" src="<?= $user->picture ?>" alt="">
+            <img class="mx-auto h-24 w-24 rounded-full object-cover" src="<?= $user->picture ?>" alt="">
             <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">
               <?= $user->totem ?>
             </h3>
@@ -252,7 +252,7 @@
   </div>
 </article>
 <!-- Testimonials -->
-<div class="relative isolate bg-white pb-32 pt-24 sm:pt-32" x-data="{ width : (window.innerWidth > 0) ? window.innerWidth : screen.width }"  @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;">
+<div class="relative isolate overflow-hidden bg-white pb-32 pt-24 sm:pt-32" x-data="{ width : (window.innerWidth > 0) ? window.innerWidth : screen.width }"  @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;">
   <div class="absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 transform-gpu overflow-hidden opacity-30 blur-3xl" aria-hidden="true">
     <div class="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-[#FCF7F8] to-[#CED3DC]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
   </div>

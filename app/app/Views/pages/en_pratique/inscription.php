@@ -234,12 +234,12 @@
               <p>
                 Après la réunion d'essai, vous pourrez confirmer l'inscription en payant la <a
                   href="/en-pratique/cotisation"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline">cotisation annuelle</a> et en
+                  class="font-medium text-blue-600 hover:underline">cotisation annuelle</a> et en
                 remettant la <span class="text-gray-700 font-semibold">fiche médicale</span> au staff d'animation.</a>
               </p>
               <p class="mt-2">
                 En inscrivant votre enfant vous acceptez notre <a href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Charte de fonctionnement</a>.
+                  class="font-medium text-blue-600 hover:underline">Charte de fonctionnement</a>.
               </p>
             </div>
           </div>

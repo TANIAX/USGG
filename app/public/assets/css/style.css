@@ -24,6 +24,9 @@
 /****************/
 html {
   scroll-behavior: smooth;
+  /* The site only has a light theme, whatever the theme of the system */
+  color-scheme: only light;
+  background-color: #fff;
 }
 
 .reveal {

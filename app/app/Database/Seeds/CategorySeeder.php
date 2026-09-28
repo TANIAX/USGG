@@ -9,7 +9,7 @@ class CategorySeeder extends Seeder
     public function run()
     {        
         $evenements = [
-            'name' => 'Évenements',
+            'name' => 'Événements',
         ];
 
         $services = [

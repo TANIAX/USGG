@@ -57,6 +57,19 @@ CI_ENVIRONMENT = production
 # database.tests.port = 3306
 
 #--------------------------------------------------------------------
+# EMAIL (password reset)
+#--------------------------------------------------------------------
+
+# email.fromEmail = 'noreply@gsgosselies.be'
+# email.fromName = 'Guides et Scouts de Gosselies'
+# email.protocol = 'smtp'
+# email.SMTPHost = 'smtp.example.org'
+# email.SMTPUser = ''
+# email.SMTPPass = ''
+# email.SMTPPort = 587
+# email.SMTPCrypto = 'tls'
+
+#--------------------------------------------------------------------
 # CONTENT SECURITY POLICY
 #--------------------------------------------------------------------
 
