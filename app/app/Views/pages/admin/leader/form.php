@@ -116,9 +116,9 @@ Guides et scoutes de Gosselies - <?= $leader ? 'Modifier un responsable' : 'Ajou
 
          get accountMessage() {
             if (!this.account)
-               return 'Si aucun compte n\'existe pour cette adresse, il sera créé et ses identifiants seront envoyés par e-mail.';
+               return 'Si aucun compte n\'existe pour cette adresse, il sera créé et la personne recevra un e-mail pour choisir son mot de passe.';
             if (!this.account.exists)
-               return 'Aucun compte pour cette adresse : il sera créé et un mot de passe lui sera envoyé par e-mail.';
+               return 'Aucun compte pour cette adresse : il sera créé et la personne recevra un e-mail pour choisir son mot de passe.';
             return this.account.active
                ? 'Compte existant : il sera lié, ses informations ont été reprises ci-dessous.'
                : 'Compte existant mais désactivé : il sera réactivé et lié.';

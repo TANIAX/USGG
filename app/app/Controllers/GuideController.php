@@ -49,7 +49,11 @@ class GuideController extends BaseController
      */
     public function staff()
     {
-        return view('pages/unit/staff', ['branch' => 'guide']);
+        // Leaders managed in admin/responsables (the "Unité" section is the unit staff)
+        return view('pages/unit/staff', [
+            'branch' => 'guide',
+            'leaders' => service('repository', 'SectionLeader')->getLeaders(),
+        ]);
     }
 
     /**

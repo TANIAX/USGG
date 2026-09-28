@@ -32,33 +32,6 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * GetAllMainLeaders
-     *
-     * @param  int $result_type
-     * @param  object $result_class
-     * @return array of objects
-     */
-    public function getAllMainLeaders($result_type = self::RESULT_AS_OBJECT, $result_class = null)
-    {
-        $query = $this->builder
-        ->select('user.user_type_id AS user_type')
-        ->select('user.*')
-        ->whereIn('user_type_id', [6,2,3,4])
-        ->get();
-        $users = $this->getResultAs($query, $result_type, $result_class);
-        foreach ($users as $user) {
-            $user->user_type = $this->userTypeRepository->getById($user->user_type)->name;
-
-            //If the user has a picture, we get it from the server otherwise we set a default picture
-            if($user->picture && file_exists(FileHelper::PROFIL_PICTURE_DIRECTORY . $user->picture))
-                $user->picture = base_url(FileHelper::PROFIL_PICTURE_DIRECTORY . $user->picture);
-            else
-                $user->picture = base_url(FileHelper::DEFAULT_PROFIL_PICTURE);
-        }
-        return $users;
-    }
-
-    /**
      * Retrieves a full user by an associative array of key-value pairs.
      *
      * @param array $associativeArray An associative array of key-value pairs.

@@ -25,6 +25,23 @@
       ],
    ];
    $unit = $units[$branch];
+
+   // Leaders by section (slug); no personal contact information is shown
+   $leadersBySection = [];
+   foreach ($leaders as $leader) {
+      $leadersBySection[$leader->section_slug][] = $leader;
+   }
+   $renderLeaders = function (array $sectionLeaders) {
+      $html = '<ul role="list" class="mt-4 w-full space-y-3 text-left">';
+      foreach ($sectionLeaders as $leader) {
+         $picture = $leader->picture_url ?? base_url('assets/img/question-mark.jpg');
+         $html .= '<li class="flex items-center gap-x-3">'
+            . '<img src="' . esc($picture, 'attr') . '" alt="" class="h-10 w-10 flex-none rounded-full bg-gray-100 object-cover">'
+            . '<div class="min-w-0"><p class="truncate text-sm font-semibold text-gray-900">' . esc($leader->display_name) . '</p>'
+            . '<p class="truncate text-xs text-gray-500">' . esc($leader->function ?? '') . '</p></div></li>';
+      }
+      return $html . '</ul>';
+   };
 ?>
 <?= $this->extend('pages/default') ?>
 
@@ -59,6 +76,20 @@
       </div>
    </div>
 
+   <!-- Unit staff (section "Unité") -->
+   <?php if (!empty($leadersBySection['unite'])): ?>
+      <h2 class="mt-16 text-2xl font-semibold text-gray-900">Le staff d'unité</h2>
+      <ul role="list" class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+         <?php foreach ($leadersBySection['unite'] as $leader): ?>
+            <li class="text-center">
+               <img src="<?= esc($leader->picture_url ?? base_url('assets/img/question-mark.jpg'), 'attr') ?>" alt="" class="mx-auto h-24 w-24 rounded-full bg-gray-100 object-cover">
+               <p class="mt-3 font-semibold text-gray-900"><?= esc($leader->display_name) ?></p>
+               <p class="text-sm text-indigo-600"><?= esc($leader->function ?? '') ?></p>
+            </li>
+         <?php endforeach; ?>
+      </ul>
+   <?php endif; ?>
+
    <h2 class="mt-16 text-2xl font-semibold text-gray-900">Les équipes d'animation</h2>
    <ul role="list" class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <?php foreach ($unit['sections'] as $section): ?>
@@ -66,7 +97,11 @@
             <img class="h-24 w-24 rounded-full bg-white object-contain ring-1 ring-gray-200" src="<?= base_url($section['logo']) ?>" alt="">
             <h3 class="mt-4 font-semibold text-gray-900"><?= $section['name'] ?></h3>
             <p class="text-sm text-gray-500"><?= $section['ages'] ?></p>
-            <p class="mt-3 text-sm text-gray-600">L’équipe d’animation des <?= $section['name'] ?> sera présentée ici prochainement.</p>
+            <?php if (!empty($leadersBySection[$section['id']])): ?>
+               <?= $renderLeaders($leadersBySection[$section['id']]) ?>
+            <?php else: ?>
+               <p class="mt-3 text-sm text-gray-600">L’équipe d’animation des <?= $section['name'] ?> sera présentée ici prochainement.</p>
+            <?php endif; ?>
             <a href="<?= $unit['presentation'] ?>#<?= $section['id'] ?>" class="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-500">Découvrir la section</a>
          </li>
       <?php endforeach; ?>

@@ -9,7 +9,7 @@
         <?php if ($token === null): ?>
             <h1 class="text-2xl font-bold leading-tight text-gray-900">Lien invalide ou expiré</h1>
             <p class="mt-2 text-sm text-gray-600">
-                Ce lien de réinitialisation n'est plus valable : il a déjà été utilisé, il a expiré (validité d'une heure)
+                Ce lien n'est plus valable : il a déjà été utilisé, il a expiré
                 ou un lien plus récent a été demandé.
             </p>
             <a href="/auth/mot-de-passe-oublie" class="mt-6 block w-full rounded-lg bg-indigo-500 px-4 py-3 text-center font-semibold text-white hover:bg-indigo-400">

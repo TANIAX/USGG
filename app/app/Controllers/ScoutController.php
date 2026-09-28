@@ -27,7 +27,11 @@ class ScoutController extends BaseController
 
     public function staff()
     {
-        return view('pages/unit/staff', ['branch' => 'scout']);
+        // Leaders managed in admin/responsables (the "Unité" section is the unit staff)
+        return view('pages/unit/staff', [
+            'branch' => 'scout',
+            'leaders' => service('repository', 'SectionLeader')->getLeaders(),
+        ]);
     }
 
     public function documents()

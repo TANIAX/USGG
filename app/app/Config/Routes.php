@@ -73,14 +73,6 @@ $routes->group('en-pratique', static function ($routes) {
 
 
 $routes->group('admin',['filter' => 'auth:admin,super_admin'], static function ($routes) {
-    $routes->group('article',  static function ($routes) {
-        $routes->get('', 'ArticleController::index');
-        //Route that mach with 4 digits 
-        $routes->get('([0-9]{4})', 'ArticleController::index/$1');
-        $routes->get('create', 'ArticleController::create');
-        $routes->post('upload','ArticleController::upload');
-    });
-
     $routes->group('document',  static function ($routes) {
         $routes->get('', 'DocumentController::index');
         $routes->get('create', 'DocumentController::create');

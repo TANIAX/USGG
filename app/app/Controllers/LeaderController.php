@@ -9,12 +9,13 @@ use App\Helpers\ImageHelper;
 use App\Controllers\BaseController;
 use App\Repositories\UserRepository;
 use App\Repositories\SectionRepository;
+use App\Repositories\PasswordResetRepository;
 use App\Repositories\SectionLeaderRepository;
 
 /**
  * Management of the section leaders (super admin), shown on the home page.
  * A leader is identified by the e-mail of their account: if the account does not exist it is created
- * and its credentials (random password) are sent by e-mail.
+ * and a link to choose its password is sent by e-mail.
  */
 class LeaderController extends BaseController
 {
@@ -96,23 +97,23 @@ class LeaderController extends BaseController
 
         $messages = [];
         if ($user === null) {
-            // New account: random password sent by e-mail
-            $password = $this->randomPassword();
+            // New account: it gets an unknown random password, the person chooses their own with the link sent by e-mail
             $userId = $this->userRepository->createAccount($data['profile'] + [
                 'user_type_id' => $data['user_type_id'],
                 'email' => $data['email'],
-                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'password' => password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT),
                 'picture' => $picture['picture'] ?? null,
             ]);
+            $token = service('repository', 'PasswordReset')->createToken($userId, $this->request->getIPAddress(), PasswordResetRepository::INVITATION_LIFETIME);
             $sent = MailHelper::send($data['email'], 'Votre compte sur le site des Guides et Scouts de Gosselies', 'emails/account_created', [
                 'name' => $data['profile']['totem'] ?: $data['profile']['firstname'],
                 'email' => $data['email'],
-                'password' => $password,
-                'loginLink' => base_url('auth/login'),
+                'link' => base_url('auth/reinitialiser/' . $token),
+                'days' => PasswordResetRepository::INVITATION_LIFETIME / 86400,
                 'forgotLink' => base_url('auth/mot-de-passe-oublie'),
             ]);
             $messages[] = $sent
-                ? 'Un compte a été créé pour ' . $data['email'] . ' et ses identifiants lui ont été envoyés par e-mail.'
+                ? 'Un compte a été créé pour ' . $data['email'] . ' : un e-mail lui a été envoyé pour choisir son mot de passe.'
                 : 'Un compte a été créé pour ' . $data['email'] . ', mais l\'e-mail n\'a pas pu être envoyé : la personne peut utiliser « Mot de passe oublié » sur la page de connexion.';
         } else {
             // Existing account: linked, its profile is updated with the form
@@ -279,19 +280,6 @@ class LeaderController extends BaseController
     private function picturePath(string $name)
     {
         return ROOTPATH . 'public' . DIRECTORY_SEPARATOR . FileHelper::PROFIL_PICTURE_DIRECTORY . $name;
-    }
-
-    /**
-     * 16 characters without the ambiguous ones (0/O, 1/l/I), within the limits of the login form (8 to 32).
-     */
-    private function randomPassword()
-    {
-        $alphabet = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
-        $password = '';
-        for ($i = 0; $i < 16; $i++) {
-            $password .= $alphabet[random_int(0, strlen($alphabet) - 1)];
-        }
-        return $password;
     }
 
     private function notFound()
