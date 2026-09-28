@@ -5,17 +5,16 @@
 
 <?= $this->section('content') ?>
 
-<div class="mx-auto max-w-7xl px-8 mt-8" x-data="app()" x-cloak
-    x-init="getDates();datesChanged();$watch('dates', () => datesChanged() )">
+<div class="mx-auto max-w-7xl px-8 mt-8" x-data="app()" x-cloak>
     <div
     class="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96 hidden lg:block "
     aria-hidden="true"></div>
     <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">AGENDA DES ACTIVITÉS</h1>
-    <h2 class="font-semibold leading-6 text-gray-900 text-xl md:text-2xl mt-4 md:mt-12">Prochains évenements</h2>
+    <h2 class="font-semibold leading-6 text-gray-900 text-xl md:text-2xl mt-4 md:mt-12">Prochains événements</h2>
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
             <div class="flex items-center text-gray-900">
-                <button type="button" @click="moveCurrentDateToPrevious()"
+                <button type="button" @click="moveCurrentDateTo(-1)"
                     class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
                     <span class="sr-only">Mois précédent</span>
                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -24,12 +23,10 @@
                             clip-rule="evenodd" />
                     </svg>
                 </button>
-                <div class="flex-auto text-sm font-semibold uppercase" x-text="currentDateString">
-
-                </div>
-                <button @click="moveCurrentDateToNext();currentDate=currentDate" type="button"
+                <div class="flex-auto text-sm font-semibold uppercase" x-text="currentDateString"></div>
+                <button type="button" @click="moveCurrentDateTo(1)"
                     class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
-                    <span class="sr-only">Prochain mois</span>
+                    <span class="sr-only">Mois suivant</span>
                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd"
                             d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
@@ -38,18 +35,40 @@
                 </button>
             </div>
             <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-                <div>D</div>
                 <div>L</div>
                 <div>M</div>
                 <div>M</div>
                 <div>J</div>
                 <div>V</div>
                 <div>S</div>
+                <div>D</div>
             </div>
 
-            <!-- Dates are inserted with javascript -->
-            <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200"
-                id="dates-calendar">
+            <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+                <template x-for="(day, index) in days" :key="day.key">
+                    <button type="button" @click="selectDate(day)" :id="day.key"
+                        class="relative py-1.5 hover:bg-gray-100 focus:z-10"
+                        :class="{
+                            'bg-white': day.isCurrentMonth,
+                            'bg-gray-50': !day.isCurrentMonth,
+                            'font-semibold': day.isToday || isSelected(day),
+                            'text-white': isSelected(day),
+                            'text-indigo-600': !isSelected(day) && day.isToday,
+                            'text-gray-900': !isSelected(day) && !day.isToday && day.isCurrentMonth,
+                            'text-gray-400': !isSelected(day) && !day.isToday && !day.isCurrentMonth,
+                            'rounded-tl-lg': index === 0,
+                            'rounded-tr-lg': index === 6,
+                            'rounded-bl-lg': index === days.length - 7,
+                            'rounded-br-lg': index === days.length - 1,
+                        }">
+                        <time :datetime="day.key" x-text="day.day"
+                            class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
+                            :class="{
+                                'bg-indigo-600': isSelected(day) && day.isToday,
+                                'bg-gray-900': isSelected(day) && !day.isToday,
+                            }"></time>
+                    </button>
+                </template>
             </div>
 
             <!-- If any event -->
@@ -171,157 +190,43 @@
 <script>
     function app() {
         return {
-            currentDate: new Date(),
-            selectedDate: new Date(),
-            currentDateString: '',
-            dates: [],
-            errors: [],
+            // Displayed month (first day of the month, local time)
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth(),
+            selectedKey: null,
+            days: [],
 
-            moveCurrentDateToPrevious() {
-                this.moveCurrentDateTo(-1);
+            init() {
+                this.refresh();
             },
-            moveCurrentDateToNext() {
-                this.moveCurrentDateTo(1);
-            },
-            moveCurrentDateTo(value) {
-                this.currentDate.setMonth(this.currentDate.getMonth() + value);
-                this.currentDateString = this.getCurrentDateText();
-                this.getDates(this.currentDate);
-            },
-            getCurrentDateText() {
-                return this.currentDate.toLocaleDateString(undefined, {
-                    month: "long",
-                    year: "numeric",
+
+            get currentDateString() {
+                return new Date(this.currentYear, this.currentMonth, 1).toLocaleDateString('fr-BE', {
+                    month: 'long',
+                    year: 'numeric',
                 });
             },
 
-            getDates(date = new Date()) {
-                //#region Variable declaration
-                let month;
-                let year;
-                //#endregion
-
-                month = date.getMonth();
-                year = date.getFullYear();
-                this.currentDateString = this.getCurrentDateText();
-
-                this.dates = createCalendar(year, month, this.currentDate.getMonth());
-                return this.dates;
+            // Move from one or several months without going through Date.setMonth(),
+            // which skips a month when the current day does not exist in the target month (e.g. 31/01 -> 03/03).
+            moveCurrentDateTo(value) {
+                const target = new Date(this.currentYear, this.currentMonth + value, 1);
+                this.currentYear = target.getFullYear();
+                this.currentMonth = target.getMonth();
+                this.refresh();
             },
 
-            selectDate(element) {
-                this.selectedDate = new Date(event.target.getAttribute('datetime'));
-
-                //Search for the selected date in the dates array
-                for (let i = 0; i < this.dates.length; i++) {
-                    for (let j = 0; j < this.dates[i].length; j++) {
-                        if (this.dates[i][j].dateString == this.selectedDate.toISOString()) {
-                            this.dates[i][j].isSelected = true;
-                        } else {
-                            this.dates[i][j].isSelected = false;
-                        }
-                    }
-                }
+            refresh() {
+                this.days = createCalendar(this.currentYear, this.currentMonth).flat();
             },
 
-            //Triggered when the currentDate has changed - We absolutely need to do this in pure JS because AlpineJS does not recreate the DOM elements when the data has changed.
-            //for some reason class persist on the button even if the data has changed so we need to remove all the children in pure js and re-add them manually.
-            //Really not optimal but it works.
-            datesChanged() {
-                const datesCalendar = document.getElementById('dates-calendar');
+            selectDate(day) {
+                this.selectedKey = this.selectedKey === day.key ? null : day.key;
+            },
 
-                //Remove all the children of the datesCalendar
-                while (datesCalendar.firstChild) {
-                    datesCalendar.removeChild(datesCalendar.firstChild);
-                }
-
-                for (let i = 0; i < this.dates.length; i++) {
-                    for (let j = 0; j < this.dates[i].length; j++) {
-                        //Add the new children
-                        const button = document.createElement('button');
-                        button.setAttribute('type', 'button');
-                        button.setAttribute('class', 'py-1.5 hover:bg-gray-100 focus:z-10');
-                        button.setAttribute('x-on:click', 'selectDate');
-                        button.setAttribute('id', this.dates[i][j].dateString.split('T')[0]);
-
-                        //Conditionnal class
-                        if (i == 0 && j == 0) //First button
-                            button.classList.add('rounded-tl-lg');
-                        if (i == 0 && j == this.dates[i].length - 1) //Last button of the first row
-                            button.classList.add('rounded-tr-lg');
-                        if (i == this.dates.length - 1 && j == 0) //First button of the last row
-                            button.classList.add('rounded-bl-lg');
-                        if (i == this.dates.length - 1 && j == this.dates[i].length - 1) //Last button of the last row
-                            button.classList.add('rounded-br-lg');
-
-                        if (this.dates[i][j].isCurrentMonth)  //current month = white background else gray background
-                            button.classList.add('bg-white');
-                        else
-                            button.classList.add('bg-gray-50');
-
-
-                        if (this.dates[i][j].isToday) //Today = indigo text else gray text
-                            button.classList.add('text-indigo-600', 'font-semibold');
-                        else
-                            button.classList.add('text-gray-400');
-
-                        if (this.dates[i][j].isSelected && this.dates[i][j].isToday) //If the date is selected and is today font-semibold and text-white
-                            button.classList.add('font-semibold', 'text-white');
-
-                        if (this.dates[i][j].isSelected)
-                            button.classList.add('text-white');
-                        else if (!this.dates[i][j].isSelected && this.dates[i][j].isToday)
-                            button.classList.add('text-indigo-600');
-                        else if (!this.dates[i][j].isSelected && !this.dates[i][j].isToday && this.dates[i][j].isCurrentMonth)
-                            button.classList.add('text-gray-900');
-                        else if (!this.dates[i][j].isSelected && !this.dates[i][j].isToday && !this.dates[i][j].isCurrentMonth)
-                            button.classList.add('text-gray-400');
-
-                        if (this.dates[i][j].isToday && this.dates[i][j].isSelected)
-                            button.classList.add('!text-white');
-
-
-
-
-
-                        const time = document.createElement('time');
-                        time.setAttribute('datetime', this.dates[i][j].dateString);
-                        time.innerText = this.dates[i][j].day;
-                        time.setAttribute('class', 'mx-auto flex h-7 w-7 items-center justify-center rounded-full');
-
-                        const container = document.createElement('div');
-                        container.setAttribute('class', 'flex ml-1 absolute -mt-1.5');
-
-                        const circle = document.createElement('div');
-                        circle.setAttribute('class', 'h-2 w-2 rounded-full bg-indigo-600');
-
-
-
-                        //Conditionnal class
-                        if (this.dates[i][j].isSelected && this.dates[i][j].isToday)
-                            time.classList.add('bg-indigo-600');
-                        if (this.dates[i][j].isSelected && !this.dates[i][j].isToday)
-                            time.classList.add('bg-gray-900');
-
-
-
-                        //Append the time to the button
-                        button.appendChild(time);
-
-                        //Example of how to add a circle to a date
-                        if (this.dates[i][j].isToday) {
-                            //Append the circle to the container
-                            container.appendChild(circle);
-                            //Append the circle to the time
-                            button.appendChild(container);
-                        }
-
-                        //Append the button to the datesCalendar
-                        datesCalendar.appendChild(button);
-
-                    }
-                }
-            }
+            isSelected(day) {
+                return this.selectedKey === day.key;
+            },
         };
     }
 </script>

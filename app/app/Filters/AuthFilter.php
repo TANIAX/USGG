@@ -44,7 +44,7 @@ class AuthFilter implements FilterInterface
             if(!$hasRole)
             {
                 SessionHelper::disconnectUser();
-                return redirect()->route(base_url('/auth/login'));
+                return redirect()->to(base_url('/auth/login'));
             }
    
         }
