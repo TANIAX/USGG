@@ -1,6 +1,6 @@
 <?= view('emails/layout_start', ['subject' => $subject]) ?>
 <p>Bonjour <?= esc($name) ?>,</p>
-<p>Un compte a été créé pour vous sur le site des Guides et Scouts de Gosselies, en tant que responsable de section.</p>
+<p>Un compte a été créé pour vous sur le site des Guides et Scouts de Gosselies<?= !empty($reason) ? ', ' . esc($reason) : '' ?>.</p>
 <p>Votre identifiant est votre adresse e-mail : <strong><?= esc($email) ?></strong></p>
 <p>Pour activer votre compte, choisissez votre mot de passe (le lien est valable <?= (int) $days ?> jours et ne peut servir qu'une fois) :</p>
 <p style="text-align:center;margin:28px 0;">

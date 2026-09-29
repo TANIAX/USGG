@@ -63,6 +63,7 @@ use App\Helpers\SessionHelper;
                 ['/admin/agenda', 'Agenda', ['admin', 'super_admin', 'guide_admin', 'scout_admin', 'asbl_admin']],
                 ['/admin/galerie', 'Galerie', ['super_admin', 'guide_admin', 'scout_admin']],
                 ['/admin/responsables', 'Responsables', ['super_admin']],
+                ['/admin/utilisateurs', 'Utilisateurs', ['super_admin']],
               ];
             ?>
             <?php foreach ($adminLinks as [$href, $label, $allowedRoles]): ?>

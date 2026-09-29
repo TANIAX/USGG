@@ -4,12 +4,11 @@ namespace App\Controllers;
 
 use Exception;
 use App\Helpers\FileHelper;
-use App\Helpers\MailHelper;
+use App\Helpers\AccountHelper;
 use App\Helpers\ImageHelper;
 use App\Controllers\BaseController;
 use App\Repositories\UserRepository;
 use App\Repositories\SectionRepository;
-use App\Repositories\PasswordResetRepository;
 use App\Repositories\SectionLeaderRepository;
 
 /**
@@ -97,21 +96,12 @@ class LeaderController extends BaseController
 
         $messages = [];
         if ($user === null) {
-            // New account: it gets an unknown random password, the person chooses their own with the link sent by e-mail
-            $userId = $this->userRepository->createAccount($data['profile'] + [
+            // New account: the person chooses their password with the link sent by e-mail
+            [$userId, $sent] = AccountHelper::createAndInvite($data['profile'] + [
                 'user_type_id' => $data['user_type_id'],
                 'email' => $data['email'],
-                'password' => password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT),
                 'picture' => $picture['picture'] ?? null,
-            ]);
-            $token = service('repository', 'PasswordReset')->createToken($userId, $this->request->getIPAddress(), PasswordResetRepository::INVITATION_LIFETIME);
-            $sent = MailHelper::send($data['email'], 'Votre compte sur le site des Guides et Scouts de Gosselies', 'emails/account_created', [
-                'name' => $data['profile']['totem'] ?: $data['profile']['firstname'],
-                'email' => $data['email'],
-                'link' => base_url('auth/reinitialiser/' . $token),
-                'days' => PasswordResetRepository::INVITATION_LIFETIME / 86400,
-                'forgotLink' => base_url('auth/mot-de-passe-oublie'),
-            ]);
+            ], 'en tant que responsable de section');
             $messages[] = $sent
                 ? 'Un compte a été créé pour ' . $data['email'] . ' : un e-mail lui a été envoyé pour choisir son mot de passe.'
                 : 'Un compte a été créé pour ' . $data['email'] . ', mais l\'e-mail n\'a pas pu être envoyé : la personne peut utiliser « Mot de passe oublié » sur la page de connexion.';

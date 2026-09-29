@@ -60,6 +60,9 @@ class AuthController extends BaseController
                 return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
             if (!password_verify($userLogin->password, $user->getPassword()))
                 return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
+            //A deactivated account can not log in anymore
+            if (!$user->getExists())
+                return view('pages/auth/login', ['errors' => ['Ce compte est désactivé. Contactez l\'unité si vous pensez qu\'il s\'agit d\'une erreur.'], 'authUrl' => $authUrl]);
 
 
             //Store the user in the session
@@ -95,9 +98,9 @@ class AuthController extends BaseController
 
         //Get the user from the database        
         $user = $this->userRepository->getFullUserBy(['email' => $email], BaseRepository::RESULT_AS_CUSTOM, User::class);
-        if (!$user) {
+        if (!$user || !$user->getExists()) {
             return view('pages/auth/login', [
-                'errors' => ['L\'adresse email est inconnue de l\'application'],
+                'errors' => [$user ? 'Ce compte est désactivé.' : 'L\'adresse email est inconnue de l\'application'],
                 'authUrl' => $this->googleClient->createAuthUrl()
             ]);
         }

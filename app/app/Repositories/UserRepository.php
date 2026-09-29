@@ -117,4 +117,70 @@ class UserRepository extends BaseRepository
         }
         return array_values($types);
     }
+
+    /**
+     * All the accounts with their roles, for the administration of the users.
+     *
+     * @return array of objects
+     */
+    public function getAllForAdmin()
+    {
+        $users = $this->db->table('user')
+                    ->select('user.id, user.email, user.totem, user.firstname, user.name, user.phone, user.picture, user.user_type_id, user.exists, user.created_at')
+                    ->select('user_type.name AS function')
+                    ->join('user_type', 'user_type.id = user.user_type_id', 'left')
+                    ->orderBy('user.exists', 'DESC')
+                    ->orderBy('user.firstname', 'ASC')
+                    ->orderBy('user.name', 'ASC')
+                    ->get()
+                    ->getResultObject();
+
+        $rows = $this->db->table('user_role')
+                    ->select('user_role.user_id, role.name')
+                    ->join('role', 'role.id = user_role.role_id')
+                    ->where('user_role.exists', true)
+                    ->where('role.exists', true)
+                    ->get()
+                    ->getResultObject();
+        $rolesByUser = [];
+        foreach ($rows as $row) {
+            $rolesByUser[$row->user_id][] = $row->name;
+        }
+
+        foreach ($users as $user) {
+            $user->id = (int) $user->id;
+            $user->user_type_id = (int) $user->user_type_id;
+            $user->exists = (bool) $user->exists;
+            $user->roles = array_values(array_unique($rolesByUser[$user->id] ?? []));
+            $user->display_name = trim(($user->firstname ?? '') . ' ' . ($user->name ?? '')) ?: $user->email;
+        }
+
+        return $users;
+    }
+
+    /**
+     * Activates or deactivates an account (a deactivated account can not log in anymore).
+     */
+    public function setActive(int $id, bool $active)
+    {
+        return $this->builder->where('id', $id)->update(['exists' => $active, 'updated_at' => date('Y-m-d H:i:s')]);
+    }
+
+    /**
+     * Number of active accounts having a role, optionally without one account.
+     */
+    public function countActiveWithRole(string $roleName, ?int $exceptUserId = null)
+    {
+        $builder = $this->db->table('user')
+                    ->join('user_role', 'user_role.user_id = user.id')
+                    ->join('role', 'role.id = user_role.role_id')
+                    ->where('role.name', $roleName)
+                    ->where('role.exists', true)
+                    ->where('user_role.exists', true)
+                    ->where('user.exists', true);
+        if ($exceptUserId !== null)
+            $builder->where('user.id !=', $exceptUserId);
+
+        return $builder->countAllResults();
+    }
 }
