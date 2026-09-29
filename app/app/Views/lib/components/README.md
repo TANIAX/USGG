@@ -1,7 +1,8 @@
 # Composants d'interface
 
-Morceaux de vue réutilisables, rendus par le serveur (pas de JavaScript en plus). Chaque fichier de ce dossier est un
-composant ; ses paramètres (« props ») sont décrits en tête du fichier.
+Morceaux de vue réutilisables, rendus par le serveur (pas de JavaScript en plus). Chaque fichier `.php` à la racine de ce
+dossier est un composant ; ses paramètres (« props ») sont décrits en tête du fichier. Les sous-dossiers contiennent le
+gabarit des pages (`layout/` : en-tête, menus, pied de page) et les pages d'erreur (`errors/`, voir `Config/Exceptions.php`).
 
 ```php
 <?= component('button', ['label' => 'Enregistrer', 'type' => 'submit']) ?>

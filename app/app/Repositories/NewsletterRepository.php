@@ -54,14 +54,9 @@ class NewsletterRepository extends BaseRepository
     }
 
     /**
-     * Conditions of the statuses: active (confirmed), pending (not confirmed), unsubscribed, '' (all)
+     * Statuses of the list: active (confirmed), pending (not confirmed), unsubscribed, '' (all)
      */
-    private const STATUSES = [
-        'active' => ['confirmed_at IS NOT NULL' => null, 'unsubscribed_at' => null],
-        'pending' => ['confirmed_at' => null, 'unsubscribed_at' => null],
-        'unsubscribed' => ['unsubscribed_at IS NOT NULL' => null],
-        '' => [],
-    ];
+    private const STATUSES = ['active', 'pending', 'unsubscribed', ''];
 
     /**
      * Query of the subscribers of a status for the paginated list of the administration, the most recent first.
@@ -69,9 +64,13 @@ class NewsletterRepository extends BaseRepository
     public function adminQuery(string $status = '')
     {
         $builder = $this->db->table('newsletter_subscriber')->select('id, email, confirmed_at, unsubscribed_at, created_at');
-        foreach (self::STATUSES[$status] ?? [] as $condition => $value) {
-            $value === null && str_contains($condition, ' ') ? $builder->where($condition, null, false) : $builder->where($condition, $value);
-        }
+        if ($status === 'active')
+            $builder->where('confirmed_at IS NOT NULL', null, false)->where('unsubscribed_at', null);
+        elseif ($status === 'pending')
+            $builder->where('confirmed_at', null)->where('unsubscribed_at', null);
+        elseif ($status === 'unsubscribed')
+            $builder->where('unsubscribed_at IS NOT NULL', null, false);
+
         return $builder->orderBy('created_at', 'DESC')->orderBy('id', 'DESC');
     }
 
@@ -80,7 +79,11 @@ class NewsletterRepository extends BaseRepository
      */
     public function countByStatus(): array
     {
-        return array_map(fn($status) => $this->adminQuery($status)->countAllResults(), array_combine(array_keys(self::STATUSES), array_keys(self::STATUSES)));
+        $counts = [];
+        foreach (self::STATUSES as $status) {
+            $counts[$status] = $this->adminQuery($status)->countAllResults();
+        }
+        return $counts;
     }
 
     public static function cast($subscriber)

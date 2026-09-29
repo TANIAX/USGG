@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use \Config\Services;
 
 /**
  * A helper class for handling session operations.

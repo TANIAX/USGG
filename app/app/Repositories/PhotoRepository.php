@@ -70,16 +70,6 @@ class PhotoRepository extends BaseRepository
     }
 
     /**
-     * Gets the file names of the photos of an album.
-     *
-     * @return array of string
-     */
-    public function getFilenames(int $albumId)
-    {
-        return array_column($this->builder->select('filename')->where('album_id', $albumId)->get()->getResultArray(), 'filename');
-    }
-
-    /**
      * Adds a photo at the end of an album.
      *
      * @return int The id of the photo

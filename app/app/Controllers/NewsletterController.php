@@ -105,10 +105,7 @@ class NewsletterController extends BaseController
     private function exportCsv()
     {
         $emails = array_column($this->newsletterRepository->adminQuery('active')->get()->getResultArray(), 'email');
-        return $this->response
-                    ->setHeader('Content-Type', 'text/csv; charset=utf-8')
-                    ->setHeader('Content-Disposition', 'attachment; filename="newsletter-abonnes.csv"')
-                    ->setBody("\u{FEFF}" . implode("\r\n", array_merge(['E-mail'], $emails)));
+        return $this->csvResponse('newsletter-abonnes.csv', array_merge([['E-mail']], array_map(fn($email) => [$email], $emails)));
     }
 
     /**

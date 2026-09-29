@@ -2,11 +2,9 @@
 
 namespace App\Repositories;
 
-use Config\Database;
 use App\Entities\Role;
 use App\Entities\User;
 use App\Entities\UserType;
-use App\Helpers\FileHelper;
 use App\Interfaces\IRepository;
 use App\Repositories\BaseRepository;
 

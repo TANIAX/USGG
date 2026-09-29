@@ -13,3 +13,17 @@
  *
  * @see: https://codeigniter4.github.io/CodeIgniter4/
  */
+
+if (!function_exists('asset_url')) {
+    /**
+     * Url of a file of public/ (CSS, JS...) with its version (date of modification): the browsers load
+     * the new file as soon as it changes instead of keeping an old one in their cache.
+     *
+     * @param string $path path in public/, e.g. "assets/js/script.js"
+     */
+    function asset_url(string $path): string
+    {
+        $file = FCPATH . ltrim($path, '/');
+        return base_url($path) . (is_file($file) ? '?v=' . filemtime($file) : '');
+    }
+}
