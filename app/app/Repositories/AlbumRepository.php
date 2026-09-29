@@ -25,41 +25,48 @@ class AlbumRepository extends BaseRepository
     }
 
     /**
-     * Gets the albums of the given branches with their number of photos and their cover.
+     * Query of the albums of the given branches for a paginated list, the most recent first.
+     * The covers are added by withCovers().
      *
-     * @param  array $branches
-     * @param  bool $withPrivatePhotos Count the private photos
-     * @param  bool $onlyNotEmpty Hide the albums without (visible) photo
-     * @return array of objects
+     * @param bool $withPrivatePhotos Count the private photos
+     * @param bool $onlyNotEmpty Hide the albums without (visible) photo
      */
-    public function getAlbums(array $branches, bool $withPrivatePhotos, bool $onlyNotEmpty = true)
+    public function listQuery(array $branches, bool $withPrivatePhotos, bool $onlyNotEmpty)
     {
-        if (!$branches)
-            return [];
-
         $visibility = $withPrivatePhotos ? '' : ' AND photo.is_public = 1';
-
-        $albums = $this->builder
+        $builder = $this->db->table('album')
                     ->select('album.id, album.title, album.description, album.branch, album.album_date, album.created_at')
                     ->select('(SELECT COUNT(*) FROM photo WHERE photo.album_id = album.id' . $visibility . ') AS photo_count', false)
                     ->select('(SELECT COUNT(*) FROM photo WHERE photo.album_id = album.id AND photo.is_public = 0) AS private_count', false)
-                    ->whereIn('album.branch', $branches)
-                    ->orderBy('album.album_date IS NULL', 'ASC', false)
-                    ->orderBy('album.album_date', 'DESC')
-                    ->orderBy('album.id', 'DESC')
-                    ->get()
-                    ->getResultObject();
+                    ->whereIn('album.branch', $branches ?: ['']);
+        if ($onlyNotEmpty)
+            $builder->where('EXISTS (SELECT 1 FROM photo WHERE photo.album_id = album.id' . $visibility . ')', null, false);
 
+        return $builder->orderBy('album.album_date IS NULL', 'ASC', false)
+                    ->orderBy('album.album_date', 'DESC')
+                    ->orderBy('album.id', 'DESC');
+    }
+
+    /**
+     * Casts albums read with listQuery() and adds the photos of their cover.
+     */
+    public function withCovers(array $albums, bool $withPrivatePhotos): array
+    {
         $albums = array_map([$this, 'castAlbum'], $albums);
         $coverIds = $this->getCoverIds(array_column($albums, 'id'), $withPrivatePhotos);
         foreach ($albums as $album) {
             $album->cover_ids = $coverIds[$album->id] ?? [];
         }
-
-        if ($onlyNotEmpty)
-            $albums = array_values(array_filter($albums, fn($album) => $album->photo_count > 0));
-
         return $albums;
+    }
+
+    /**
+     * Whether some albums of the branches have private photos (to invite the visitors to log in).
+     */
+    public function hasPrivatePhotos(array $branches): bool
+    {
+        return $branches && $this->db->table('photo')->join('album', 'album.id = photo.album_id')
+                    ->whereIn('album.branch', $branches)->where('photo.is_public', false)->countAllResults() > 0;
     }
 
     /**

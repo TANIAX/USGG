@@ -7,6 +7,7 @@ use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\SessionHelper;
 use App\Helpers\GalleryHelper;
+use App\Libraries\ListQuery;
 use App\Controllers\BaseController;
 use App\Repositories\AlbumRepository;
 use App\Repositories\PhotoRepository;
@@ -30,12 +31,13 @@ class AlbumController extends BaseController
 
     public function index()
     {
-        $albums = $this->albumRepository->getAlbums(GalleryHelper::getManageableBranches(), true, false);
+        $list = ListQuery::fromRequest($this->request);
+        $builder = $this->albumRepository->listQuery(GalleryHelper::getManageableBranches(), true, false);
+        $list->search($builder, ['album.title', 'album.description']);
 
-        return view('pages/admin/gallery/index', [
-            'albums' => $this->toJson($albums),
+        return $this->listResponse('pages/admin/gallery/index', [
             'branches' => $this->getBranchChoices(),
-        ]);
+        ], $list->paginate($builder, null, fn($albums) => $this->albumRepository->withCovers($albums, true)));
     }
 
     public function create()

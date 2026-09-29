@@ -27,14 +27,14 @@ Guides et scoutes de Gosselies - Documents
             <?php endif; ?>
             <?php foreach (['' => 'Tous', 'active' => 'Actifs', 'inactive' => 'Inactifs'] as $code => $label): ?>
                <?= component('chip', ['tone' => 'dark', 'active_alpine' => "status === '$code'", 'attrs' => ['@click' => "status = '$code'",
-                  'x-text' => $code ? "'$label (' + files.filter(f => f.is_active === " . ($code === 'active' ? 'true' : 'false') . ").length + ')'" : null], 'label' => $label]) ?>
+                  'x-text' => "'$label (' + (counts['$code'] ?? 0) + ')'"], 'label' => $label]) ?>
             <?php endforeach; ?>
          </div>
          <?= component('search', ['placeholder' => 'Rechercher un document', 'class' => 'lg:w-80']) ?>
       </div>
 
       <!-- Table -->
-      <div x-show="filteredFiles.length > 0" class="-mx-4 sm:-mx-0">
+      <div id="list-top" x-show="items.length > 0" class="-mx-4 scroll-mt-8 transition-opacity sm:-mx-0" :class="listLoading ? 'opacity-60' : ''">
          <table class="min-w-full divide-y divide-gray-300">
             <thead>
                <tr>
@@ -50,7 +50,7 @@ Guides et scoutes de Gosselies - Documents
                </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-               <template x-for="file in filteredFiles" :key="file.id">
+               <template x-for="file in items" :key="file.id">
                   <tr :class="selected.includes(file.id) ? 'bg-indigo-50/50' : ''">
                      <td class="px-2">
                         <input type="checkbox" :checked="selected.includes(file.id)" @click="toggle(file)" :aria-label="`Sélectionner ${file.name}`"
@@ -86,48 +86,45 @@ Guides et scoutes de Gosselies - Documents
          </table>
       </div>
 
-      <?= component('empty_state', ['icon' => 'document', 'title_alpine' => "files.length ? 'Aucun document ne correspond aux filtres' : 'Aucun document'", 'attrs' => ['x-show' => 'filteredFiles.length === 0']]) ?>
+      <?= component('pagination', ['noun' => ['document', 'documents'], 'class' => 'mt-6 mb-16']) ?>
+      <?= component('empty_state', ['icon' => 'document', 'title_alpine' => "counts[''] || search ? 'Aucun document ne correspond aux filtres' : 'Aucun document'", 'attrs' => ['x-show' => 'items.length === 0']]) ?>
 
       <!-- Actions on the selection -->
       <?= component('selection_bar', ['noun' => ['document sélectionné', 'documents sélectionnés'], 'busy' => 'busy', 'actions' => [
          ['label' => 'Activer', 'click' => "run('activate', selected)", 'tone' => 'green'],
          ['label' => 'Désactiver', 'click' => "run('deactivate', selected)", 'tone' => 'amber'],
-         ['label' => 'Supprimer', 'click' => 'remove(files.filter(f => selected.includes(f.id)))', 'tone' => 'red'],
+         ['label' => 'Supprimer', 'click' => 'removeSelected()', 'tone' => 'red'],
       ]]) ?>
    </div>
 </div>
 
 <script>
    function app() {
-      return {
-         files: <?= $files ?>,
+      return listApp('/admin/document', <?= $list ?>, {
          types: <?= js_data($types) ?>,
-         type: '',
-         status: '',
-         search: '',
          selected: [],
+         selectedNames: {},
          busy: false,
          actionErrors: [],
 
-         get filteredFiles() {
-            const search = this.search.trim().toLowerCase();
-            return this.files.filter(file =>
-               (!this.type || file.file_type === this.type)
-               && (!this.status || file.is_active === (this.status === 'active'))
-               && (!search || file.name.toLowerCase().includes(search)));
-         },
-
+         // The selection is kept when changing of page (names kept for the confirmation)
          get allSelected() {
-            return this.filteredFiles.length > 0 && this.filteredFiles.every(file => this.selected.includes(file.id));
+            return this.items.length > 0 && this.items.every(file => this.selected.includes(file.id));
          },
 
          toggle(file) {
+            this.selectedNames[file.id] = file.name;
             this.selected = this.selected.includes(file.id) ? this.selected.filter(id => id !== file.id) : [...this.selected, file.id];
          },
 
          toggleAll() {
-            const ids = this.filteredFiles.map(file => file.id);
+            const ids = this.items.map(file => file.id);
+            this.items.forEach(file => this.selectedNames[file.id] = file.name);
             this.selected = this.allSelected ? this.selected.filter(id => !ids.includes(id)) : [...new Set([...this.selected, ...ids])];
+         },
+
+         removeSelected() {
+            this.remove(this.selected.map(id => ({ id: id, name: this.selectedNames[id] || '' })));
          },
 
          remove(files) {
@@ -141,16 +138,16 @@ Guides et scoutes de Gosselies - Documents
             this.actionErrors = [];
             try {
                const json = await requestJson('/admin/document/bulk', { action: action, ids: ids });
-               this.files = json.files;
                this.actionErrors = json.errors;
-               this.selected = this.selected.filter(id => !json.ids.includes(id) && this.files.some(file => file.id === id));
+               this.selected = this.selected.filter(id => !json.ids.includes(id));
+               await this.loadList();
             } catch (error) {
                this.actionErrors = [error.message || 'L\'action n\'a pas pu être effectuée. Rechargez la page et réessayez.'];
             } finally {
                this.busy = false;
             }
          },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>

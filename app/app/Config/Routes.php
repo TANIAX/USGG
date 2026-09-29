@@ -244,6 +244,9 @@ $routes->group('api/v1', static function ($routes) {
     //? News (upcoming events of the agenda)
     $routes->get('actualites', 'NewsController::index');
 
+    //? Section leaders of the home page
+    $routes->get('responsables', 'LeadersController::index');
+
     //? Agenda
     $routes->group('agenda', static function ($routes) {
         $routes->get('', 'AgendaController::index');

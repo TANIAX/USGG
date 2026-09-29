@@ -54,17 +54,40 @@ class NewsletterRepository extends BaseRepository
     }
 
     /**
-     * All the subscribers, with their status: active (confirmed), pending (not confirmed), unsubscribed.
+     * Conditions of the statuses: active (confirmed), pending (not confirmed), unsubscribed, '' (all)
      */
-    public function getSubscribers(): array
+    private const STATUSES = [
+        'active' => ['confirmed_at IS NOT NULL' => null, 'unsubscribed_at' => null],
+        'pending' => ['confirmed_at' => null, 'unsubscribed_at' => null],
+        'unsubscribed' => ['unsubscribed_at IS NOT NULL' => null],
+        '' => [],
+    ];
+
+    /**
+     * Query of the subscribers of a status for the paginated list of the administration, the most recent first.
+     */
+    public function adminQuery(string $status = '')
     {
-        $subscribers = $this->db->table('newsletter_subscriber')->orderBy('created_at', 'DESC')->get()->getResultObject();
-        foreach ($subscribers as $subscriber) {
-            $subscriber->id = (int) $subscriber->id;
-            $subscriber->status = $subscriber->unsubscribed_at ? 'unsubscribed' : ($subscriber->confirmed_at ? 'active' : 'pending');
-            unset($subscriber->token);
+        $builder = $this->db->table('newsletter_subscriber')->select('id, email, confirmed_at, unsubscribed_at, created_at');
+        foreach (self::STATUSES[$status] ?? [] as $condition => $value) {
+            $value === null && str_contains($condition, ' ') ? $builder->where($condition, null, false) : $builder->where($condition, $value);
         }
-        return $subscribers;
+        return $builder->orderBy('created_at', 'DESC')->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Number of subscribers of each status: [status => count]
+     */
+    public function countByStatus(): array
+    {
+        return array_map(fn($status) => $this->adminQuery($status)->countAllResults(), array_combine(array_keys(self::STATUSES), array_keys(self::STATUSES)));
+    }
+
+    public static function cast($subscriber)
+    {
+        $subscriber->id = (int) $subscriber->id;
+        $subscriber->status = $subscriber->unsubscribed_at ? 'unsubscribed' : ($subscriber->confirmed_at ? 'active' : 'pending');
+        return $subscriber;
     }
 
     /**

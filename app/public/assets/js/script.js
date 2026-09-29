@@ -339,3 +339,131 @@ async function reduceInputPhoto(input, maxSize = 2000) {
   input.files = transfer.files;
   return reducedFile;
 }
+
+/**
+ * Alpine component of a paginated list of the administration (filters, search and pages done by the server).
+ * The page of the server (listResponse() of BaseController) gives the first result; the next ones are asked
+ * in JSON (?format=json) when the page, the number per page, a filter or the search change. The url is kept
+ * up to date, so that a reload or a link shows the same page.
+ * @param {string} url - The url of the list (e.g. "/admin/inscriptions").
+ * @param {Object} list - The first result: {items, pagination, filters, counts}.
+ * @param {Object} extra - The own properties and methods of the page (getters kept). "setup()" is called by init().
+ * @returns {Object} - The Alpine component: items, pagination, counts, one property per filter ("search"...).
+ */
+function listApp(url, list, extra = {}) {
+  // Values not written in the url (the page may be opened with other values, e.g. ?status=new)
+  const defaults = list.defaults || {};
+  const defaultPerPage = defaults.per_page || list.pagination.per_page;
+  const base = {
+    listUrl: url,
+    items: list.items,
+    pagination: list.pagination,
+    counts: list.counts || {},
+    filterKeys: Object.keys(list.filters || {}),
+    ...list.filters,
+    listLoading: false,
+    listError: "",
+    listRequest: 0,
+    searchTimer: null,
+
+    init() {
+      // The filters defaults are the values of the first page (the page may be opened with filters in the url)
+      this.filterDefaults = { ...defaults, ...this.filterDefaults };
+      this.filterKeys.forEach((key) =>
+        this.$watch(key, () => (key === "search" ? this.debouncedLoad() : this.loadList(1)))
+      );
+      if (typeof this.setup === "function") this.setup();
+    },
+
+    debouncedLoad() {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = setTimeout(() => this.loadList(1), 300);
+    },
+
+    // Parameters of the url: only the values different from the defaults
+    listParams(page) {
+      const params = new URLSearchParams();
+      this.filterKeys.forEach((key) => {
+        // An empty value is written when the default is another one (e.g. ?filter= for "all" when the default is "todo")
+        const value = String(this[key] ?? "").trim();
+        if (value !== String(this.filterDefaults[key] ?? "")) params.set(key, value);
+      });
+      if (this.pagination.per_page !== defaultPerPage) params.set("per_page", this.pagination.per_page);
+      if (page > 1) params.set("page", page);
+      return params;
+    },
+
+    // Loads a page (by default the current one again, e.g. after an action on the items)
+    async loadList(page = this.pagination.page) {
+      const request = ++this.listRequest;
+      const params = this.listParams(page);
+      this.listLoading = true;
+      this.listError = "";
+      try {
+        const json = await requestJson(`${this.listUrl}?${params.toString() ? params + "&" : ""}format=json`);
+        if (request !== this.listRequest) return;
+        this.items = json.items;
+        this.pagination = json.pagination;
+        this.counts = json.counts || {};
+        // The other parameters of the url (e.g. ?periode= of another part of the page) are kept
+        const address = new URL(window.location);
+        [...this.filterKeys, "page", "per_page"].forEach((key) => address.searchParams.delete(key));
+        this.listParams(json.pagination.page).forEach((value, key) => address.searchParams.set(key, value));
+        window.history.replaceState(null, "", address);
+        if (typeof this.afterLoad === "function") this.afterLoad();
+      } catch (error) {
+        if (request === this.listRequest) this.listError = error.message || "La liste n'a pas pu être chargée. Réessayez.";
+      } finally {
+        if (request === this.listRequest) this.listLoading = false;
+      }
+    },
+
+    goToPage(page) {
+      if (page < 1 || page > this.pagination.pages || page === this.pagination.page) return;
+      this.loadList(page).then(() => document.getElementById("list-top")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    },
+
+    setPerPage(perPage) {
+      this.pagination.per_page = parseInt(perPage);
+      this.loadList(1);
+    },
+
+    // Page numbers around the current page, null for "…" (same rule as ListQuery::pageNumbers())
+    get pageLinks() {
+      const { page, pages } = this.pagination;
+      const links = [];
+      for (let number = 1; number <= pages; number++) {
+        if (number === 1 || number === pages || Math.abs(number - page) <= 1) links.push(number);
+        else if (links[links.length - 1] !== null) links.push(null);
+      }
+      return links;
+    },
+  };
+  return Object.defineProperties(base, Object.getOwnPropertyDescriptors(extra));
+}
+
+/**
+ * Appearance animation of an item of a list (news, section leaders): it fades in when it comes on screen,
+ * after the items before it in the same group ("x-init="appearOnView($el, index)"). Nothing moves if the user
+ * asked the system to reduce the animations (CSS .appear-wait of input.css).
+ * @param {HTMLElement} element - The item.
+ * @param {number} position - Its position in the group loaded at the same time (delay of 90 ms each).
+ */
+function appearOnView(element, position = 0) {
+  element.style.setProperty("--appear-delay", `${Math.min(position, 8) * 90}ms`);
+  element.classList.add("appear-wait");
+  if (!("IntersectionObserver" in window)) {
+    element.classList.add("appear-in");
+    return;
+  }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        element.classList.add("appear-in");
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.1 }
+  );
+  observer.observe(element);
+}

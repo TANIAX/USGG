@@ -15,12 +15,12 @@ Guides et scoutes de Gosselies - Galerie photos
 
       <?= component('flash') ?>
 
-      <div x-show="albums.length > 0">
+      <div x-show="pagination.total > 0 || search">
          <?= component('search', ['label' => 'Recherche rapide', 'placeholder' => 'Rechercher un album', 'class' => 'mb-6 sm:w-80']) ?>
       </div>
 
-      <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-         <template x-for="album in filteredAlbums" :key="album.id">
+      <ul id="list-top" role="list" class="grid scroll-mt-8 grid-cols-1 gap-6 transition-opacity sm:grid-cols-2 lg:grid-cols-3" :class="listLoading ? 'opacity-60' : ''">
+         <template x-for="album in items" :key="album.id">
             <li class="overflow-hidden rounded-lg bg-white shadow ring-1 ring-gray-200">
                <a :href="`/admin/galerie/album/${album.id}`" class="block group">
                   <div class="aspect-[4/3] bg-gray-100">
@@ -43,7 +43,8 @@ Guides et scoutes de Gosselies - Galerie photos
          </template>
       </ul>
 
-      <?php component_open('empty_state', ['icon' => 'photo', 'title_alpine' => "search ? 'Aucun album ne correspond à la recherche' : 'Aucun album'", 'attrs' => ['x-show' => 'filteredAlbums.length === 0']]) ?>
+      <?= component('pagination', ['noun' => ['album', 'albums'], 'class' => 'mt-8 mb-16']) ?>
+      <?php component_open('empty_state', ['icon' => 'photo', 'title_alpine' => "search ? 'Aucun album ne correspond à la recherche' : 'Aucun album'", 'attrs' => ['x-show' => 'items.length === 0']]) ?>
          <div class="mt-6" x-show="!search"><?= component('button', ['label' => 'Créer un album', 'href' => '/admin/galerie/create', 'size' => 'sm']) ?></div>
       <?= component_close() ?>
    </div>
@@ -51,15 +52,7 @@ Guides et scoutes de Gosselies - Galerie photos
 
 <script>
    function app() {
-      return {
-         albums: <?= $albums ?>,
-         search: '',
-
-         get filteredAlbums() {
-            const search = this.search.trim().toLowerCase();
-            return search ? this.albums.filter(album => album.title.toLowerCase().includes(search)) : this.albums;
-         },
-
+      return listApp('/admin/galerie', <?= $list ?>, {
          branchLabel(branch) {
             return branch === 'GUIDE' ? 'Guides' : 'Scouts';
          },
@@ -67,7 +60,7 @@ Guides et scoutes de Gosselies - Galerie photos
          photoCount(count) {
             return count + ' photo' + (count > 1 ? 's' : '');
          },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>

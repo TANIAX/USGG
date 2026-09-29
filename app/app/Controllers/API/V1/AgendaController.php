@@ -11,9 +11,9 @@ class AgendaController extends ApiController
     use ResponseTrait;
 
     /**
-     * Maximum number of days that can be requested at once.
+     * Maximum number of days that can be requested at once (a whole year: view "Année" of the agenda).
      */
-    private const MAX_RANGE_DAYS = 100;
+    private const MAX_RANGE_DAYS = 366;
 
     private EventRepository $eventRepository;
 

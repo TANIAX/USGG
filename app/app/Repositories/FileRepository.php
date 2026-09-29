@@ -68,6 +68,39 @@ class FileRepository extends BaseRepository
     }
 
     /**
+     * Query of the documents of the given types for the paginated list of the administration, the most recent first.
+     * $type: '' for all the given types; $status: '' (all), 'active' or 'inactive'.
+     */
+    public function adminQuery(array $fileTypes, string $type = '', string $status = '')
+    {
+        $builder = $this->db->table('file')
+                    ->select(self::FIELDS)
+                    ->whereIn('file_type', $type !== '' ? [$type] : ($fileTypes ?: ['']))
+                    ->where('exists', true);
+        if ($status !== '')
+            $builder->where('is_active', $status === 'active');
+
+        return $builder->orderBy('created_at', 'DESC')->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Number of documents of the given types: all (''), active, inactive
+     */
+    public function countByStatus(array $fileTypes, string $type = ''): array
+    {
+        return [
+            '' => $this->adminQuery($fileTypes, $type)->countAllResults(),
+            'active' => $this->adminQuery($fileTypes, $type, 'active')->countAllResults(),
+            'inactive' => $this->adminQuery($fileTypes, $type, 'inactive')->countAllResults(),
+        ];
+    }
+
+    public function castRows(array $documents): array
+    {
+        return $this->cast($documents);
+    }
+
+    /**
      * @return object|null
      */
     public function getDocument(int $id)

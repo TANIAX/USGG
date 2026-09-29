@@ -67,6 +67,18 @@ abstract class BaseController extends Controller
     }
 
     /**
+     * Paginated list (App\Libraries\ListQuery): JSON for the requests of the page (?format=json, when the page,
+     * the filters or the search change), otherwise the page with its first result ($list, used by listApp() of script.js).
+     */
+    protected function listResponse(string $view, array $data, array $list)
+    {
+        if ($this->request->getGet('format') === 'json')
+            return $this->response->setJSON($list);
+
+        return view($view, $data + ['list' => $this->toJson($list)]);
+    }
+
+    /**
      * Error answer of a request made in javascript ({success: false, message}).
      */
     protected function jsonError(int $status, string $message)

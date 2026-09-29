@@ -13,14 +13,14 @@ Guides et scoutes de Gosselies - Messages
       <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
          <div class="flex flex-wrap gap-2 text-sm">
             <?php foreach (['todo' => 'À traiter', 'unread' => 'Non lus', 'handled' => 'Traités', '' => 'Tous'] as $code => $label): ?>
-               <?= component('chip', ['active_alpine' => "filter === '$code'", 'attrs' => ['@click' => "filter = '$code'", 'x-text' => "'$label (' + countOf('$code') + ')'"]]) ?>
+               <?= component('chip', ['active_alpine' => "filter === '$code'", 'attrs' => ['@click' => "filter = '$code'", 'x-text' => "'$label (' + (counts['$code'] ?? 0) + ')'"]]) ?>
             <?php endforeach; ?>
          </div>
          <?= component('search', ['placeholder' => 'Nom, e-mail, message...', 'class' => 'lg:w-80']) ?>
       </div>
 
-      <ul role="list" class="mb-16 space-y-4" x-show="filteredMessages.length > 0">
-         <template x-for="message in filteredMessages" :key="message.id">
+      <ul id="list-top" role="list" class="scroll-mt-8 space-y-4 transition-opacity" :class="listLoading ? 'opacity-60' : ''" x-show="items.length > 0">
+         <template x-for="message in items" :key="message.id">
             <li class="rounded-lg bg-white shadow-sm ring-1" :class="message.is_read ? 'ring-gray-200' : 'ring-indigo-300'">
                <details @toggle="if ($el.open && !message.is_read) run('read', [message.id])">
                   <summary class="flex cursor-pointer list-none items-start gap-x-3 px-4 py-3">
@@ -51,32 +51,16 @@ Guides et scoutes de Gosselies - Messages
             </li>
          </template>
       </ul>
-      <?= component('empty_state', ['icon' => 'envelope', 'class' => 'mb-16', 'title_alpine' => "messages.length ? 'Aucun message ne correspond aux filtres' : 'Aucun message pour le moment'", 'attrs' => ['x-show' => 'filteredMessages.length === 0']]) ?>
+      <?= component('pagination', ['noun' => ['message', 'messages'], 'class' => 'mt-6 mb-16']) ?>
+      <?= component('empty_state', ['icon' => 'envelope', 'class' => 'mb-16', 'title_alpine' => "counts[''] ? 'Aucun message ne correspond aux filtres' : 'Aucun message pour le moment'", 'attrs' => ['x-show' => 'items.length === 0']]) ?>
    </div>
 </div>
 
 <script>
    function app() {
-      return {
-         messages: <?= $messages ?>,
-         filter: 'todo',
-         search: '',
+      return listApp('/admin/messages', <?= $list ?>, {
          busy: false,
          actionError: '',
-
-         matches(message, filter) {
-            return { todo: !message.is_handled, unread: !message.is_read, handled: message.is_handled, '': true }[filter];
-         },
-
-         countOf(filter) {
-            return this.messages.filter(message => this.matches(message, filter)).length;
-         },
-
-         get filteredMessages() {
-            const search = this.search.trim().toLowerCase();
-            return this.messages.filter(message => this.matches(message, this.filter)
-               && (!search || [message.name, message.email, message.message].some(text => text.toLowerCase().includes(search))));
-         },
 
          remove(message) {
             if (confirm(`Supprimer définitivement le message de ${message.name} ?`))
@@ -87,14 +71,20 @@ Guides et scoutes de Gosselies - Messages
             this.busy = true;
             this.actionError = '';
             try {
-               this.messages = (await requestJson('/admin/messages/bulk', { action: action, ids: ids })).messages;
+               const json = await requestJson('/admin/messages/bulk', { action: action, ids: ids });
+               this.counts = json.counts;
+               // A deletion changes the pages; the other actions only change the message, which stays visible until the next page
+               if (action === 'delete')
+                  await this.loadList();
+               else
+                  this.items.filter(message => json.ids.includes(message.id)).forEach(message => Object.assign(message, json.changes));
             } catch (error) {
                this.actionError = error.message || 'L\'action n\'a pas pu être effectuée. Rechargez la page et réessayez.';
             } finally {
                this.busy = false;
             }
          },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>

@@ -59,12 +59,12 @@ Guides et scoutes de Gosselies - Newsletter
             <h2 class="text-lg font-semibold text-gray-900">Abonnés</h2>
             <div class="mt-3 flex flex-wrap gap-2 text-sm">
                <?php foreach (['active' => 'Confirmés', 'pending' => 'En attente', 'unsubscribed' => 'Désinscrits', '' => 'Tous'] as $code => $label): ?>
-                  <?= component('chip', ['active_alpine' => "status === '$code'", 'attrs' => ['@click' => "status = '$code'", 'x-text' => "'$label (' + count('$code') + ')'"]]) ?>
+                  <?= component('chip', ['active_alpine' => "status === '$code'", 'attrs' => ['@click' => "status = '$code'", 'x-text' => "'$label (' + (counts['$code'] ?? 0) + ')'"]]) ?>
                <?php endforeach; ?>
             </div>
             <?= component('search', ['placeholder' => 'Adresse e-mail', 'class' => 'mt-3']) ?>
-            <ul role="list" class="mt-3 divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200" x-show="filtered.length > 0">
-               <template x-for="subscriber in filtered.slice(0, 200)" :key="subscriber.id">
+            <ul id="list-top" role="list" class="mt-3 scroll-mt-8 divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200 transition-opacity" :class="listLoading ? 'opacity-60' : ''" x-show="items.length > 0">
+               <template x-for="subscriber in items" :key="subscriber.id">
                   <li class="flex items-center gap-x-3 px-4 py-2">
                      <div class="min-w-0 flex-auto">
                         <p class="truncate text-sm text-gray-900" x-text="subscriber.email"></p>
@@ -76,9 +76,10 @@ Guides et scoutes de Gosselies - Newsletter
                   </li>
                </template>
             </ul>
-            <p x-show="filtered.length === 0" class="mt-3 rounded-lg bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">Aucune adresse.</p>
+            <?= component('pagination', ['noun' => ['adresse', 'adresses'], 'class' => 'mt-4']) ?>
+            <p x-show="items.length === 0" class="mt-3 rounded-lg bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">Aucune adresse.</p>
             <div class="mt-3">
-               <?= component('button', ['label' => 'Exporter les abonnés confirmés (CSV)', 'variant' => 'secondary', 'size' => 'sm', 'attrs' => ['@click' => 'exportCsv()']]) ?>
+               <?= component('button', ['label' => 'Exporter les abonnés confirmés (CSV)', 'variant' => 'secondary', 'size' => 'sm', 'href' => base_url('admin/newsletter?format=csv')]) ?>
             </div>
          </section>
       </div>
@@ -87,20 +88,7 @@ Guides et scoutes de Gosselies - Newsletter
 
 <script>
    function app() {
-      return {
-         subscribers: <?= $subscribers ?>,
-         status: 'active',
-         search: '',
-
-         count(status) {
-            return status ? this.subscribers.filter(subscriber => subscriber.status === status).length : this.subscribers.length;
-         },
-
-         get filtered() {
-            const search = this.search.trim().toLowerCase();
-            return this.subscribers.filter(subscriber => (!this.status || subscriber.status === this.status) && (!search || subscriber.email.includes(search)));
-         },
-
+      return listApp('/admin/newsletter', <?= $list ?>, {
          label(subscriber) {
             if (subscriber.status === 'unsubscribed')
                return 'Désinscrit le ' + formatDate(subscriber.unsubscribed_at, 'short');
@@ -108,15 +96,7 @@ Guides et scoutes de Gosselies - Newsletter
                return 'Inscrit le ' + formatDate(subscriber.created_at, 'short') + ', pas encore confirmé';
             return 'Confirmé le ' + formatDate(subscriber.confirmed_at, 'short');
          },
-
-         exportCsv() {
-            const rows = this.subscribers.filter(subscriber => subscriber.status === 'active').map(subscriber => subscriber.email);
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob(['﻿' + ['E-mail', ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' }));
-            link.download = 'newsletter-abonnes.csv';
-            link.click();
-         },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>
