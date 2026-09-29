@@ -351,7 +351,7 @@
   }
 </style>
 
-<script type="text/javascript" src="<?= base_url('assets/js/TweenMax.2.1.3.min.js') ?>"></script>
+<script type="text/javascript" src="<?= asset_url('assets/js/TweenMax.2.1.3.min.js') ?>"></script>
 <script>
   // Fade in of the page and zoom of the banner once everything is loaded
   window.addEventListener('load', () => document.body.classList.add('loaded'));
