@@ -19,6 +19,9 @@ class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $args = null)
     {
+        //Roles / deactivation are read again from the database (filters run before the controllers)
+        SessionHelper::refreshConnectedUser();
+
         //Get the user from the session
         $user = SessionHelper::getUserConnected();
 

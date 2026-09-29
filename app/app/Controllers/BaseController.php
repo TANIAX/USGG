@@ -52,6 +52,9 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
         $this->session = \Config\Services::session();
+
+        // Roles / deactivation changed by an administrator apply immediately
+        \App\Helpers\SessionHelper::refreshConnectedUser();
     }
 
 

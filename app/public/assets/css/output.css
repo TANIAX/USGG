@@ -2146,6 +2146,11 @@ input:where([type='file']):focus {
   background-color: rgb(79 70 229 / 0.8);
 }
 
+.bg-purple-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 245 255 / var(--tw-bg-opacity));
+}
+
 .bg-red-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 242 242 / var(--tw-bg-opacity));
@@ -2400,6 +2405,10 @@ input:where([type='file']):focus {
 
 .\!pb-2 {
   padding-bottom: 0.5rem !important;
+}
+
+.pb-10 {
+  padding-bottom: 2.5rem;
 }
 
 .pb-16 {
@@ -2757,6 +2766,11 @@ input:where([type='file']):focus {
   color: rgb(55 48 163 / var(--tw-text-opacity));
 }
 
+.text-purple-700 {
+  --tw-text-opacity: 1;
+  color: rgb(126 34 206 / var(--tw-text-opacity));
+}
+
 .text-red-300 {
   --tw-text-opacity: 1;
   color: rgb(252 165 165 / var(--tw-text-opacity));
@@ -2924,6 +2938,11 @@ input:where([type='file']):focus {
   --tw-ring-color: rgb(224 231 255 / var(--tw-ring-opacity));
 }
 
+.ring-indigo-200 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(199 210 254 / var(--tw-ring-opacity));
+}
+
 .ring-indigo-50 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(238 242 255 / var(--tw-ring-opacity));
@@ -2932,6 +2951,11 @@ input:where([type='file']):focus {
 .ring-indigo-600 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
+}
+
+.ring-purple-200 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(233 213 255 / var(--tw-ring-opacity));
 }
 
 .blur {
