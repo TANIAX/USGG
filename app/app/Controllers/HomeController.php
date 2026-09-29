@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\FormGuard;
+use App\Helpers\MailHelper;
 use App\Controllers\BaseController;
 use App\Repositories\EventRepository;
 use App\Controllers\API\V1\NewsController;
@@ -46,6 +48,50 @@ class HomeController extends BaseController
 
     public function contact()
     {
-        return view('pages/contact');
+        helper('form');
+        return view('pages/contact', ['contactEmail' => config('Site')->contactEmail]);
+    }
+
+    /**
+     * Message of the contact form: saved (admin/messages) and sent by e-mail to the unit, the answer going to the sender.
+     */
+    public function sendContact()
+    {
+        $guard = FormGuard::check('contact');
+        if ($guard === 'spam')
+            return $this->contactSent();
+        if ($guard !== null)
+            return $this->redirectWithErrors('/contact#formulaire', $guard)->withInput();
+
+        $post = array_map(fn($value) => is_string($value) ? trim($value) : $value, $this->request->getPost());
+        $rules = [
+            'fullname' => 'required|max_length[150]',
+            'email' => 'required|valid_email|max_length[255]',
+            'phone' => 'permit_empty|max_length[30]',
+            'message' => 'required|min_length[10]|max_length[5000]',
+        ];
+        $messages = [
+            'fullname' => ['required' => 'Votre nom est obligatoire.', 'max_length' => 'Votre nom est trop long.'],
+            'email' => ['required' => 'Votre adresse e-mail est obligatoire.', 'valid_email' => 'L\'adresse e-mail n\'est pas valide.', 'max_length' => 'L\'adresse e-mail est trop longue.'],
+            'phone' => ['max_length' => 'Le numéro de téléphone est trop long.'],
+            'message' => ['required' => 'Le message est vide.', 'min_length' => 'Le message est trop court.', 'max_length' => 'Le message est trop long (5000 caractères maximum).'],
+        ];
+        if (!$this->validateData($post, $rules, $messages))
+            return $this->redirectWithErrors('/contact#formulaire', array_values($this->validator->getErrors()))->withInput();
+
+        $repository = service('repository', 'ContactMessage');
+        $contact = (object) ['name' => $post['fullname'], 'email' => strtolower($post['email']), 'phone' => ($post['phone'] ?? '') ?: null, 'message' => $post['message']];
+        $repository->create((array) $contact);
+
+        MailHelper::send(config('Site')->contactEmail, 'Message du site : ' . $contact->name, 'emails/contact_message',
+            ['contact' => $contact, 'link' => base_url('admin/messages')], $contact->email);
+
+        return $this->contactSent();
+    }
+
+    private function contactSent()
+    {
+        $this->session->setFlashdata('success', 'Merci, votre message a bien été envoyé. Nous vous répondrons dès que possible.');
+        return redirect()->to(base_url('/contact#formulaire'));
     }
 }

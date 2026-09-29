@@ -43,6 +43,7 @@ $routes->set404Override();
 //! WEB ROUTES
 $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact');
+$routes->post('/contact','HomeController::sendContact');
 
 
 //? Auth
@@ -67,6 +68,7 @@ $routes->get('actualites/(:num)', 'NewsController::show/$1');
 
 $routes->group('en-pratique', static function ($routes) {
     $routes->get('inscription', 'EnPratiqueController::inscription');
+    $routes->post('inscription', 'EnPratiqueController::submitRegistration');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
     $routes->get('agenda', 'EnPratiqueController::agenda');
 });
@@ -108,6 +110,27 @@ $routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout
 });
 
 //Accounts and roles: super admin only
+//Registration requests: guide admins see the guide sections, scout admins the scout sections, the super admin all
+$routes->group('admin/inscriptions', ['filter' => 'auth:super_admin,guide_admin,scout_admin'], static function ($routes) {
+    $routes->get('', 'RegistrationController::index');
+    $routes->post('bulk', 'RegistrationController::bulk');
+    $routes->get('(:num)', 'RegistrationController::show/$1');
+    $routes->post('(:num)', 'RegistrationController::update/$1');
+    $routes->post('(:num)/delete', 'RegistrationController::delete/$1');
+});
+
+//Messages of the contact form
+$routes->group('admin/messages', ['filter' => 'auth:super_admin,asbl_admin'], static function ($routes) {
+    $routes->get('', 'ContactMessageController::index');
+    $routes->post('bulk', 'ContactMessageController::bulk');
+});
+
+//Membership fees
+$routes->group('admin/cotisations', ['filter' => 'auth:super_admin,asbl_admin'], static function ($routes) {
+    $routes->get('', 'PricingController::edit');
+    $routes->post('', 'PricingController::update');
+});
+
 $routes->group('admin/logs', ['filter' => 'auth:super_admin'], static function ($routes) {
     $routes->get('', 'LogController::index');
     $routes->get('download/(:segment)', 'LogController::download/$1');

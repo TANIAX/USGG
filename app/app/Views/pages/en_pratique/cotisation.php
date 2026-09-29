@@ -107,12 +107,12 @@
           MODALITÉS DE PAIEMENT
         </h2>
         <p class="text-lg leading-8 text-gray-600 py-4 mt-8">
-          La cotisation est à payer sur le compte <span class="font-medium">BE84 7320 5580 4959</span> avec pour
+          La cotisation est à payer sur le compte <span class="font-medium"><?= esc($payment->iban ?? 'BE84 7320 5580 4959') ?></span> avec pour
           communication le <span class="font-medium">nom de famille</span> et le
           (ou les) <span class="font-medium">prénom(s) des personnes</span> (essentiel pour la reconnaissance, le nom du
           propriétaire du compte n'étant
           pas toujours le même que celui des enfants) Le virement doit être effectué pour le <span
-            class="font-medium">31 octobre au plus tard.</span>
+            class="font-medium"><?= esc($payment->payment_deadline ?? '31 octobre') ?> au plus tard.</span>
         </p>
         <p class="text-xl leading-8 text-gray-600 py-2 mt-8 font-medium">Le prix des cotisations ne doit pas être un
           frein pour nous rejoindre.</p>

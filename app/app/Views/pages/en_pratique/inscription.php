@@ -7,28 +7,62 @@
   <div class="bg-white py-8">
     <div class="container mx-auto flex flex-col items-start xl:flex-row my-12 xl:my-24">
       <!-- LEFT -->
-      <div class="flex flex-col w-full sticky xl:top-36 xl:w-1/3 mt-2 xl:mt-12 px-8 md:px-0">
-        <p class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">Inscription</p>
+      <div id="demande" class="flex flex-col w-full xl:w-1/3 mt-2 xl:mt-12 px-8 md:px-0 scroll-mt-8">
+        <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">Inscription</h1>
         <p class="text-sm xl:text-base text-gray-500 mb-4">
-          Vous pouvez retrouver ici les informations concernant le déroulement des phases d'inscription.
+          Les étapes de l'inscription sont détaillées ci-contre. Remplissez ce formulaire pour introduire une demande :
+          vous recevrez une confirmation par e-mail et nous vous recontacterons.
         </p>
-        <form class="mt-6 space-y-4" action="#" method="post">
-          <h2 class="text-xl uppercase font-semibold text-gray-700">Informations du membre</h2>
+        <?= component('flash', ['class' => 'mt-2']) ?>
+        <?php $old = fn(string $field) => old($field, null, false); ?>
+        <form class="mt-6 space-y-4" action="<?= base_url('en-pratique/inscription') ?>" method="post" novalidate x-data="{ sending: false }" @submit="sending = true">
+          <?= \App\Helpers\FormGuard::field() ?>
+
+          <h2 class="text-xl uppercase font-semibold text-gray-700">L'enfant</h2>
           <hr>
-          <?= component('field', ['label' => 'Nom', 'name' => 'name', 'required' => true, 'attrs' => ['autocomplete' => 'family-name']]) ?>
-          <?= component('field', ['label' => 'Prénom', 'name' => 'firstname', 'required' => true, 'attrs' => ['autocomplete' => 'given-name']]) ?>
-          <?= component('field', ['label' => 'Totem et quali (si applicable)', 'name' => 'totem']) ?>
-          <?= component('field', ['label' => 'Date de naissance', 'name' => 'birthdate', 'type' => 'date', 'required' => true, 'attrs' => ['autocomplete' => 'bday']]) ?>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <?= component('field', ['label' => 'Prénom', 'name' => 'firstname', 'required' => true, 'value' => $old('firstname'), 'attrs' => ['autocomplete' => 'off', 'maxlength' => 100]]) ?>
+            <?= component('field', ['label' => 'Nom', 'name' => 'name', 'required' => true, 'value' => $old('name'), 'attrs' => ['autocomplete' => 'off', 'maxlength' => 100]]) ?>
+          </div>
+          <?= component('field', ['label' => 'Date de naissance', 'name' => 'birthdate', 'type' => 'date', 'required' => true, 'value' => $old('birthdate')]) ?>
+          <?= component('field', ['label' => 'Totem et quali (si applicable)', 'name' => 'totem', 'value' => $old('totem'), 'attrs' => ['maxlength' => 100]]) ?>
+          <?= component('field', ['label' => 'Section souhaitée', 'name' => 'section_id', 'type' => 'select', 'options' => $sections, 'value' => $old('section_id'),
+            'placeholder' => 'Pas de préférence (selon l\'âge)']) ?>
+
+          <fieldset>
+            <legend class="block text-sm font-medium leading-6 text-gray-900">Lien avec l'unité <span class="text-red-600">*</span></legend>
+            <div class="mt-2 space-y-2">
+              <?php foreach ($relations as $code => [$label, $phase]): ?>
+                <label class="flex items-start gap-x-3 text-sm text-gray-700">
+                  <input type="radio" name="relation" value="<?= $code ?>" <?= ($old('relation') ?? '') === $code ? 'checked' : '' ?> required class="mt-0.5 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                  <span><?= esc($label) ?> <span class="text-gray-500">(phase <?= $phase ?>)</span></span>
+                </label>
+              <?php endforeach; ?>
+            </div>
+          </fieldset>
 
           <h2 class="!mt-8 text-xl uppercase font-semibold text-gray-700">Adresse</h2>
           <hr>
-          <?= component('field', ['label' => 'Rue', 'name' => 'street', 'required' => true, 'attrs' => ['autocomplete' => 'address-line1']]) ?>
-          <?= component('field', ['label' => 'Numéro', 'name' => 'number', 'required' => true]) ?>
-          <?= component('field', ['label' => 'Code postal', 'name' => 'zipCode', 'id' => 'zip-code', 'required' => true, 'attrs' => ['autocomplete' => 'postal-code', 'inputmode' => 'numeric']]) ?>
-          <?= component('field', ['label' => 'Localité', 'name' => 'city', 'required' => true, 'attrs' => ['autocomplete' => 'address-level2']]) ?>
+          <div class="grid grid-cols-3 gap-4">
+            <?= component('field', ['label' => 'Rue', 'name' => 'street', 'required' => true, 'value' => $old('street'), 'class' => 'col-span-2', 'attrs' => ['autocomplete' => 'address-line1', 'maxlength' => 150]]) ?>
+            <?= component('field', ['label' => 'Numéro', 'name' => 'number', 'required' => true, 'value' => $old('number'), 'attrs' => ['maxlength' => 20]]) ?>
+            <?= component('field', ['label' => 'Code postal', 'name' => 'zip_code', 'required' => true, 'value' => $old('zip_code'), 'attrs' => ['autocomplete' => 'postal-code', 'inputmode' => 'numeric', 'maxlength' => 5]]) ?>
+            <?= component('field', ['label' => 'Localité', 'name' => 'city', 'required' => true, 'value' => $old('city'), 'class' => 'col-span-2', 'attrs' => ['autocomplete' => 'address-level2', 'maxlength' => 100]]) ?>
+          </div>
+
+          <h2 class="!mt-8 text-xl uppercase font-semibold text-gray-700">Parent ou responsable</h2>
+          <hr>
+          <?= component('field', ['label' => 'Nom et prénom', 'name' => 'parent_name', 'required' => true, 'value' => $old('parent_name'), 'attrs' => ['autocomplete' => 'name', 'maxlength' => 150]]) ?>
+          <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'parent_email', 'type' => 'email', 'required' => true, 'value' => $old('parent_email'), 'attrs' => ['autocomplete' => 'email', 'maxlength' => 255]]) ?>
+          <?= component('field', ['label' => 'Téléphone', 'name' => 'parent_phone', 'type' => 'tel', 'required' => true, 'value' => $old('parent_phone'), 'attrs' => ['autocomplete' => 'tel', 'maxlength' => 30]]) ?>
+          <?= component('field', ['label' => 'Remarque', 'name' => 'remark', 'type' => 'textarea', 'rows' => 3, 'value' => $old('remark'),
+            'help' => 'Facultatif : informations utiles (besoins particuliers, disponibilités...).', 'attrs' => ['maxlength' => 2000]]) ?>
+
+          <?= component('checkbox', ['name' => 'consent', 'checked' => (bool) $old('consent'), 'class' => 'flex items-start',
+            'label' => 'J\'accepte que ces informations soient utilisées par l\'unité pour traiter la demande d\'inscription.', 'attrs' => ['required' => true]]) ?>
 
           <div class="flex items-center justify-end border-t border-gray-900/10 py-4">
-            <?= component('button', ['label' => 'Envoyer une demande', 'type' => 'submit', 'size' => 'lg']) ?>
+            <?= component('button', ['label' => 'Envoyer la demande', 'type' => 'submit', 'size' => 'lg', 'attrs' => [':disabled' => 'sending']]) ?>
           </div>
         </form>
       </div>

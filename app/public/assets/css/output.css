@@ -1484,6 +1484,10 @@ input:where([type='file']):focus {
   max-width: 48rem;
 }
 
+.max-w-5xl {
+  max-width: 64rem;
+}
+
 .max-w-7xl {
   max-width: 80rem;
 }
@@ -1625,6 +1629,10 @@ input:where([type='file']):focus {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+}
+
+.scroll-mt-8 {
+  scroll-margin-top: 2rem;
 }
 
 .list-disc {
@@ -1830,6 +1838,12 @@ input:where([type='file']):focus {
   --tw-space-y-reverse: 0;
   margin-top: calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(2.5rem * var(--tw-space-y-reverse));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
@@ -2177,6 +2191,10 @@ input:where([type='file']):focus {
 .bg-slate-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+}
+
+.bg-transparent {
+  background-color: transparent;
 }
 
 .bg-white {
@@ -2659,6 +2677,11 @@ input:where([type='file']):focus {
   letter-spacing: 0.1em;
 }
 
+.\!text-red-600 {
+  --tw-text-opacity: 1 !important;
+  color: rgb(220 38 38 / var(--tw-text-opacity)) !important;
+}
+
 .text-\[\#4A8FFF\] {
   --tw-text-opacity: 1;
   color: rgb(74 143 255 / var(--tw-text-opacity));
@@ -2958,6 +2981,11 @@ input:where([type='file']):focus {
 .ring-indigo-200 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(199 210 254 / var(--tw-ring-opacity));
+}
+
+.ring-indigo-300 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(165 180 252 / var(--tw-ring-opacity));
 }
 
 .ring-indigo-50 {
@@ -3558,6 +3586,10 @@ input:where([type='file']):focus {
     padding-left: 0px;
   }
 
+  .sm\:pl-9 {
+    padding-left: 2.25rem;
+  }
+
   .sm\:pr-0 {
     padding-right: 0px;
   }
@@ -3961,10 +3993,6 @@ input:where([type='file']):focus {
 }
 
 @media (min-width: 1280px) {
-  .xl\:top-36 {
-    top: 9rem;
-  }
-
   .xl\:col-auto {
     grid-column: auto;
   }
