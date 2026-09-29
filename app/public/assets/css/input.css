@@ -17,3 +17,13 @@
   .appear-wait { opacity: 1; }
   .appear-wait.appear-in { animation: none; }
 }
+
+/* Text of the pages written in the administration (charter, privacy policy): see App\Libraries\PageText */
+.page-text { @apply text-base leading-7 text-gray-700; }
+.page-text h2 { @apply mt-10 scroll-mt-8 text-2xl font-bold tracking-tight text-gray-900; }
+.page-text h3 { @apply mt-6 text-lg font-semibold text-gray-900; }
+.page-text p { @apply mt-4; }
+.page-text ul { @apply mt-4 list-disc space-y-2 pl-6; }
+.page-text a { @apply font-medium text-indigo-600 underline hover:text-indigo-500; }
+.page-text strong { @apply font-semibold text-gray-900; }
+.page-text > :first-child { @apply mt-0; }

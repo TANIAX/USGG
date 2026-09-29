@@ -46,6 +46,10 @@ $routes->get('/contact','HomeController::contact');
 $routes->post('/contact','HomeController::sendContact');
 
 //Newsletter (public): subscription confirmed by e-mail, unsubscription link in every e-mail
+// Charter of the unit and privacy policy (written in admin/pages)
+$routes->get('charte', 'PageController::show/charte');
+$routes->get('confidentialite', 'PageController::show/confidentialite');
+
 $routes->post('newsletter', 'NewsletterController::subscribe');
 $routes->get('newsletter/confirmer/(:segment)', 'NewsletterController::confirm/$1');
 $routes->get('newsletter/desinscription/(:segment)', 'NewsletterController::unsubscribe/$1');
@@ -164,6 +168,11 @@ $routes->group('admin', ['filter' => 'auth:super_admin'], static function ($rout
     $routes->post('fonctions/delete/(:num)', 'UserTypeController::delete/$1');
 
     $routes->get('historique', 'AuditController::index');
+
+    $routes->get('pages', 'PageController::index');
+    $routes->post('pages/apercu', 'PageController::preview');
+    $routes->get('pages/(charte|confidentialite)', 'PageController::edit/$1');
+    $routes->post('pages/(charte|confidentialite)', 'PageController::update/$1');
 });
 
 //Newsletter: super admin and ASBL admin
