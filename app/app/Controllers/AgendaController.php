@@ -7,6 +7,7 @@ use App\Helpers\LogHelper;
 use DateTime;
 use Exception;
 use App\Helpers\ImageHelper;
+use App\Libraries\ListQuery;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
 use App\Repositories\EventRepository;
@@ -36,12 +37,11 @@ class AgendaController extends BaseController
      */
     public function index()
     {
-        $past = $this->request->getGet('periode') === 'passes';
+        $list = ListQuery::fromRequest($this->request, ['periode' => ['', 'passes']]);
+        $builder = $this->eventRepository->adminQuery($list->filter('periode') !== 'passes');
+        $list->search($builder, ['event.title', 'event.location', [$this->eventRepository, 'sectionNameCondition']]);
 
-        return view('pages/admin/agenda/index', [
-            'past' => $past,
-            'events' => $this->toJson($this->eventRepository->getByPeriod(!$past)),
-        ]);
+        return $this->listResponse('pages/admin/agenda/index', [], $list->paginate($builder, null, [$this->eventRepository, 'withSections']));
     }
 
     public function create()

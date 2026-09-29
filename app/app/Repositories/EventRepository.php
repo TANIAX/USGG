@@ -62,6 +62,35 @@ class EventRepository extends BaseRepository
     }
 
     /**
+     * Query of the upcoming (not finished) or past events for the paginated list of the administration
+     * (the soonest first, or the most recent first). The sections are added by withSections().
+     */
+    public function adminQuery(bool $upcoming)
+    {
+        return $this->eventQuery()
+                    ->where($upcoming ? 'event.end_at >=' : 'event.end_at <', date('Y-m-d H:i:s'))
+                    ->orderBy('event.start_at', $upcoming ? 'ASC' : 'DESC')
+                    ->orderBy('event.id', $upcoming ? 'ASC' : 'DESC');
+    }
+
+    /**
+     * SQL condition "the event has a section whose name contains the word" (search of the administration)
+     */
+    public function sectionNameCondition(string $word): string
+    {
+        return 'event.id IN (SELECT event_section.event_id FROM event_section JOIN section ON section.id = event_section.section_id'
+            . ' WHERE LOWER(section.name) LIKE ' . $this->db->escape('%' . $this->db->escapeLikeString(mb_strtolower($word)) . '%') . " ESCAPE '!')";
+    }
+
+    /**
+     * Adds their sections, images and author to events read with adminQuery().
+     */
+    public function withSections(array $events): array
+    {
+        return $this->attachSections($events);
+    }
+
+    /**
      * Gets a page of the upcoming events (news of the home page), the soonest first.
      *
      * @param  int $offset

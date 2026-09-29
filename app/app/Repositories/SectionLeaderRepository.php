@@ -52,6 +52,28 @@ class SectionLeaderRepository extends BaseRepository
         return $leaders;
     }
 
+    /**
+     * A page of the leaders for the public pages (home page): only what is shown on the site (no e-mail or phone).
+     *
+     * @return array ['items' => [display_name, function, picture_url, section_name, section_color], 'has_more' => bool]
+     */
+    public function getPublicPage(int $offset, int $limit): array
+    {
+        $leaders = array_slice($this->getLeaders(), $offset, $limit + 1);
+
+        return [
+            'items' => array_map(fn($leader) => [
+                'id' => $leader->id,
+                'display_name' => $leader->display_name,
+                'function' => $leader->function,
+                'picture_url' => $leader->picture_url,
+                'section_name' => $leader->section_name,
+                'section_color' => $leader->section_color,
+            ], array_slice($leaders, 0, $limit)),
+            'has_more' => count($leaders) > $limit,
+        ];
+    }
+
     public function getLeader(int $id)
     {
         foreach ($this->getLeaders() as $leader) {

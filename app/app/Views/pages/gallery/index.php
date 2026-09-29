@@ -46,6 +46,8 @@
                 </li>
             <?php endforeach; ?>
         </ul>
+        <?= component('pagination', ['pagination' => $pagination, 'noun' => ['album', 'albums'], 'class' => 'mt-12',
+            'url' => fn(int $page) => base_url('galerie' . ($branch ? '/' . $branch : '')) . ($page > 1 ? '?page=' . $page : '')]) ?>
     <?php else: ?>
         <?php component_open('empty_state', ['icon' => 'photo', 'text' => 'Aucun album pour le moment.', 'class' => 'py-16']) ?>
             <?php if (!$connected): ?>

@@ -26,17 +26,17 @@ Guides et scoutes de Gosselies - Utilisateurs
       <!-- Filters -->
       <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
          <div class="flex flex-wrap gap-2 text-sm">
-            <?= component('chip', ['active_alpine' => "role === ''", 'attrs' => ['@click' => "role = ''", 'x-text' => '`Tous (${users.length})`']]) ?>
+            <?= component('chip', ['active_alpine' => "role === ''", 'attrs' => ['@click' => "role = ''", 'x-text' => "`Tous (\${counts[''] ?? 0})`"]]) ?>
             <?php foreach ($roles as $code => $role): ?>
-               <?= component('chip', ['active_alpine' => "role === '$code'", 'attrs' => ['@click' => "role = '$code'", 'x-text' => "`" . addslashes($role['label']) . " (\${users.filter(u => u.roles.includes('$code')).length})`"]]) ?>
+               <?= component('chip', ['active_alpine' => "role === '$code'", 'attrs' => ['@click' => "role = '$code'", 'x-text' => "`" . addslashes($role['label']) . " (\${counts['$code'] ?? 0})`"]]) ?>
             <?php endforeach; ?>
-            <?= component('chip', ['tone' => 'dark', 'active_alpine' => "role === 'inactive'", 'attrs' => ['@click' => "role = 'inactive'", 'x-text' => '`Désactivés (${users.filter(u => !u.exists).length})`']]) ?>
+            <?= component('chip', ['tone' => 'dark', 'active_alpine' => "role === 'inactive'", 'attrs' => ['@click' => "role = 'inactive'", 'x-text' => '`Désactivés (${counts.inactive ?? 0})`']]) ?>
          </div>
          <?= component('search', ['placeholder' => 'Nom, totem ou e-mail', 'class' => 'lg:w-80']) ?>
       </div>
 
-      <ul role="list" class="divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200" x-show="filteredUsers.length > 0">
-         <template x-for="user in filteredUsers" :key="user.id">
+      <ul id="list-top" role="list" class="scroll-mt-8 divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200 transition-opacity" :class="listLoading ? 'opacity-60' : ''" x-show="items.length > 0">
+         <template x-for="user in items" :key="user.id">
             <li class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3" :class="user.exists ? '' : 'bg-gray-50'">
                <div class="min-w-0 flex-auto">
                   <p class="font-semibold" :class="user.exists ? 'text-gray-900' : 'text-gray-400'">
@@ -57,27 +57,18 @@ Guides et scoutes de Gosselies - Utilisateurs
             </li>
          </template>
       </ul>
-      <?= component('empty_state', ['icon' => 'users', 'title' => 'Aucun compte ne correspond.', 'attrs' => ['x-show' => 'filteredUsers.length === 0']]) ?>
+      <?= component('pagination', ['noun' => ['compte', 'comptes'], 'class' => 'mt-6']) ?>
+      <?= component('empty_state', ['icon' => 'users', 'title' => 'Aucun compte ne correspond.', 'attrs' => ['x-show' => 'items.length === 0']]) ?>
       <div class="h-16"></div>
    </div>
 </div>
 
 <script>
    function app() {
-      return {
-         users: <?= $users ?>,
+      return listApp('/admin/utilisateurs', <?= $list ?>, {
          roles: <?= js_data($roles) ?>,
          currentUserId: <?= (int) $currentUserId ?>,
-         role: '',
-         search: '',
-
-         get filteredUsers() {
-            const search = this.search.trim().toLowerCase();
-            return this.users.filter(user =>
-               (this.role === '' || (this.role === 'inactive' ? !user.exists : user.roles.includes(this.role)))
-               && (!search || [user.display_name, user.totem || '', user.email].some(text => text.toLowerCase().includes(search))));
-         },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>

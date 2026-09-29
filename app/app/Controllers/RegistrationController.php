@@ -7,6 +7,7 @@ use App\Helpers\GalleryHelper;
 use App\Helpers\SessionHelper;
 use App\Helpers\SectionChoices;
 use App\Helpers\RegistrationHelper;
+use App\Libraries\ListQuery;
 use App\Repositories\RegistrationRepository;
 
 /**
@@ -25,11 +26,18 @@ class RegistrationController extends BaseController
 
     public function index()
     {
-        return view('pages/admin/registration/index', [
-            'requests' => $this->toJson(array_map([$this, 'forList'], $this->registrationRepository->getForAdmin($this->branches()))),
+        $list = $this->listQuery();
+        if ($this->request->getGet('format') === 'csv')
+            return $this->exportCsv($list);
+
+        $builder = $this->filteredQuery($list);
+        $result = $list->paginate($builder, fn($request) => $this->forList($request), [$this->registrationRepository, 'castRows']);
+        $result['counts'] = $this->registrationRepository->countByStatus($this->branches());
+
+        return $this->listResponse('pages/admin/registration/index', [
             'statuses' => RegistrationHelper::STATUSES,
             'sections' => SectionChoices::grouped(),
-        ]);
+        ], $result);
     }
 
     public function show($id)
@@ -88,8 +96,7 @@ class RegistrationController extends BaseController
             return $this->jsonError(400, 'Action inconnue.');
 
         // Only the requests the user can manage are taken into account, whatever ids are sent
-        $manageable = array_column($this->registrationRepository->getForAdmin($this->branches()), 'id');
-        $ids = array_values(array_intersect($manageable, array_map('intval', (array) $this->request->getPost('ids'))));
+        $ids = $this->registrationRepository->filterManageable($this->branches(), array_map('intval', (array) $this->request->getPost('ids')));
 
         if ($action === 'delete') {
             $this->registrationRepository->deleteRequests($ids);
@@ -102,11 +109,8 @@ class RegistrationController extends BaseController
         if ($ids)
             AuditHelper::log($action === 'delete' ? 'deleted' : 'updated', 'Inscription', count($ids) . ' demande(s)' . ($action === 'delete' ? '' : ' : ' . RegistrationHelper::statusLabel($status)), '/admin/inscriptions');
 
-        return $this->response->setJSON([
-            'success' => true,
-            'ids' => $ids,
-            'requests' => array_map([$this, 'forList'], $this->registrationRepository->getForAdmin($this->branches())),
-        ]);
+        // The page reloads the list itself (listApp)
+        return $this->response->setJSON(['success' => true, 'ids' => $ids]);
     }
 
     public function delete($id)
@@ -143,6 +147,46 @@ class RegistrationController extends BaseController
             'note' => $request->note,
             'created_at' => $request->created_at,
         ];
+    }
+
+    /**
+     * Filters of the list, read in the url
+     */
+    private function listQuery(): ListQuery
+    {
+        return ListQuery::fromRequest($this->request, [
+            'status' => array_merge([''], array_keys(RegistrationHelper::STATUSES)),
+            'section' => array_merge(['', 'none'], SectionChoices::ids()),
+        ]);
+    }
+
+    private function filteredQuery(ListQuery $list)
+    {
+        $builder = $this->registrationRepository->adminQuery($this->branches(), $list->filter('status'), $list->filter('section'));
+        $list->search($builder, ['registration.firstname', 'registration.name', 'registration.totem', 'registration.parent_name', 'registration.parent_email', 'registration.city']);
+        return $builder;
+    }
+
+    /**
+     * Spreadsheet of all the requests matching the filters (Excel reads the ";" and the UTF-8 mark)
+     */
+    private function exportCsv(ListQuery $list)
+    {
+        $columns = ['Enfant', 'Âge', 'Section', 'Phase', 'Statut', 'Parent', 'E-mail', 'Téléphone', 'Localité', 'Reçue le', 'Note'];
+        $cell = fn($value) => '"' . str_replace('"', '""', (string) $value) . '"';
+        $lines = [implode(';', array_map($cell, $columns))];
+        foreach ($this->registrationRepository->castRows($this->filteredQuery($list)->get()->getResultObject()) as $row) {
+            $request = $this->forList($row);
+            $lines[] = implode(';', array_map($cell, [
+                $request['child'], $request['age'], $request['section'], $request['phase'], RegistrationHelper::statusLabel($request['status']),
+                $request['parent'], $request['email'], $request['phone'], $request['city'], $request['created_at'], $request['note'],
+            ]));
+        }
+
+        return $this->response
+                    ->setHeader('Content-Type', 'text/csv; charset=utf-8')
+                    ->setHeader('Content-Disposition', 'attachment; filename="demandes-inscription-' . date('Y-m-d') . '.csv"')
+                    ->setBody("\u{FEFF}" . implode("\r\n", $lines));
     }
 
     private function getManageable(int $id)

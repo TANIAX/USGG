@@ -34,7 +34,7 @@ class DashboardController extends BaseController
         ];
 
         if ($allowed('/admin/inscriptions')) {
-            $counts = array_count_values(array_column(service('repository', 'Registration')->getForAdmin(GalleryHelper::getManageableBranches()), 'status'));
+            $counts = service('repository', 'Registration')->countByStatus(GalleryHelper::getManageableBranches());
             $open = array_sum(array_intersect_key($counts, array_flip(self::OPEN_STATUSES)));
             $cards[] = [
                 'label' => 'Inscriptions à traiter',

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Helpers\AuditHelper;
 use App\Helpers\RoleHelper;
+use App\Libraries\ListQuery;
 use App\Helpers\AccountHelper;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
@@ -29,11 +30,16 @@ class UserController extends BaseController
 
     public function index()
     {
-        return view('pages/admin/user/index', [
-            'users' => $this->toJson($this->userRepository->getAllForAdmin()),
+        $list = ListQuery::fromRequest($this->request, ['role' => array_merge([''], array_keys(RoleHelper::ROLES), ['inactive'])]);
+        $builder = $this->userRepository->adminQuery($list->filter('role'));
+        $list->search($builder, ['user.firstname', 'user.name', 'user.totem', 'user.email']);
+        $result = $list->paginate($builder, null, [$this->userRepository, 'withRoles']);
+        $result['counts'] = $this->userRepository->countByRole(array_keys(RoleHelper::ROLES));
+
+        return $this->listResponse('pages/admin/user/index', [
             'roles' => RoleHelper::ROLES,
             'currentUserId' => $this->currentUserId(),
-        ]);
+        ], $result);
     }
 
     public function create()
@@ -193,11 +199,7 @@ class UserController extends BaseController
 
     private function getUser(int $id)
     {
-        foreach ($this->userRepository->getAllForAdmin() as $user) {
-            if ($user->id === $id)
-                return $user;
-        }
-        return null;
+        return $this->userRepository->getForAdmin($id);
     }
 
     private function currentUserId()

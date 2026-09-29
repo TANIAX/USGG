@@ -7,6 +7,7 @@ use App\Helpers\MailHelper;
 use App\Controllers\BaseController;
 use App\Repositories\EventRepository;
 use App\Controllers\API\V1\NewsController;
+use App\Controllers\API\V1\LeadersController;
 use App\Repositories\SectionLeaderRepository;
 
 /**
@@ -36,14 +37,15 @@ class HomeController extends BaseController
     public function index()
     {
         // Section leaders, managed in admin/responsables
-        $leaders = $this->leaderRepository->getLeaders();
+        // The first ones, the next ones are loaded by pages (api/v1/responsables)
+        $leaders = $this->leaderRepository->getPublicPage(0, LeadersController::PAGE_SIZE);
         // News = upcoming events of the agenda, the next ones are loaded 3 by 3 (api/v1/actualites)
         $news = $this->eventRepository->getUpcoming(0, NewsController::PAGE_SIZE);
 
         $contents = service('repository', 'Content');
 
         return view('pages/welcome_message', [
-            'leaders' => $leaders,
+            'leaders' => $this->toJson($leaders),
             // FAQ and testimonials, managed in admin/contenus
             'questions' => $contents->getItems('faq', true),
             'testimonials' => $contents->getItems('temoignage', true),

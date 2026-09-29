@@ -20,17 +20,44 @@ class ContactMessageRepository extends BaseRepository
     }
 
     /**
-     * All the messages, the most recent first.
+     * Conditions of the filters of the list: todo (not handled), unread, handled, '' (all)
      */
-    public function getAllRecent(): array
+    private const FILTERS = [
+        'todo' => ['is_handled' => false],
+        'unread' => ['is_read' => false],
+        'handled' => ['is_handled' => true],
+        '' => [],
+    ];
+
+    /**
+     * Query of the messages of a filter (see FILTERS) for a paginated list, the most recent first.
+     */
+    public function adminQuery(string $filter)
     {
-        $rows = $this->db->table('contact_message')->orderBy('created_at', 'DESC')->orderBy('id', 'DESC')->get()->getResultObject();
-        foreach ($rows as $row) {
-            $row->id = (int) $row->id;
-            $row->is_read = (bool) $row->is_read;
-            $row->is_handled = (bool) $row->is_handled;
+        return $this->db->table('contact_message')
+                    ->where(self::FILTERS[$filter] ?? [])
+                    ->orderBy('created_at', 'DESC')
+                    ->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Number of messages of each filter: [filter => count]
+     */
+    public function countByFilter(): array
+    {
+        $counts = [];
+        foreach (self::FILTERS as $filter => $conditions) {
+            $counts[$filter] = $this->db->table('contact_message')->where($conditions)->countAllResults();
         }
-        return $rows;
+        return $counts;
+    }
+
+    public static function cast($row)
+    {
+        $row->id = (int) $row->id;
+        $row->is_read = (bool) $row->is_read;
+        $row->is_handled = (bool) $row->is_handled;
+        return $row;
     }
 
     public function updateMessages(array $ids, array $data): void

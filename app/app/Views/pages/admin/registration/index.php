@@ -6,7 +6,7 @@ Guides et scoutes de Gosselies - Demandes d'inscription
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" x-data="app()" x-cloak>
    <div class="px-4 sm:px-6 lg:px-8">
       <?php component_open('page_header', ['title' => 'Demandes d\'inscription', 'subtitle' => 'Demandes envoyées depuis la page Inscription, les plus récentes en premier. Phase 1 : frère, sœur ou enfant d\'ancien membre ; phase 2 : les autres familles.']) ?>
-         <?= component('button', ['variant' => 'secondary', 'size' => 'sm', 'block' => true, 'label' => 'Exporter (CSV)', 'attrs' => ['@click' => 'exportCsv()', ':disabled' => 'filteredRequests.length === 0']]) ?>
+         <?= component('button', ['variant' => 'secondary', 'size' => 'sm', 'block' => true, 'label' => 'Exporter (CSV)', 'href' => '#', 'attrs' => [':href' => 'exportUrl', ':class' => "pagination.total === 0 ? 'pointer-events-none opacity-50' : ''"]]) ?>
       <?= component_close() ?>
 
       <?= component('flash') ?>
@@ -15,9 +15,9 @@ Guides et scoutes de Gosselies - Demandes d'inscription
       <!-- Filters -->
       <div class="mb-6 space-y-4">
          <div class="flex flex-wrap gap-2 text-sm">
-            <?= component('chip', ['active_alpine' => "status === ''", 'attrs' => ['@click' => "status = ''", 'x-text' => '`Toutes (${requests.length})`']]) ?>
+            <?= component('chip', ['active_alpine' => "status === ''", 'attrs' => ['@click' => "status = ''", 'x-text' => '`Toutes (${totalCount})`']]) ?>
             <?php foreach ($statuses as $code => [$label]): ?>
-               <?= component('chip', ['active_alpine' => "status === '$code'", 'attrs' => ['@click' => "status = '$code'", 'x-text' => "`" . addslashes($label) . " (\${requests.filter(r => r.status === '$code').length})`"]]) ?>
+               <?= component('chip', ['active_alpine' => "status === '$code'", 'attrs' => ['@click' => "status = '$code'", 'x-text' => "`" . addslashes($label) . " (\${counts['$code'] || 0})`"]]) ?>
             <?php endforeach; ?>
          </div>
          <div class="flex flex-col gap-4 sm:flex-row">
@@ -29,8 +29,8 @@ Guides et scoutes de Gosselies - Demandes d'inscription
          </div>
       </div>
 
-      <ul role="list" class="mb-16 divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200" x-show="filteredRequests.length > 0">
-         <template x-for="request in filteredRequests" :key="request.id">
+      <ul id="list-top" role="list" class="scroll-mt-8 divide-y divide-gray-100 rounded-lg bg-white shadow-sm ring-1 ring-gray-200 transition-opacity" :class="listLoading ? 'opacity-60' : ''" x-show="items.length > 0">
+         <template x-for="request in items" :key="request.id">
             <li class="flex items-start gap-x-3 px-4 py-4" :class="selected.includes(request.id) ? 'bg-indigo-50/50' : ''">
                <input type="checkbox" :checked="selected.includes(request.id)" @click="toggle(request)" :aria-label="`Sélectionner ${request.child}`"
                   class="mt-1 h-4 w-4 flex-none rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
@@ -58,7 +58,8 @@ Guides et scoutes de Gosselies - Demandes d'inscription
             </li>
          </template>
       </ul>
-      <?= component('empty_state', ['icon' => 'users', 'class' => 'mb-16', 'title_alpine' => "requests.length ? 'Aucune demande ne correspond aux filtres' : 'Aucune demande d\\'inscription pour le moment'", 'attrs' => ['x-show' => 'filteredRequests.length === 0']]) ?>
+      <?= component('pagination', ['noun' => ['demande', 'demandes'], 'class' => 'mt-6 mb-16']) ?>
+      <?= component('empty_state', ['icon' => 'users', 'class' => 'mb-16', 'title_alpine' => "totalCount ? 'Aucune demande ne correspond aux filtres' : 'Aucune demande d\\'inscription pour le moment'", 'attrs' => ['x-show' => 'items.length === 0']]) ?>
 
       <?= component('selection_bar', ['noun' => ['demande sélectionnée', 'demandes sélectionnées'], 'busy' => 'busy', 'actions' => [
          ['label' => 'Liste d\'attente', 'click' => "run('status', 'waiting')", 'tone' => 'amber'],
@@ -76,22 +77,25 @@ Guides et scoutes de Gosselies - Demandes d'inscription
    };
 
    function app() {
-      return {
-         requests: <?= $requests ?>,
+      return listApp('/admin/inscriptions', <?= $list ?>, {
          statuses: <?= js_data($statuses) ?>,
-         status: '',
-         section: '',
-         search: '',
          selected: [],
          busy: false,
          actionError: '',
 
-         get filteredRequests() {
-            const search = this.search.trim().toLowerCase();
-            return this.requests.filter(request =>
-               (!this.status || request.status === this.status)
-               && (!this.section || (this.section === 'none' ? !request.section_id : String(request.section_id) === this.section))
-               && (!search || [request.child, request.totem || '', request.parent, request.email, request.city].some(text => text.toLowerCase().includes(search))));
+         get totalCount() {
+            return Object.values(this.counts).reduce((sum, count) => sum + count, 0);
+         },
+
+         // Spreadsheet of all the requests matching the filters (made by the server)
+         get exportUrl() {
+            const params = this.listParams(1);
+            params.set('format', 'csv');
+            return `/admin/inscriptions?${params}`;
+         },
+
+         afterLoad() {
+            this.selected = this.selected.filter(id => this.items.some(request => request.id === id));
          },
 
          statusClass(status) {
@@ -111,28 +115,16 @@ Guides et scoutes de Gosselies - Demandes d'inscription
             this.busy = true;
             this.actionError = '';
             try {
-               const json = await requestJson('/admin/inscriptions/bulk', { action: action, status: status, ids: this.selected });
-               this.requests = json.requests;
+               await requestJson('/admin/inscriptions/bulk', { action: action, status: status, ids: this.selected });
                this.selected = [];
+               await this.loadList();
             } catch (error) {
                this.actionError = error.message || 'L\'action n\'a pas pu être effectuée. Rechargez la page et réessayez.';
             } finally {
                this.busy = false;
             }
          },
-
-         // Spreadsheet of the displayed requests (Excel reads the ";" and the UTF-8 mark)
-         exportCsv() {
-            const columns = [['child', 'Enfant'], ['age', 'Âge'], ['section', 'Section'], ['phase', 'Phase'], ['status', 'Statut'], ['parent', 'Parent'], ['email', 'E-mail'], ['phone', 'Téléphone'], ['city', 'Localité'], ['created_at', 'Reçue le'], ['note', 'Note']];
-            const cell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
-            const rows = this.filteredRequests.map(request => columns.map(([key]) => cell(key === 'status' ? this.statuses[request.status][0] : request[key])).join(';'));
-            const csv = '﻿' + [columns.map(([, label]) => cell(label)).join(';'), ...rows].join('\r\n');
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-            link.download = `demandes-inscription-${new Date().toISOString().slice(0, 10)}.csv`;
-            link.click();
-         },
-      }
+      });
    }
 </script>
 <?= $this->endSection() ?>

@@ -6,6 +6,7 @@ use App\Helpers\FormGuard;
 use App\Helpers\MailHelper;
 use App\Helpers\AuditHelper;
 use App\Helpers\SessionHelper;
+use App\Libraries\ListQuery;
 use App\Repositories\NewsletterRepository;
 
 /**
@@ -80,14 +81,34 @@ class NewsletterController extends BaseController
         $period = (int) ($this->request->getGet('periode') ?? 31);
         $period = isset(self::PERIODS[$period]) ? $period : 31;
 
-        return view('pages/admin/newsletter/index', [
-            'subscribers' => $this->toJson($this->newsletterRepository->getSubscribers()),
-            'recipientCount' => count($this->newsletterRepository->getRecipients()),
+        if ($this->request->getGet('format') === 'csv')
+            return $this->exportCsv();
+
+        $list = ListQuery::fromRequest($this->request, ['status' => ['active', 'pending', 'unsubscribed', '']]);
+        $builder = $this->newsletterRepository->adminQuery($list->filter('status'));
+        $list->search($builder, ['email']);
+        $result = $list->paginate($builder, [NewsletterRepository::class, 'cast']);
+        $result['counts'] = $this->newsletterRepository->countByStatus();
+
+        return $this->listResponse('pages/admin/newsletter/index', [
+            'recipientCount' => $result['counts']['active'],
             'events' => $this->upcomingEvents($period),
             'period' => $period,
             'periods' => self::PERIODS,
             'sendings' => $this->newsletterRepository->getSendings(),
-        ]);
+        ], $result);
+    }
+
+    /**
+     * Spreadsheet of the confirmed subscribers
+     */
+    private function exportCsv()
+    {
+        $emails = array_column($this->newsletterRepository->adminQuery('active')->get()->getResultArray(), 'email');
+        return $this->response
+                    ->setHeader('Content-Type', 'text/csv; charset=utf-8')
+                    ->setHeader('Content-Disposition', 'attachment; filename="newsletter-abonnes.csv"')
+                    ->setBody("\u{FEFF}" . implode("\r\n", array_merge(['E-mail'], $emails)));
     }
 
     /**

@@ -80,8 +80,8 @@
       <p class="mt-2 text-lg leading-8 text-gray-600">Prochainement chez les scouts et guides de <span class="font-bold">Gosselies</span>.</p>
     </div>
     <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      <template x-for="item in items" :key="item.id">
-        <article class="flex flex-col items-start">
+      <template x-for="(item, index) in items" :key="item.id">
+        <article class="flex flex-col items-start" x-init="appearOnView($el, index % 3)">
           <a :href="`/actualites/${item.id}`" class="relative block w-full overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-inset ring-gray-900/10">
             <template x-if="item.image_small_url">
               <img :src="item.image_small_url" :alt="item.title" loading="lazy" class="aspect-[16/9] w-full object-cover transition duration-300 hover:scale-105">
@@ -169,25 +169,63 @@
 
 
 
-<!-- Team: the section leaders (admin/responsables) -->
-<article id="responsables" class="bg-slate-100 py-24 sm:py-32">
+<!-- Team: the section leaders (admin/responsables), loaded by pages -->
+<article id="responsables" class="bg-slate-100 py-24 sm:py-32" x-data="leaderList(<?= esc($leaders, 'attr') ?>)">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des responsables de section</h2>
     </div>
-    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 px-6 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:px-8 xl:grid-cols-6 reveal">
-      <?php if (!empty($leaders)) : ?>
-        <?php foreach ($leaders as $leader) : ?>
-          <?= component('leader', ['leader' => $leader, 'show_section' => true]) ?>
-        <?php endforeach ?>
-      <?php else : ?>
-        <li class="col-span-full">
-          <p class="text-sm font-semibold leading-6 text-indigo-600">Les responsables seront bientôt présentés ici.</p>
+    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 px-6 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:px-8 xl:grid-cols-6">
+      <template x-for="(leader, index) in items" :key="leader.id">
+        <li class="text-center" x-init="appearOnView($el, index % pageSize)">
+          <img :src="leader.picture_url || '<?= base_url('assets/img/question-mark.jpg') ?>'" alt="" loading="lazy" class="mx-auto h-24 w-24 rounded-full bg-gray-100 object-cover">
+          <h3 class="mt-4 text-base font-semibold leading-7 tracking-tight text-gray-900" x-text="leader.display_name"></h3>
+          <p class="text-sm font-semibold leading-6 text-indigo-600" x-text="leader.function || ''"></p>
+          <p class="mt-1 inline-flex items-center gap-x-1.5 text-xs text-gray-500">
+            <span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${leader.section_color}`"></span>
+            <span x-text="leader.section_name"></span>
+          </p>
         </li>
-      <?php endif ?>
+      </template>
+      <li x-show="items.length === 0" class="col-span-full">
+        <p class="text-sm font-semibold leading-6 text-indigo-600">Les responsables seront bientôt présentés ici.</p>
+      </li>
     </ul>
+
+    <!-- More leaders: hidden when all are shown -->
+    <div class="mt-16 flex flex-col items-center">
+      <?= component('button', ['variant' => 'soft', 'class' => 'px-6 py-2.5 uppercase tracking-widest', 'attrs' => ['x-show' => 'hasMore', '@click' => 'loadMore()', ':disabled' => 'loading', 'x-text' => "loading ? 'Chargement…' : 'Voir plus de responsables'"]]) ?>
+      <p x-show="error" class="mt-2 text-sm text-red-600" x-text="error"></p>
+    </div>
   </div>
 </article>
+
+<script>
+  function leaderList(initial) {
+    return {
+      items: initial.items,
+      hasMore: initial.has_more,
+      pageSize: <?= \App\Controllers\API\V1\LeadersController::PAGE_SIZE ?>,
+      loading: false,
+      error: '',
+
+      async loadMore() {
+        this.loading = true;
+        this.error = '';
+        try {
+          const json = await requestJson(`<?= base_url('api/v1/responsables') ?>?offset=${this.items.length}&limit=${this.pageSize}`);
+          const known = this.items.map(leader => leader.id);
+          this.items.push(...json.data.items.filter(leader => !known.includes(leader.id)));
+          this.hasMore = json.data.has_more;
+        } catch (error) {
+          this.error = 'Impossible de charger les responsables suivants. Réessayez plus tard.';
+        } finally {
+          this.loading = false;
+        }
+      },
+    };
+  }
+</script>
 <!-- Testimonials (admin/contenus): the first one is highlighted -->
 <?php if ($testimonials): ?>
 <div class="relative isolate overflow-hidden bg-white pb-32 pt-24 sm:pt-32" x-data="{ width : (window.innerWidth > 0) ? window.innerWidth : screen.width }"  @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;">

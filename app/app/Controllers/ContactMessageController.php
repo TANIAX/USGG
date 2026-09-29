@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Helpers\AuditHelper;
+use App\Libraries\ListQuery;
 use App\Repositories\ContactMessageRepository;
 
 /**
@@ -19,10 +20,13 @@ class ContactMessageController extends BaseController
 
     public function index()
     {
-        return view('pages/admin/message/index', [
-            'messages' => $this->toJson($this->messageRepository->getAllRecent()),
-            'contactEmail' => config('Site')->contactEmail,
-        ]);
+        $list = ListQuery::fromRequest($this->request, ['filter' => ['todo', 'unread', 'handled', '']]);
+        $builder = $this->messageRepository->adminQuery($list->filter('filter'));
+        $list->search($builder, ['name', 'email', 'message']);
+        $result = $list->paginate($builder, [ContactMessageRepository::class, 'cast']);
+        $result['counts'] = $this->messageRepository->countByFilter();
+
+        return $this->listResponse('pages/admin/message/index', ['contactEmail' => config('Site')->contactEmail], $result);
     }
 
     /**
@@ -49,6 +53,7 @@ class ContactMessageController extends BaseController
             $this->messageRepository->updateMessages($ids, $actions[$action]);
         }
 
-        return $this->response->setJSON(['success' => true, 'messages' => $this->messageRepository->getAllRecent()]);
+        // New state of the messages (the page updates them without reloading the list, e.g. a message opened in "Non lus")
+        return $this->response->setJSON(['success' => true, 'ids' => $ids, 'changes' => $actions[$action] ?? null, 'counts' => $this->messageRepository->countByFilter()]);
     }
 }

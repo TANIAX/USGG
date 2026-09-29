@@ -20,24 +20,62 @@ class RegistrationRepository extends BaseRepository
     }
 
     /**
-     * Requests of the sections of the given branches (GUIDE / SCOUTE), the most recent first.
-     * The requests without section are shown to everybody.
+     * Query of the requests of the given branches for a paginated list (App\Libraries\ListQuery), the most recent first.
+     * $status: '' for all; $section: '' for all, 'none' for the requests without section, or the id of a section.
      */
-    public function getForAdmin(array $branches): array
+    public function adminQuery(array $branches, string $status = '', string $section = '')
+    {
+        $builder = $this->select()
+                    ->groupStart()
+                        ->whereIn('section.branch', $branches ?: [''])
+                        ->orWhere('registration.section_id', null)
+                    ->groupEnd();
+        if ($status !== '')
+            $builder->where('registration.status', $status);
+        if ($section === 'none')
+            $builder->where('registration.section_id', null);
+        elseif ($section !== '')
+            $builder->where('registration.section_id', (int) $section);
+
+        return $builder->orderBy('registration.created_at', 'DESC')->orderBy('registration.id', 'DESC');
+    }
+
+    /**
+     * Number of requests of the given branches by status: [status => count]
+     */
+    public function countByStatus(array $branches): array
     {
         if (!$branches)
             return [];
 
-        $rows = $this->select()
+        $rows = $this->db->table('registration')
+                    ->select('registration.status, COUNT(*) AS total')
+                    ->join('section', 'section.id = registration.section_id', 'left')
                     ->groupStart()
                         ->whereIn('section.branch', $branches)
                         ->orWhere('registration.section_id', null)
                     ->groupEnd()
-                    ->orderBy('registration.created_at', 'DESC')
-                    ->orderBy('registration.id', 'DESC')
+                    ->groupBy('registration.status')
                     ->get()
                     ->getResultObject();
 
+        return array_map('intval', array_column($rows, 'total', 'status'));
+    }
+
+    /**
+     * Among the given ids, the ones of the requests of the given branches.
+     */
+    public function filterManageable(array $branches, array $ids): array
+    {
+        if (!$branches || !$ids)
+            return [];
+
+        $rows = $this->adminQuery($branches)->select('registration.id')->whereIn('registration.id', $ids)->get()->getResultObject();
+        return array_map(fn($row) => (int) $row->id, $rows);
+    }
+
+    public function castRows(array $rows): array
+    {
         return array_map([$this, 'castRow'], $rows);
     }
 

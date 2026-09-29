@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\ListQuery;
 use App\Helpers\GalleryHelper;
 use App\Controllers\BaseController;
 use App\Repositories\AlbumRepository;
@@ -34,6 +35,11 @@ class GalleryController extends BaseController
     /**
      * Lists the albums, of every branch or of one branch (galerie/guide, galerie/scout).
      */
+    /**
+     * Albums per page (public gallery)
+     */
+    private const ALBUMS_PER_PAGE = 12;
+
     public function index(?string $branch = null)
     {
         if ($branch !== null && !isset(self::URL_BRANCHES[$branch]))
@@ -42,12 +48,14 @@ class GalleryController extends BaseController
         $branches = $branch ? [self::URL_BRANCHES[$branch]] : array_keys(GalleryHelper::BRANCHES);
         $connected = GalleryHelper::canSeePrivatePhotos();
 
-        $albums = $this->albumRepository->getAlbums($branches, $connected, false);
+        // Albums without visible photo are hidden
+        $list = ListQuery::fromRequest($this->request, [], [self::ALBUMS_PER_PAGE]);
+        $result = $list->paginate($this->albumRepository->listQuery($branches, $connected, true), null, fn($albums) => $this->albumRepository->withCovers($albums, $connected));
 
         return view('pages/gallery/index', [
-            //Albums without visible photo are hidden
-            'albums' => array_values(array_filter($albums, fn($album) => $album->photo_count > 0)),
-            'hasHiddenPhotos' => !$connected && array_filter($albums, fn($album) => $album->private_count > 0),
+            'albums' => $result['items'],
+            'pagination' => $result['pagination'],
+            'hasHiddenPhotos' => !$connected && $this->albumRepository->hasPrivatePhotos($branches),
             'branch' => $branch,
             'connected' => $connected,
         ]);

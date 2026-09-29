@@ -119,32 +119,49 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * All the accounts with their roles, for the administration of the users.
-     *
-     * @return array of objects
+     * Query of the accounts for the paginated list of the administration: active accounts first, by name.
+     * $role: '' for all, 'inactive' for the deactivated accounts, or the name of a role.
      */
-    public function getAllForAdmin()
+    public function adminQuery(string $role = '')
     {
-        $users = $this->db->table('user')
+        $builder = $this->db->table('user')
                     ->select('user.id, user.email, user.totem, user.firstname, user.name, user.phone, user.picture, user.user_type_id, user.exists, user.created_at')
                     ->select('user_type.name AS function')
-                    ->join('user_type', 'user_type.id = user.user_type_id', 'left')
-                    ->orderBy('user.exists', 'DESC')
-                    ->orderBy('user.firstname', 'ASC')
-                    ->orderBy('user.name', 'ASC')
-                    ->get()
-                    ->getResultObject();
+                    ->join('user_type', 'user_type.id = user.user_type_id', 'left');
+        if ($role === 'inactive')
+            $builder->where('user.exists', false);
+        elseif ($role !== '')
+            $builder->where('user.id IN (' . $this->withRoleQuery($role) . ')', null, false);
 
-        $rows = $this->db->table('user_role')
-                    ->select('user_role.user_id, role.name')
-                    ->join('role', 'role.id = user_role.role_id')
-                    ->where('user_role.exists', true)
-                    ->where('role.exists', true)
-                    ->get()
-                    ->getResultObject();
+        return $builder->orderBy('user.exists', 'DESC')->orderBy('user.firstname', 'ASC')->orderBy('user.name', 'ASC')->orderBy('user.id', 'ASC');
+    }
+
+    /**
+     * Account with its roles (administration), or null.
+     */
+    public function getForAdmin(int $id)
+    {
+        return $this->withRoles($this->adminQuery()->where('user.id', $id)->get()->getResultObject())[0] ?? null;
+    }
+
+    /**
+     * Adds their roles to accounts (one query), and casts their fields.
+     */
+    public function withRoles(array $users): array
+    {
         $rolesByUser = [];
-        foreach ($rows as $row) {
-            $rolesByUser[$row->user_id][] = $row->name;
+        if ($users) {
+            $rows = $this->db->table('user_role')
+                        ->select('user_role.user_id, role.name')
+                        ->join('role', 'role.id = user_role.role_id')
+                        ->whereIn('user_role.user_id', array_column($users, 'id'))
+                        ->where('user_role.exists', true)
+                        ->where('role.exists', true)
+                        ->get()
+                        ->getResultObject();
+            foreach ($rows as $row) {
+                $rolesByUser[$row->user_id][] = $row->name;
+            }
         }
 
         foreach ($users as $user) {
@@ -156,6 +173,34 @@ class UserRepository extends BaseRepository
         }
 
         return $users;
+    }
+
+    /**
+     * Number of accounts: all (''), deactivated ('inactive') and by role: [filter => count]
+     */
+    public function countByRole(array $roles): array
+    {
+        $counts = [
+            '' => $this->db->table('user')->countAllResults(),
+            'inactive' => $this->db->table('user')->where('exists', false)->countAllResults(),
+        ];
+        foreach ($roles as $role) {
+            $counts[$role] = $this->db->table('user')->where('id IN (' . $this->withRoleQuery($role) . ')', null, false)->countAllResults();
+        }
+        return $counts;
+    }
+
+    /**
+     * SQL of the ids of the accounts having a role
+     */
+    private function withRoleQuery(string $role): string
+    {
+        return $this->db->table('user_role')
+                    ->select('user_role.user_id')
+                    ->join('role', 'role.id = user_role.role_id')
+                    ->where('user_role.exists', true)
+                    ->where('role.name', $role)
+                    ->getCompiledSelect();
     }
 
     /**

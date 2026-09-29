@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Helpers\AuditHelper;
 use App\Helpers\GalleryHelper;
 use App\Helpers\DocumentHelper;
+use App\Libraries\ListQuery;
 use App\Controllers\BaseController;
 use App\Repositories\FileRepository;
 
@@ -25,10 +26,16 @@ class DocumentController extends BaseController
 
     public function index()
     {
-        return view('pages/admin/document/index', [
-            'files' => $this->toJson($this->fileRepository->getForAdmin($this->manageableTypes())),
-            'types' => $this->typeChoices(),
+        $list = ListQuery::fromRequest($this->request, [
+            'type' => array_merge([''], $this->manageableTypes()),
+            'status' => ['', 'active', 'inactive'],
         ]);
+        $builder = $this->fileRepository->adminQuery($this->manageableTypes(), $list->filter('type'), $list->filter('status'));
+        $list->search($builder, ['name']);
+        $result = $list->paginate($builder, null, [$this->fileRepository, 'castRows']);
+        $result['counts'] = $this->fileRepository->countByStatus($this->manageableTypes(), $list->filter('type'));
+
+        return $this->listResponse('pages/admin/document/index', ['types' => $this->typeChoices()], $result);
     }
 
     public function create()
@@ -167,7 +174,6 @@ class DocumentController extends BaseController
             'success' => true,
             'ids' => $done,
             'errors' => $errors,
-            'files' => $this->fileRepository->getForAdmin($this->manageableTypes()),
         ]);
     }
 

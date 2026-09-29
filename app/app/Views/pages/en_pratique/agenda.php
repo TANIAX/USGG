@@ -4,12 +4,52 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<?php ob_start(); ?>
+                    <li>
+                        <button type="button" @click="openEvent(event)"
+                            class="group flex w-full items-start gap-x-4 py-5 text-left"
+                            :class="isPast(event) ? 'opacity-60' : ''">
+                            <!-- Section colors -->
+                            <div class="flex w-1.5 self-stretch flex-col overflow-hidden rounded-full">
+                                <template x-for="section in event.sections" :key="section.id">
+                                    <span class="flex-1" :style="`background-color: ${section.color}`"></span>
+                                </template>
+                            </div>
+                            <div class="flex-auto">
+                                <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600">
+                                    <span x-text="event.title"></span>
+                                    <?= component('badge', ['label' => 'Terminé', 'shape' => 'tag', 'class' => 'ml-2', 'attrs' => ['x-show' => 'isPast(event)']]) ?>
+                                </h3>
+                                <dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
+                                    <?= component('detail', ['icon' => 'calendar', 'label' => 'Date', 'slot' => '<time :datetime="event.start_at" x-text="formatEventPeriod(event)"></time>']) ?>
+                                    <?= component('detail', ['icon' => 'map-pin', 'label' => 'Lieu', 'slot' => '<span x-text="event.location"></span>', 'class' => 'mt-2 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5', 'attrs' => ['x-show' => 'event.location']]) ?>
+                                </dl>
+                                <div class="mt-2 flex flex-wrap gap-1.5">
+                                    <template x-for="section in event.sections" :key="section.id">
+                                        <?= component('section_tag', ['alpine' => 'section']) ?>
+                                    </template>
+                                </div>
+                            </div>
+                            <?= component('icon', ['name' => 'chevron-right', 'class' => 'mt-1 h-5 w-5 flex-none text-gray-300 group-hover:text-indigo-600']) ?>
+                        </button>
+                    </li>
+<?php $eventRow = ob_get_clean(); // Row of an event (Alpine "event"), in the list of the month and of the year ?>
 
 <div class="mx-auto max-w-7xl px-8 mt-8" x-data="app()" x-cloak @keydown.escape.window="closeEvent()">
     <div
     class="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96 hidden lg:block "
     aria-hidden="true"></div>
-    <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">AGENDA DES ACTIVITÉS</h1>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <h1 class="text-4xl xl:text-4xl font-bold leading-normal xl:leading-relaxed mb-2">AGENDA DES ACTIVITÉS</h1>
+        <!-- Month (calendar) or whole year (list by month) -->
+        <div class="inline-flex rounded-md shadow-sm" role="group" aria-label="Affichage">
+            <?php foreach (['month' => 'Mois', 'year' => 'Année'] as $mode => $label): ?>
+                <button type="button" @click="setMode('<?= $mode ?>')" :aria-pressed="(mode === '<?= $mode ?>').toString()"
+                    class="px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 <?= $mode === 'month' ? 'rounded-l-md' : '-ml-px rounded-r-md' ?>"
+                    :class="mode === '<?= $mode ?>' ? 'z-10 bg-indigo-600 text-white ring-indigo-600' : 'bg-white text-gray-700 hover:bg-gray-50'"><?= $label ?></button>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <!-- Sections filter (also used as a legend for the colors of the calendar) -->
     <div class="mt-6">
@@ -30,8 +70,31 @@
     </div>
 
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
+        <!-- Year: the 12 months with their number of activities (a click opens the month) -->
+        <div x-show="mode === 'year'" class="mt-10 lg:sticky lg:top-8 lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 lg:self-start xl:col-start-9">
+            <div class="flex items-center text-gray-900">
+                <?= component('icon_button', ['icon' => 'chevron-left', 'label' => 'Année précédente', 'class' => '-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'moveYear(-1)']]) ?>
+                <div class="flex-auto text-center text-sm font-semibold" x-text="currentYear"></div>
+                <?= component('icon_button', ['icon' => 'chevron-right', 'label' => 'Année suivante', 'class' => '-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'moveYear(1)']]) ?>
+            </div>
+            <div class="mt-6 grid grid-cols-3 gap-2">
+                <template x-for="month in yearMonths" :key="month.index">
+                    <button type="button" @click="openMonth(month.index)" class="rounded-lg bg-white p-2 text-left ring-1 ring-gray-200 hover:ring-indigo-400"
+                        :class="month.isCurrent ? 'ring-2 ring-indigo-600' : ''" :aria-label="`${month.name} : ${month.events.length} activité(s)`">
+                        <span class="block text-xs font-semibold uppercase text-gray-700" x-text="month.shortName"></span>
+                        <span class="mt-1 block text-lg font-semibold" :class="month.events.length ? 'text-gray-900' : 'text-gray-300'" x-text="month.events.length"></span>
+                        <span class="mt-1 flex h-1.5 gap-0.5">
+                            <template x-for="color in month.colors.slice(0, 5)" :key="color"><span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${color}`"></span></template>
+                        </span>
+                    </button>
+                </template>
+            </div>
+            <p x-show="loading" class="mt-2 text-xs text-gray-500">Chargement des activités…</p>
+            <p x-show="loadingError" class="mt-2 text-xs text-red-600">Impossible de charger les activités. Réessayez plus tard.</p>
+        </div>
+
         <!-- Calendar -->
-        <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
+        <div x-show="mode === 'month'" class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
             <div class="flex items-center text-gray-900">
                 <?= component('icon_button', ['icon' => 'chevron-left', 'label' => 'Mois précédent', 'class' => '-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'moveCurrentDateTo(-1)']]) ?>
                 <div class="flex-auto text-sm font-semibold uppercase" x-text="currentDateString"></div>
@@ -85,8 +148,30 @@
             <p x-show="loadingError" class="mt-2 text-xs text-red-600">Impossible de charger les activités. Réessayez plus tard.</p>
         </div>
 
+        <!-- Events list of the year, by month -->
+        <div x-show="mode === 'year'" class="mt-10 lg:col-span-7 xl:col-span-8 lg:mt-9">
+            <h2 class="font-semibold leading-6 text-gray-900 text-xl md:text-2xl" x-text="`Activités de ${currentYear}`"></h2>
+            <template x-for="month in yearMonths.filter(month => month.events.length)" :key="month.index">
+                <section class="mt-8">
+                    <h3 class="sticky top-0 z-10 -mx-2 flex items-baseline justify-between bg-white/90 px-2 py-2 text-sm font-semibold uppercase tracking-wide text-gray-500 backdrop-blur">
+                        <span x-text="month.name"></span>
+                        <span class="text-xs font-normal normal-case" x-text="`${month.events.length} activité${month.events.length > 1 ? 's' : ''}`"></span>
+                    </h3>
+                    <ol class="divide-y divide-gray-100 text-sm leading-6">
+                        <template x-for="event in month.events" :key="event.id">
+                            <?= $eventRow ?>
+                        </template>
+                    </ol>
+                </section>
+            </template>
+            <div x-show="!loading && yearMonths.every(month => month.events.length === 0)" class="py-10 text-center">
+                <?= component('icon', ['name' => 'calendar', 'class' => 'mx-auto h-12 w-12 text-gray-300']) ?>
+                <p class="mt-2 text-sm text-gray-500">Aucune activité prévue cette année.</p>
+            </div>
+        </div>
+
         <!-- Events list -->
-        <div class="mt-10 lg:col-span-7 xl:col-span-8 lg:mt-9">
+        <div x-show="mode === 'month'" class="mt-10 lg:col-span-7 xl:col-span-8 lg:mt-9">
             <div class="flex items-center justify-between gap-x-4">
                 <h2 class="font-semibold leading-6 text-gray-900 text-xl md:text-2xl" x-text="listTitle"></h2>
                 <button type="button" x-show="selectedKey" @click="selectedKey = null"
@@ -97,34 +182,7 @@
 
             <ol class="mt-4 divide-y divide-gray-100 text-sm leading-6">
                 <template x-for="event in listedEvents" :key="event.id">
-                    <li>
-                        <button type="button" @click="openEvent(event)"
-                            class="group flex w-full items-start gap-x-4 py-5 text-left"
-                            :class="isPast(event) ? 'opacity-60' : ''">
-                            <!-- Section colors -->
-                            <div class="flex w-1.5 self-stretch flex-col overflow-hidden rounded-full">
-                                <template x-for="section in event.sections" :key="section.id">
-                                    <span class="flex-1" :style="`background-color: ${section.color}`"></span>
-                                </template>
-                            </div>
-                            <div class="flex-auto">
-                                <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600">
-                                    <span x-text="event.title"></span>
-                                    <?= component('badge', ['label' => 'Terminé', 'shape' => 'tag', 'class' => 'ml-2', 'attrs' => ['x-show' => 'isPast(event)']]) ?>
-                                </h3>
-                                <dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-                                    <?= component('detail', ['icon' => 'calendar', 'label' => 'Date', 'slot' => '<time :datetime="event.start_at" x-text="formatEventPeriod(event)"></time>']) ?>
-                                    <?= component('detail', ['icon' => 'map-pin', 'label' => 'Lieu', 'slot' => '<span x-text="event.location"></span>', 'class' => 'mt-2 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5', 'attrs' => ['x-show' => 'event.location']]) ?>
-                                </dl>
-                                <div class="mt-2 flex flex-wrap gap-1.5">
-                                    <template x-for="section in event.sections" :key="section.id">
-                                        <?= component('section_tag', ['alpine' => 'section']) ?>
-                                    </template>
-                                </div>
-                            </div>
-                            <?= component('icon', ['name' => 'chevron-right', 'class' => 'mt-1 h-5 w-5 flex-none text-gray-300 group-hover:text-indigo-600']) ?>
-                        </button>
-                    </li>
+                    <?= $eventRow ?>
                 </template>
             </ol>
 
@@ -200,6 +258,8 @@
             currentYear: new Date().getFullYear(),
             currentMonth: new Date().getMonth(),
             selectedKey: null,
+            // "month" (calendar) or "year" (all the activities of the year, by month): ?vue=annee&annee=2026
+            mode: 'month',
             days: [],
             events: [],
             loading: false,
@@ -208,8 +268,55 @@
             requestId: 0,
 
             init() {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('vue') === 'annee') {
+                    this.mode = 'year';
+                    const year = parseInt(params.get('annee'));
+                    if (year >= 2000 && year <= 2100)
+                        this.currentYear = year;
+                }
                 this.refresh();
                 this.openEventFromUrl();
+            },
+
+            setMode(mode) {
+                if (this.mode === mode)
+                    return;
+                this.mode = mode;
+                this.selectedKey = null;
+                this.refresh();
+            },
+
+            moveYear(value) {
+                this.currentYear += value;
+                this.refresh();
+            },
+
+            // From the year: opens the calendar of a month
+            openMonth(month) {
+                this.mode = 'month';
+                this.goToMonth(this.currentYear, month);
+            },
+
+            // The 12 months of the year with their activities (by month of start) and the colours of their sections
+            get yearMonths() {
+                const today = new Date();
+                return Array.from({ length: 12 }, (_, index) => {
+                    const first = new Date(this.currentYear, index, 1);
+                    const events = this.filteredEvents.filter(event => {
+                        const start = parseEventDate(event.start_at);
+                        // An activity started the year before is shown in January
+                        return (start.getFullYear() < this.currentYear ? 0 : start.getMonth()) === index;
+                    });
+                    return {
+                        index: index,
+                        name: first.toLocaleDateString('fr-BE', { month: 'long' }),
+                        shortName: first.toLocaleDateString('fr-BE', { month: 'short' }),
+                        isCurrent: today.getFullYear() === this.currentYear && today.getMonth() === index,
+                        events: events,
+                        colors: [...new Set(events.flatMap(event => event.sections.map(section => section.color)))],
+                    };
+                });
             },
 
             get currentDateString() {
@@ -276,14 +383,27 @@
 
             refresh() {
                 this.days = createCalendar(this.currentYear, this.currentMonth).flat();
+                this.updateUrl();
                 this.loadEvents();
             },
 
-            // Loads the events of the whole grid (including the days of the previous/next month)
+            // The view is kept in the url (reload, link)
+            updateUrl() {
+                const url = new URL(window.location);
+                url.searchParams.delete('vue');
+                url.searchParams.delete('annee');
+                if (this.mode === 'year') {
+                    url.searchParams.set('vue', 'annee');
+                    url.searchParams.set('annee', this.currentYear);
+                }
+                window.history.replaceState({}, '', url);
+            },
+
+            // Loads the events of the whole grid (including the days of the previous/next month), or of the whole year
             async loadEvents() {
                 const requestId = ++this.requestId;
-                const start = this.days[0].key;
-                const end = this.days[this.days.length - 1].key;
+                const start = this.mode === 'year' ? `${this.currentYear}-01-01` : this.days[0].key;
+                const end = this.mode === 'year' ? `${this.currentYear}-12-31` : this.days[this.days.length - 1].key;
                 this.loading = true;
                 this.loadingError = false;
 
@@ -312,7 +432,14 @@
                 try {
                     const json = await requestJson(`${this.apiUrl}/${id}`);
                     const start = parseEventDate(json.data.start_at);
-                    this.goToMonth(start.getFullYear(), start.getMonth());
+                    if (this.mode === 'year') {
+                        if (start.getFullYear() !== this.currentYear) {
+                            this.currentYear = start.getFullYear();
+                            this.refresh();
+                        }
+                    } else {
+                        this.goToMonth(start.getFullYear(), start.getMonth());
+                    }
                     this.openEvent(withDayKeys(json.data));
                 } catch (error) {
                     // The agenda stays usable without the event
