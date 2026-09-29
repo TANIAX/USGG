@@ -1,7 +1,9 @@
-version: '3.1'
+# Local environment: http://localhost:8080 (site), http://localhost:8025 (e-mails sent by the site)
+# docker compose up --build
+# Example site well filled (albums, leaders, events...): docker compose --profile vitrine up --build
 services:
     web_php:
-      build: 
+      build:
         context: ./
         dockerfile: .docker/nginx/Dockerfile
       container_name: usgg_nginx
@@ -9,17 +11,74 @@ services:
        - "8080:80"
       volumes:
        - ${CODEIGNITER_APP}:/var/www/html/
+      depends_on:
+        php:
+          condition: service_healthy
       networks:
        - code-network
     php:
-      build: 
+      build: &php-build
         context: ./
         dockerfile: .docker/php/Dockerfile
+      image: usgg-php
       container_name: usgg_php
-      volumes:
+      volumes: &php-volumes
        - ${CODEIGNITER_APP}:/var/www/html/
+       - database:/var/lib/usgg
+      # Same names as in app/.env: these values win over a local app/.env
+      environment: &php-environment
+        CI_ENVIRONMENT: development
+        app.baseURL: http://localhost:8080/
+        # SQLite database, kept in the volume "database" (docker compose down -v to start again from zero)
+        database.default.DBDriver: SQLite3
+        database.default.database: /var/lib/usgg/usgg.db
+        # E-mails caught by Mailpit
+        email.protocol: smtp
+        email.SMTPHost: mailpit
+        email.SMTPPort: 1025
+        email.SMTPCrypto: ""
+        email.fromEmail: noreply@gsgosselies.be
+        JWT_SECRET: docker-local-secret-change-me
+        GOOGLE_CLIENT_ID: ""
+        GOOGLE_CLIENT_SECRET: ""
+        GOOGLE_REDIRECT_URL: http://localhost:8080/auth/google
+        # false: no test data (accounts...) in an empty database
+        USGG_SEED: "true"
+      healthcheck:
+        # php-fpm starts after composer install + migrations + seed
+        test: ["CMD-SHELL", "grep -q ^php-fpm /proc/1/comm"]
+        interval: 5s
+        timeout: 3s
+        retries: 60
+        start_period: 10s
       networks:
         - code-network
+    # Profile "vitrine": fills the database with an example site once php is ready, then stops.
+    # Does nothing if the site is already filled (docker compose down -v to start again from zero).
+    vitrine:
+      profiles: ["vitrine"]
+      build: *php-build
+      image: usgg-php
+      container_name: usgg_vitrine
+      entrypoint: ["php", "spark", "db:seed", "VitrineSeeder"]
+      command: []
+      volumes: *php-volumes
+      environment: *php-environment
+      depends_on:
+        php:
+          condition: service_healthy
+      restart: "no"
+      networks:
+        - code-network
+    mailpit:
+      image: axllent/mailpit:latest
+      container_name: usgg_mailpit
+      ports:
+       - "8025:8025"
+      networks:
+        - code-network
+volumes:
+    database:
 networks:
     code-network:
         driver: bridge

@@ -36,11 +36,8 @@ class AddFile extends Migration
                 'null' => false,
                 'default' => 'GUIDE',
             ],
-            'created_at' => [
-                'type' => 'DATETIME',
-                'default' => current_timestamp,
-                'null' => false,
-            ],
+            // (the constant current_timestamp, without quotes, stops PHP 8 on a new database)
+            'created_at datetime not null default current_timestamp',
         ]);
         
         $this->forge->addPrimaryKey('id');

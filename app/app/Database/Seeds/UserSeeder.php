@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
             'firstname' => 'Guillaume',
             'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
             'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
-            'email' => 'scoutAdmin@gmail.com',
+            'email' => 'scout_admin@gmail.com',
             'password' => password_hash('scout_admin@gmail.com', PASSWORD_DEFAULT),
             'user_type_id' => 1,
             'picture' => 'person3.jpg'
@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
             'phone' => "+324". $faker->randomNumber(2,true) . "/" . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true) . "." . $faker->randomNumber(2,true), 
             'birthdate' => $faker->dateTimeThisCentury()->format('Y-m-d H:i:s'), // '1979-06-09 10:30:00
             'email' => 'asbl_admin@gmail.com',
-            'password' => password_hash('asbl_admin@gmail.com,', PASSWORD_DEFAULT),
+            'password' => password_hash('asbl_admin@gmail.com', PASSWORD_DEFAULT),
             'user_type_id' => 2,
             'picture' => 'person4.jpg'
         ];
