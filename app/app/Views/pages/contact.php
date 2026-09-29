@@ -45,7 +45,7 @@
                     <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'email', 'type' => 'email', 'required' => true, 'placeholder' => 'exemple@gmail.com', 'value' => old('email', null, false), 'attrs' => ['autocomplete' => 'email', 'maxlength' => 255]]) ?>
                     <?= component('field', ['label' => 'Téléphone', 'name' => 'phone', 'type' => 'tel', 'placeholder' => '0497/12.34.45', 'value' => old('phone', null, false), 'attrs' => ['autocomplete' => 'tel', 'maxlength' => 30]]) ?>
                     <?= component('field', ['label' => 'Message', 'name' => 'message', 'type' => 'textarea', 'rows' => 5, 'required' => true, 'placeholder' => 'Votre message', 'value' => old('message', null, false), 'attrs' => ['maxlength' => 5000]]) ?>
-                    <p class="text-sm text-gray-500">Vos coordonnées servent uniquement à vous répondre.</p>
+                    <p class="text-sm text-gray-500">Vos coordonnées servent uniquement à vous répondre (<a href="<?= base_url('confidentialite') ?>" class="font-medium text-indigo-600 hover:text-indigo-500">politique de confidentialité</a>).</p>
                     <div>
                         <?= component('button', ['label' => 'Envoyer', 'type' => 'submit', 'size' => 'lg', 'attrs' => [':disabled' => 'sending']]) ?>
                     </div>

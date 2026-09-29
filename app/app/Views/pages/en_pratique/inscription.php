@@ -60,6 +60,7 @@
 
           <?= component('checkbox', ['name' => 'consent', 'checked' => (bool) $old('consent'), 'class' => 'flex items-start',
             'label' => 'J\'accepte que ces informations soient utilisées par l\'unité pour traiter la demande d\'inscription.', 'attrs' => ['required' => true]]) ?>
+          <p class="-mt-4 pl-7 text-sm text-gray-500">Voir notre <a href="<?= base_url('confidentialite') ?>" target="_blank" class="font-medium text-indigo-600 hover:text-indigo-500">politique de confidentialité</a> et la <a href="<?= base_url('charte') ?>" target="_blank" class="font-medium text-indigo-600 hover:text-indigo-500">charte de fonctionnement</a> de l'unité.</p>
 
           <div class="flex items-center justify-end border-t border-gray-900/10 py-4">
             <?= component('button', ['label' => 'Envoyer la demande', 'type' => 'submit', 'size' => 'lg', 'attrs' => [':disabled' => 'sending']]) ?>

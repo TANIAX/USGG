@@ -1019,6 +1019,10 @@ input:where([type='file']):focus {
   margin-top: -0.75rem;
 }
 
+.-mt-4 {
+  margin-top: -1rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -1339,6 +1343,10 @@ input:where([type='file']):focus {
 
 .max-h-\[200px\] {
   max-height: 200px;
+}
+
+.max-h-\[46rem\] {
+  max-height: 46rem;
 }
 
 .max-h-full {
@@ -1690,6 +1698,10 @@ input:where([type='file']):focus {
 
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.grid-cols-\[auto\2c 1fr\] {
+  grid-template-columns: auto 1fr;
 }
 
 .flex-row-reverse {
@@ -2534,6 +2546,10 @@ input:where([type='file']):focus {
   padding-left: 1.25rem;
 }
 
+.pl-7 {
+  padding-left: 1.75rem;
+}
+
 .pl-9 {
   padding-left: 2.25rem;
 }
@@ -3190,6 +3206,76 @@ input:where([type='file']):focus {
   .appear-wait.appear-in {
     animation: none;
   }
+}
+
+/* Text of the pages written in the administration (charter, privacy policy): see App\Libraries\PageText */
+
+.page-text {
+  font-size: 1rem;
+  line-height: 1.75rem;
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+
+.page-text h2 {
+  margin-top: 2.5rem;
+  scroll-margin-top: 2rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
+.page-text h3 {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
+.page-text p {
+  margin-top: 1rem;
+}
+
+.page-text ul {
+  margin-top: 1rem;
+  list-style-type: disc;
+}
+
+.page-text ul > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+.page-text ul {
+  padding-left: 1.5rem;
+}
+
+.page-text a {
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgb(79 70 229 / var(--tw-text-opacity));
+  text-decoration-line: underline;
+}
+
+.page-text a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(99 102 241 / var(--tw-text-opacity));
+}
+
+.page-text strong {
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
+.page-text > :first-child {
+  margin-top: 0px;
 }
 
 .placeholder\:text-gray-400::-moz-placeholder {
@@ -3898,6 +3984,10 @@ input:where([type='file']):focus {
     order: 9999;
   }
 
+  .lg\:col-span-12 {
+    grid-column: span 12 / span 12;
+  }
+
   .lg\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -3912,6 +4002,10 @@ input:where([type='file']):focus {
 
   .lg\:col-span-7 {
     grid-column: span 7 / span 7;
+  }
+
+  .lg\:col-span-9 {
+    grid-column: span 9 / span 9;
   }
 
   .lg\:col-start-8 {
@@ -3942,6 +4036,10 @@ input:where([type='file']):focus {
 
   .lg\:-mr-96 {
     margin-right: -24rem;
+  }
+
+  .lg\:mb-0 {
+    margin-bottom: 0px;
   }
 
   .lg\:ml-32 {
@@ -4058,6 +4156,11 @@ input:where([type='file']):focus {
 
   .lg\:gap-8 {
     gap: 2rem;
+  }
+
+  .lg\:gap-x-12 {
+    -moz-column-gap: 3rem;
+         column-gap: 3rem;
   }
 
   .lg\:gap-x-16 {

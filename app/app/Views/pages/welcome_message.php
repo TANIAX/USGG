@@ -265,7 +265,7 @@
         <?= component('input', ['type' => 'email', 'name' => 'email', 'id' => 'email-address', 'required' => true, 'placeholder' => 'Votre adresse e-mail', 'width' => 'min-w-0 flex-auto', 'attrs' => ['autocomplete' => 'email', 'maxlength' => 255]]) ?>
         <?= component('button', ['label' => 'S\'inscrire', 'type' => 'submit', 'class' => 'flex-none']) ?>
       </div>
-      <p class="mt-4 text-sm leading-6 text-gray-900">Vous recevrez un e-mail pour confirmer l'inscription. Votre adresse sert uniquement à l'envoi des actualités de l'unité ; chaque e-mail contient un lien de désinscription.</p>
+      <p class="mt-4 text-sm leading-6 text-gray-900">Vous recevrez un e-mail pour confirmer l'inscription. Votre adresse sert uniquement à l'envoi des actualités de l'unité ; chaque e-mail contient un lien de désinscription (<a href="<?= base_url('confidentialite') ?>" class="font-semibold underline">politique de confidentialité</a>).</p>
     </form>
   </div>
 </div>

@@ -39,9 +39,15 @@
       </div>
     </div>
     <div class="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24">
-      <p class="text-xs leading-5 text-gray-500">&copy;
-        <?= date("Y"); ?> U.S.G.G. Tous droits réservés.
-      </p>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs leading-5 text-gray-500">&copy;
+          <?= date("Y"); ?> U.S.G.G. Tous droits réservés.
+        </p>
+        <nav class="flex gap-x-6 text-xs leading-5" aria-label="Informations">
+          <a href="<?= base_url('charte') ?>" class="text-gray-500 hover:text-gray-900">Charte de fonctionnement</a>
+          <a href="<?= base_url('confidentialite') ?>" class="text-gray-500 hover:text-gray-900">Politique de confidentialité</a>
+        </nav>
+      </div>
     </div>
   </div>
 </footer>
