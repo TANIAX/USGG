@@ -25,7 +25,7 @@
                         <dt class="sr-only">Email</dt>
                         <dd class="flex">
                             <?= component('icon', ['name' => 'envelope', 'class' => 'h-6 w-6 flex-shrink-0 text-gray-400']) ?>
-                            <span class="ml-3">contact@gsgosselies.be</span>
+                            <a href="mailto:<?= esc($contactEmail, 'attr') ?>" class="ml-3 hover:text-gray-700"><?= esc($contactEmail) ?></a>
                         </dd>
                     </div>
                 </dl>
@@ -38,13 +38,16 @@
         </div>
         <div class="bg-white px-6 py-16 lg:col-span-3 lg:px-8 lg:py-24 xl:pl-12">
             <div class="mx-auto max-w-lg lg:max-w-none">
-                <form action="#" method="POST" class="grid grid-cols-1 gap-y-6">
-                    <?= component('field', ['label' => 'Nom - Prénom', 'name' => 'fullname', 'required' => true, 'placeholder' => 'John Doe', 'attrs' => ['autocomplete' => 'name']]) ?>
-                    <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'email', 'type' => 'email', 'required' => true, 'placeholder' => 'exemple@gmail.com', 'attrs' => ['autocomplete' => 'email']]) ?>
-                    <?= component('field', ['label' => 'Téléphone', 'name' => 'phone', 'type' => 'tel', 'placeholder' => '0497/12.34.45', 'attrs' => ['autocomplete' => 'tel']]) ?>
-                    <?= component('field', ['label' => 'Message', 'name' => 'message', 'type' => 'textarea', 'rows' => 4, 'required' => true, 'placeholder' => 'Votre message']) ?>
+                <div id="formulaire" class="scroll-mt-8"><?= component('flash') ?></div>
+                <form action="<?= base_url('contact') ?>" method="POST" class="grid grid-cols-1 gap-y-6" novalidate x-data="{ sending: false }" @submit="sending = true">
+                    <?= \App\Helpers\FormGuard::field() ?>
+                    <?= component('field', ['label' => 'Nom - Prénom', 'name' => 'fullname', 'required' => true, 'placeholder' => 'John Doe', 'value' => old('fullname', null, false), 'attrs' => ['autocomplete' => 'name', 'maxlength' => 150]]) ?>
+                    <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'email', 'type' => 'email', 'required' => true, 'placeholder' => 'exemple@gmail.com', 'value' => old('email', null, false), 'attrs' => ['autocomplete' => 'email', 'maxlength' => 255]]) ?>
+                    <?= component('field', ['label' => 'Téléphone', 'name' => 'phone', 'type' => 'tel', 'placeholder' => '0497/12.34.45', 'value' => old('phone', null, false), 'attrs' => ['autocomplete' => 'tel', 'maxlength' => 30]]) ?>
+                    <?= component('field', ['label' => 'Message', 'name' => 'message', 'type' => 'textarea', 'rows' => 5, 'required' => true, 'placeholder' => 'Votre message', 'value' => old('message', null, false), 'attrs' => ['maxlength' => 5000]]) ?>
+                    <p class="text-sm text-gray-500">Vos coordonnées servent uniquement à vous répondre.</p>
                     <div>
-                        <?= component('button', ['label' => 'Envoyer', 'type' => 'submit', 'size' => 'lg']) ?>
+                        <?= component('button', ['label' => 'Envoyer', 'type' => 'submit', 'size' => 'lg', 'attrs' => [':disabled' => 'sending']]) ?>
                     </div>
                 </form>
             </div>

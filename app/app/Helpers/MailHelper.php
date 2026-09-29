@@ -15,12 +15,14 @@ class MailHelper
      *
      * @return bool false if the e-mail could not be sent (the error is logged)
      */
-    public static function send(string $to, string $subject, string $view, array $data = [])
+    public static function send(string $to, string $subject, string $view, array $data = [], ?string $replyTo = null)
     {
         $email = service('email');
         $config = config('Email');
         $email->setFrom($config->fromEmail ?: 'noreply@gsgosselies.be', $config->fromName ?: 'Guides et Scouts de Gosselies');
         $email->setTo($to);
+        if ($replyTo)
+            $email->setReplyTo($replyTo);
         $email->setSubject($subject);
 
         $html = view($view, $data + ['subject' => $subject]);

@@ -3,7 +3,7 @@
  * Form control alone (see components/field for the label and the help). Props:
  *  - type: text (default), email, url, tel, password, number, date, time, textarea, select
  *  - name, id (default: the name; false: no id), value (raw value, escaped here), placeholder, required
- *  - options: choices of a select [value => label]; placeholder: first empty choice ("Choisir...")
+ *  - options: choices of a select [value => label], or groups [group label => [value => label]]; placeholder: first empty choice ("Choisir...")
  *  - rows: rows of a textarea
  *  - width: width class (default "w-full")
  *  - attrs: other attributes (x-model, maxlength, autocomplete, :disabled...)
@@ -21,7 +21,15 @@ $common = ['name' => $name, 'id' => $id, 'class' => $base, 'required' => !empty(
 <select<?= attrs($common + $attrs) ?>>
    <?php if (isset($placeholder)): ?><option value=""><?= esc($placeholder) ?></option><?php endif; ?>
    <?php foreach ($options ?? [] as $optionValue => $optionLabel): ?>
-      <option value="<?= esc((string) $optionValue, 'attr') ?>"<?= $value !== null && (string) $value === (string) $optionValue ? ' selected' : '' ?>><?= esc($optionLabel) ?></option>
+      <?php if (is_array($optionLabel)): ?>
+         <optgroup label="<?= esc((string) $optionValue, 'attr') ?>">
+            <?php foreach ($optionLabel as $groupValue => $groupLabel): ?>
+               <option value="<?= esc((string) $groupValue, 'attr') ?>"<?= $value !== null && (string) $value === (string) $groupValue ? ' selected' : '' ?>><?= esc($groupLabel) ?></option>
+            <?php endforeach; ?>
+         </optgroup>
+      <?php else: ?>
+         <option value="<?= esc((string) $optionValue, 'attr') ?>"<?= $value !== null && (string) $value === (string) $optionValue ? ' selected' : '' ?>><?= esc($optionLabel) ?></option>
+      <?php endif; ?>
    <?php endforeach; ?>
 </select>
 <?php else: ?>

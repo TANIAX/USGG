@@ -169,6 +169,28 @@ class UserRepository extends BaseRepository
     /**
      * Number of active accounts having a role, optionally without one account.
      */
+    /**
+     * E-mail addresses of the active accounts having one of the roles.
+     * @param string[] $roleNames
+     * @return string[]
+     */
+    public function emailsWithRoles(array $roleNames)
+    {
+        $rows = $this->db->table('user')
+                    ->distinct()
+                    ->select('user.email')
+                    ->join('user_role', 'user_role.user_id = user.id')
+                    ->join('role', 'role.id = user_role.role_id')
+                    ->whereIn('role.name', $roleNames)
+                    ->where('role.exists', true)
+                    ->where('user_role.exists', true)
+                    ->where('user.exists', true)
+                    ->get()
+                    ->getResultArray();
+
+        return array_values(array_filter(array_column($rows, 'email')));
+    }
+
     public function countActiveWithRole(string $roleName, ?int $exceptUserId = null)
     {
         $builder = $this->db->table('user')
