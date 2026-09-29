@@ -2,125 +2,292 @@
 
 namespace App\Controllers;
 
+use App\Helpers\GalleryHelper;
+use App\Helpers\DocumentHelper;
 use App\Controllers\BaseController;
 use App\Repositories\FileRepository;
-use App\Repositories\BaseRepository;
-use App\Entities\File;
-use App\Helpers\FileHelper;
 
+/**
+ * Administration of the documents (downloads of the guide / scout pages).
+ * Same rights as the gallery: guide admins manage the guide documents, scout admins the scout documents,
+ * the super admin both. An inactive document is hidden from the public.
+ */
 class DocumentController extends BaseController
 {
-
     private FileRepository $fileRepository;
-    
+
     public function __construct()
     {
         $this->fileRepository = new FileRepository();
+        helper('form');
     }
-
 
     public function index()
     {
-        $files = $this->fileRepository->getAll(FileRepository::FILE_TYPE_GUIDE, BaseRepository::RESULT_AS_CUSTOM, File::class) ?? [];
         return view('pages/admin/document/index', [
-            'files' => json_encode($files),
-            'file_types' => json_encode([...FileRepository::FILE_TYPES, 'TOUS'])
+            'files' => $this->toJson($this->fileRepository->getForAdmin($this->manageableTypes())),
+            'types' => $this->typeChoices(),
         ]);
-    }
-
-    /**
-     * Deletes provided document.
-     *
-     * @param mixed $ids The ID(s) of the document(s) to be deleted separated by commas.
-     */
-    public function delete($ids)
-    {
-        $ids = explode(',', $ids);
-
-        //Gets each document by its ID before deleting it because we need to know the path to the file to delete it from the system and then proceed to delete it from the database.
-        foreach ($ids as $id) {
-            $file = $this->fileRepository->getById($id, BaseRepository::RESULT_AS_CUSTOM, File::class);
-            if ($file === null) {
-                continue;
-            }
-
-            $path = ROOTPATH . 'public'. DIRECTORY_SEPARATOR . FileHelper::DOCUMENTS_DIRECTORY . $file->path . DIRECTORY_SEPARATOR . $file->name;
-
-            //Depending on the OS, the path may need to be modified
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                $path = str_replace('/', '\\', $path);
-            }
-
-            if (file_exists($path)) {
-                $deleted = unlink($path);
-            }
-
-            $this->fileRepository->delete($id, true);
-        }
-
-        return redirect()->to(base_url('/admin/document'));
     }
 
     public function create()
     {
-        return view('pages/admin/document/create',
-            ['file_types' => json_encode(FileRepository::FILE_TYPES)]);
+        return $this->form();
     }
 
-    public function upload()
+    public function edit($id)
     {
-        $data = [
-            'name' => $this->request->getPost('name'),
-            'file_type' => $this->request->getPost('file_type'),
-            'file' => $this->request->getFile('file'),
-        ];
+        $document = $this->getManageableDocument((int) $id);
+        if ($document === null)
+            return $this->denied();
+
+        return $this->form($document);
+    }
+
+    public function store()
+    {
+        $data = $this->validateDocument(true);
+        if ($data === null)
+            return redirect()->to(base_url('/admin/document/create'))->withInput();
+
+        $file = $this->request->getFile('file');
+        $extension = strtolower($file->getClientExtension());
+        // Read before moving the file (the temporary file does not exist anymore after)
+        $mimeType = $file->getMimeType();
+        $size = $file->getSize();
+        $storedName = DocumentHelper::newStoredName($extension);
+        if (!$this->storeUploadedFile($file, $storedName))
+            return redirect()->to(base_url('/admin/document/create'))->withInput();
+
+        $this->fileRepository->create([
+            'name' => $data['name'] . '.' . $extension,
+            'path' => strtolower($data['file_type']),
+            'file_type' => $data['file_type'],
+            'is_active' => $data['is_active'],
+            'stored_name' => $storedName,
+            'mime_type' => $mimeType,
+            'size' => $size,
+        ]);
+
+        $this->session->setFlashdata('success', 'Le document « ' . $data['name'] . ' » a été ajouté' . ($data['is_active'] ? '.' : ' (inactif : il n\'est pas visible par le public).'));
+        return redirect()->to(base_url('/admin/document'));
+    }
+
+    public function update($id)
+    {
+        $document = $this->getManageableDocument((int) $id);
+        if ($document === null)
+            return $this->denied();
+
+        $data = $this->validateDocument(false, $document->id);
+        if ($data === null)
+            return redirect()->to(base_url('/admin/document/edit/' . $document->id))->withInput();
+
+        $update = ['file_type' => $data['file_type'], 'is_active' => $data['is_active']];
+        $extension = $document->extension;
+
+        // New file (optional)
+        $file = $this->request->getFile('file');
+        if ($file !== null && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+            $extension = strtolower($file->getClientExtension());
+            $mimeType = $file->getMimeType();
+            $size = $file->getSize();
+            $storedName = DocumentHelper::newStoredName($extension);
+            if (!$this->storeUploadedFile($file, $storedName))
+                return redirect()->to(base_url('/admin/document/edit/' . $document->id))->withInput();
+
+            DocumentHelper::deleteFile($document);
+            $update += ['stored_name' => $storedName, 'mime_type' => $mimeType, 'size' => $size];
+        } else if (!$data['is_active'] && empty($document->stored_name)) {
+            // An old document stored in the public folder leaves it when it is deactivated
+            $update['stored_name'] = $this->moveToPrivate($document);
+            if ($update['stored_name'] === null)
+                return redirect()->to(base_url('/admin/document/edit/' . $document->id))->withInput();
+        }
+
+        $update['name'] = $data['name'] . ($extension ? '.' . $extension : '');
+        $this->fileRepository->updateDocument($document->id, $update);
+
+        $this->session->setFlashdata('success', 'Le document « ' . $data['name'] . ' » a été modifié.');
+        return redirect()->to(base_url('/admin/document'));
+    }
+
+    /**
+     * Downloads a document, active or not (to check it from the administration).
+     */
+    public function download($id)
+    {
+        $document = $this->getManageableDocument((int) $id);
+        if ($document === null || !is_file(DocumentHelper::getPath($document)))
+            return $this->denied('Le fichier de ce document est introuvable.');
+
+        return $this->response->download(DocumentHelper::getPath($document), null)->setFileName($document->name);
+    }
+
+    /**
+     * Action on one or several documents (called in javascript): "activate", "deactivate" or "delete".
+     */
+    public function bulk()
+    {
+        $action = $this->request->getPost('action');
+        if (!in_array($action, ['activate', 'deactivate', 'delete'], true))
+            return $this->jsonError(400, 'Action inconnue.');
+
+        // Only the documents the user can manage are taken into account, whatever ids are sent
+        $ids = array_map('intval', (array) $this->request->getPost('ids'));
+        $documents = array_filter($this->fileRepository->getDocuments($ids), fn($document) => in_array($document->file_type, $this->manageableTypes(), true));
+
+        $done = [];
+        $errors = [];
+        foreach ($documents as $document) {
+            if ($action === 'delete') {
+                DocumentHelper::deleteFile($document);
+                $this->fileRepository->deleteDocument($document->id);
+            } else if ($action === 'activate') {
+                $this->fileRepository->updateDocument($document->id, ['is_active' => true]);
+            } else {
+                $update = ['is_active' => false];
+                if (empty($document->stored_name)) {
+                    $update['stored_name'] = DocumentHelper::moveToPrivateStorage($document);
+                    if ($update['stored_name'] === null) {
+                        $errors[] = 'Le fichier de « ' . $document->name . ' » est introuvable : le document n\'a pas été désactivé.';
+                        continue;
+                    }
+                }
+                $this->fileRepository->updateDocument($document->id, $update);
+            }
+            $done[] = $document->id;
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'ids' => $done,
+            'errors' => $errors,
+            'files' => $this->fileRepository->getForAdmin($this->manageableTypes()),
+        ]);
+    }
+
+    private function form($document = null)
+    {
+        return view('pages/admin/document/form', [
+            'document' => $document,
+            'types' => $this->typeChoices(),
+            'extensions' => DocumentHelper::EXTENSIONS,
+            'maxSizeMb' => DocumentHelper::MAX_SIZE_KB / 1024,
+        ]);
+    }
+
+    /**
+     * @param int $currentId Document being edited (excluded from the check of unique names)
+     * @return array|null ['name' => string (without extension), 'file_type' => string, 'is_active' => bool], null if invalid
+     */
+    private function validateDocument(bool $fileRequired, int $currentId = 0)
+    {
+        $types = $this->manageableTypes();
+        $post = $this->request->getPost();
+        // Only the super admin chooses the unit
+        if (count($types) === 1)
+            $post['file_type'] = $types[0];
+        $post['name'] = DocumentHelper::cleanName((string) ($post['name'] ?? ''));
 
         $rules = [
-            'name' => 'required|min_length[3]|max_length[255]',
-            'file_type' => 'required|in_list[' . implode(',', FileRepository::FILE_TYPES) . ']',
-            'file' => [
-                'uploaded[file]',
-                'max_size[file,10240]',
-                'mime_in[file,application/pdf,text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document]',
-                'ext_in[file,doc,docx,txt,pdf]',
-            ],
+            'name' => ['rules' => 'required|min_length[2]|max_length[200]'],
+            'file_type' => ['rules' => 'required|in_list[' . implode(',', $types) . ']'],
+        ];
+        $messages = [
+            'name' => ['required' => 'Le nom du document est obligatoire.', 'min_length' => 'Le nom du document est trop court.', 'max_length' => 'Le nom du document est trop long.'],
+            'file_type' => ['required' => 'Choisissez l\'unité du document.', 'in_list' => 'Vous ne pouvez pas publier de document pour cette unité.'],
         ];
 
-        
-        if (!$this->validateData($data, $rules)) {
-            $errors = $this->validator->getErrors();
-            $this->session->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('/admin/document/create'));
+        $file = $this->request->getFile('file');
+        $hasFile = $file !== null && $file->getError() !== UPLOAD_ERR_NO_FILE;
+        $errors = [];
+        if (!$this->validateData($post, $rules, $messages))
+            $errors = array_values($this->validator->getErrors());
+
+        if ($fileRequired && !$hasFile) {
+            $errors[] = 'Choisissez le fichier à publier.';
+        } else if ($hasFile) {
+            if (!$file->isValid())
+                $errors[] = $file->getError() === UPLOAD_ERR_INI_SIZE ? 'Le fichier est trop lourd pour le serveur.' : 'Le fichier n\'a pas pu être envoyé.';
+            else if (!in_array(strtolower($file->getClientExtension()), DocumentHelper::EXTENSIONS, true))
+                $errors[] = 'Format non accepté (' . implode(', ', DocumentHelper::EXTENSIONS) . ').';
+            else if ($file->getSize() > DocumentHelper::MAX_SIZE_KB * 1024)
+                $errors[] = 'Le fichier dépasse ' . (DocumentHelper::MAX_SIZE_KB / 1024) . ' Mo.';
         }
 
-        //Set the path where the file will be stored
-        $path = ROOTPATH . 'public'. DIRECTORY_SEPARATOR . FileHelper::DOCUMENTS_DIRECTORY . strtolower($data['file_type']) . DIRECTORY_SEPARATOR;
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
-            $path = str_replace('/', '\\', $path);
-
-        //Set the file name
-        $fullPath = $path . $data['name'] . '.' . $data['file']->getExtension();
-
-        //Check if the directory exists, if not, create it
-        if (!file_exists($path))
-            mkdir($path, 0777, true);
-
-        if(file_exists($fullPath)) {
-            $data['name'] = $data['name'] . '_' . time();
-            $fullPath = $path . $data['name'] . '.' . $data['file']->getExtension();
+        // The name must be unique for the unit (it is the name of the downloaded file)
+        if (!$errors) {
+            foreach ($this->fileRepository->getForAdmin([$post['file_type']]) as $other) {
+                if (strcasecmp(pathinfo($other->name, PATHINFO_FILENAME), $post['name']) === 0 && $other->id !== $currentId)
+                    $errors[] = 'Un document porte déjà ce nom pour cette unité.';
+            }
         }
 
-        //Move the file to the folder
-        if($data['file']->move($path, $data['name'] . '.' . $data['file']->getExtension())) {
-            $this->fileRepository->insert([
-                'name' => $data['name'] . '.' . $data['file']->getExtension(),
-                'path' => strtolower($data['file_type']),
-                'file_type' => $data['file_type'],
-            ]);
-        }else{
-            die('Error while uploading the file');
+        if ($errors) {
+            $this->session->setFlashdata('errors', array_unique($errors));
+            return null;
         }
 
+        return [
+            'name' => $post['name'],
+            'file_type' => $post['file_type'],
+            'is_active' => ($post['is_active'] ?? '') === '1',
+        ];
+    }
+
+    private function storeUploadedFile($file, string $storedName)
+    {
+        if (!is_dir(DocumentHelper::privateDirectory()))
+            mkdir(DocumentHelper::privateDirectory(), 0775, true);
+
+        if ($file->move(DocumentHelper::privateDirectory(), $storedName))
+            return true;
+
+        $this->session->setFlashdata('errors', ['Le fichier n\'a pas pu être enregistré sur le serveur.']);
+        return false;
+    }
+
+    private function moveToPrivate($document)
+    {
+        $storedName = DocumentHelper::moveToPrivateStorage($document);
+        if ($storedName === null)
+            $this->session->setFlashdata('errors', ['Le fichier de ce document est introuvable : il n\'a pas pu être désactivé.']);
+        return $storedName;
+    }
+
+    private function getManageableDocument(int $id)
+    {
+        $document = $this->fileRepository->getDocument($id);
+        return $document && in_array($document->file_type, $this->manageableTypes(), true) ? $document : null;
+    }
+
+    /**
+     * Document types the user can manage (same values as the gallery branches: GUIDE / SCOUTE).
+     */
+    private function manageableTypes()
+    {
+        return GalleryHelper::getManageableBranches();
+    }
+
+    private function typeChoices()
+    {
+        return array_intersect_key(GalleryHelper::BRANCHES, array_flip($this->manageableTypes()));
+    }
+
+    private function denied(string $message = 'Ce document n\'existe pas ou vous n\'avez pas le droit de le gérer.')
+    {
+        $this->session->setFlashdata('errors', [$message]);
         return redirect()->to(base_url('/admin/document'));
+    }
+
+    private function jsonError(int $status, string $message)
+    {
+        return $this->response->setStatusCode($status)->setJSON(['success' => false, 'message' => $message]);
+    }
+
+    private function toJson($data)
+    {
+        return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     }
 }

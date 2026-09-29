@@ -2,17 +2,22 @@
 
 namespace App\Repositories;
 
+use App\Helpers\FileHelper;
 use App\Repositories\BaseRepository;
 
 /**
  * EventRepository class represents a repository for the event model (agenda).
  * An event is linked to one or several sections through the event_section table.
+ * The upcoming events are also the news of the home page.
  *
  * @author Guillaume Cornez
  */
 class EventRepository extends BaseRepository
 {
-    private const EVENT_FIELDS = 'id, title, description, location, start_at, end_at, all_day, registration_url';
+    /**
+     * Directory (in public/) of the images of the events.
+     */
+    public const IMAGE_DIRECTORY = 'uploads/events/';
 
     public function __construct()
     {
@@ -29,12 +34,10 @@ class EventRepository extends BaseRepository
      */
     public function getBetween(string $start, string $end)
     {
-        $events = $this->builder
-                    ->select(self::EVENT_FIELDS)
-                    ->where('exists', true)
-                    ->where('start_at <=', $end . ' 23:59:59')
-                    ->where('end_at >=', $start . ' 00:00:00')
-                    ->orderBy('start_at', 'ASC')
+        $events = $this->eventQuery()
+                    ->where('event.start_at <=', $end . ' 23:59:59')
+                    ->where('event.end_at >=', $start . ' 00:00:00')
+                    ->orderBy('event.start_at', 'ASC')
                     ->get()
                     ->getResultObject();
 
@@ -49,15 +52,37 @@ class EventRepository extends BaseRepository
      */
     public function getByPeriod(bool $upcoming = true)
     {
-        $events = $this->builder
-                    ->select(self::EVENT_FIELDS)
-                    ->where('exists', true)
-                    ->where($upcoming ? 'end_at >=' : 'end_at <', date('Y-m-d H:i:s'))
-                    ->orderBy('start_at', $upcoming ? 'ASC' : 'DESC')
+        $events = $this->eventQuery()
+                    ->where($upcoming ? 'event.end_at >=' : 'event.end_at <', date('Y-m-d H:i:s'))
+                    ->orderBy('event.start_at', $upcoming ? 'ASC' : 'DESC')
                     ->get()
                     ->getResultObject();
 
         return $this->attachSections($events);
+    }
+
+    /**
+     * Gets a page of the upcoming events (news of the home page), the soonest first.
+     *
+     * @param  int $offset
+     * @param  int $limit
+     * @return array ['events' => array of objects, 'has_more' => bool]
+     */
+    public function getUpcoming(int $offset, int $limit)
+    {
+        // One more event is read to know if there is a next page
+        $events = $this->eventQuery()
+                    ->where('event.end_at >=', date('Y-m-d H:i:s'))
+                    ->orderBy('event.start_at', 'ASC')
+                    ->orderBy('event.id', 'ASC')
+                    ->limit($limit + 1, $offset)
+                    ->get()
+                    ->getResultObject();
+
+        return [
+            'events' => $this->attachSections(array_slice($events, 0, $limit)),
+            'has_more' => count($events) > $limit,
+        ];
     }
 
     /**
@@ -68,10 +93,8 @@ class EventRepository extends BaseRepository
      */
     public function getWithSections(int $id)
     {
-        $events = $this->builder
-                    ->select(self::EVENT_FIELDS)
-                    ->where('id', $id)
-                    ->where('exists', true)
+        $events = $this->eventQuery()
+                    ->where('event.id', $id)
                     ->get()
                     ->getResultObject();
 
@@ -115,6 +138,37 @@ class EventRepository extends BaseRepository
     }
 
     /**
+     * Path of the image of an event (full size or card size).
+     */
+    public static function getImagePath(string $image, bool $small = false)
+    {
+        return ROOTPATH . 'public' . DIRECTORY_SEPARATOR . self::IMAGE_DIRECTORY . $image . ($small ? '-small' : '') . '.jpg';
+    }
+
+    public static function deleteImageFiles(?string $image)
+    {
+        if (!$image)
+            return;
+
+        foreach ([false, true] as $small) {
+            if (is_file(self::getImagePath($image, $small)))
+                unlink(self::getImagePath($image, $small));
+        }
+    }
+
+    /**
+     * Base query: the events that exist, with their author.
+     */
+    private function eventQuery()
+    {
+        return $this->builder
+                    ->select('event.id, event.title, event.description, event.location, event.start_at, event.end_at, event.all_day, event.registration_url, event.image')
+                    ->select('user.totem AS author_totem, user.firstname AS author_firstname, user.picture AS author_picture')
+                    ->join('user', 'user.id = event.user_id', 'left')
+                    ->where('event.exists', true);
+    }
+
+    /**
      * Replaces the sections linked to an event.
      *
      * @param  int $eventId
@@ -131,7 +185,7 @@ class EventRepository extends BaseRepository
     }
 
     /**
-     * Adds a "sections" property to each event (one query for all the events).
+     * Adds the sections (one query for all the events), the urls of the image and the author to each event.
      *
      * @param  array $events
      * @return array of objects
@@ -162,6 +216,18 @@ class EventRepository extends BaseRepository
             $event->sections = $sectionsByEvent[$event->id] ?? [];
             $event->id = (int) $event->id;
             $event->all_day = (bool) $event->all_day;
+
+            $hasImage = $event->image && is_file(self::getImagePath($event->image));
+            $event->image_url = $hasImage ? base_url(self::IMAGE_DIRECTORY . $event->image . '.jpg') : null;
+            $event->image_small_url = $hasImage ? base_url(self::IMAGE_DIRECTORY . $event->image . '-small.jpg') : null;
+
+            // The events created before the author was recorded are signed by the unit
+            $hasPicture = $event->author_picture && is_file(ROOTPATH . 'public' . DIRECTORY_SEPARATOR . FileHelper::PROFIL_PICTURE_DIRECTORY . $event->author_picture);
+            $event->author = [
+                'name' => $event->author_totem ?: ($event->author_firstname ?: 'L\'équipe d\'unité'),
+                'picture_url' => $hasPicture ? base_url(FileHelper::PROFIL_PICTURE_DIRECTORY . $event->author_picture) : null,
+            ];
+            unset($event->author_totem, $event->author_firstname, $event->author_picture);
         }
 
         return $events;

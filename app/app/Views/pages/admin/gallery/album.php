@@ -181,8 +181,7 @@ Guides et scoutes de Gosselies - Album <?= esc($album->title) ?>
 </div>
 
 <script>
-   // Photos are reduced in the browser before being sent: faster on mobile and below the upload limit of the server
-   const MAX_PHOTO_SIZE = 2000;
+   // Photos are reduced in the browser before being sent (reducePhoto() in script.js): faster on mobile and below the upload limit of the server
    const PARALLEL_UPLOADS = 3;
 
    function app() {
@@ -378,27 +377,6 @@ Guides et scoutes de Gosselies - Album <?= esc($album->title) ?>
                photo.busy = false;
             }
          },
-      }
-   }
-
-   // Returns a JPEG version of the photo, turned upright and reduced to MAX_PHOTO_SIZE px.
-   // If the browser can not read the image (e.g. some HEIC files), the original file is sent and processed by the server.
-   async function reducePhoto(file) {
-      try {
-         const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-         const ratio = Math.min(1, MAX_PHOTO_SIZE / Math.max(bitmap.width, bitmap.height));
-         const canvas = document.createElement('canvas');
-         canvas.width = Math.round(bitmap.width * ratio);
-         canvas.height = Math.round(bitmap.height * ratio);
-         const context = canvas.getContext('2d');
-         context.fillStyle = '#fff';
-         context.fillRect(0, 0, canvas.width, canvas.height);
-         context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-         bitmap.close();
-         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
-         return blob || file;
-      } catch (error) {
-         return file;
       }
    }
 

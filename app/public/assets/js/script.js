@@ -238,3 +238,50 @@ function coverCarousel(ids, delay = 4000) {
     },
   };
 }
+
+/**
+ * Returns a JPEG version of a photo, turned upright and reduced to maxSize px, to be sent to the server
+ * (faster on mobile and below the upload limit of the server).
+ * If the browser can not read the image (e.g. some HEIC files), the original file is returned and processed by the server.
+ * @param {File} file - The photo chosen by the user.
+ * @param {number} maxSize - The maximum width / height.
+ * @returns {Promise<Blob|File>} - The reduced photo.
+ */
+async function reducePhoto(file, maxSize = 2000) {
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const ratio = Math.min(1, maxSize / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * ratio);
+    canvas.height = Math.round(bitmap.height * ratio);
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
+    return blob || file;
+  } catch (error) {
+    return file;
+  }
+}
+
+/**
+ * Replaces the file chosen in an <input type="file"> by its reduced version (see reducePhoto()).
+ * @param {HTMLInputElement} input - The file input.
+ * @param {number} maxSize - The maximum width / height.
+ * @returns {Promise<File|null>} - The file now in the input.
+ */
+async function reduceInputPhoto(input, maxSize = 2000) {
+  const file = input.files[0];
+  if (!file) return null;
+
+  const reduced = await reducePhoto(file, maxSize);
+  if (reduced === file || typeof DataTransfer === "undefined") return file;
+
+  const reducedFile = new File([reduced], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  const transfer = new DataTransfer();
+  transfer.items.add(reducedFile);
+  input.files = transfer.files;
+  return reducedFile;
+}

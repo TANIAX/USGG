@@ -63,6 +63,8 @@ $routes->group('auth', static function ($routes) {
     $routes->post('reinitialiser/(:segment)', 'PasswordResetController::update/$1');
 });
 
+$routes->get('actualites/(:num)', 'NewsController::show/$1');
+
 $routes->group('en-pratique', static function ($routes) {
     $routes->get('inscription', 'EnPratiqueController::inscription');
     $routes->get('cotisation', 'EnPratiqueController::cotisation');
@@ -70,21 +72,15 @@ $routes->group('en-pratique', static function ($routes) {
 });
 
 
-$routes->group('admin',['filter' => 'auth:admin,super_admin'], static function ($routes) {
-    $routes->group('article',  static function ($routes) {
-        $routes->get('', 'ArticleController::index');
-        //Route that mach with 4 digits 
-        $routes->get('([0-9]{4})', 'ArticleController::index/$1');
-        $routes->get('create', 'ArticleController::create');
-        $routes->post('upload','ArticleController::upload');
-    });
-
-    $routes->group('document',  static function ($routes) {
-        $routes->get('', 'DocumentController::index');
-        $routes->get('create', 'DocumentController::create');
-        $routes->post('upload','DocumentController::upload');
-        $routes->get('delete/(:any)','DocumentController::delete/$1');
-    });
+//Documents: guide admins manage the guide documents, scout admins the scout documents, the super admin both
+$routes->group('admin/document', ['filter' => 'auth:super_admin,guide_admin,scout_admin'], static function ($routes) {
+    $routes->get('', 'DocumentController::index');
+    $routes->get('create', 'DocumentController::create');
+    $routes->post('store', 'DocumentController::store');
+    $routes->get('edit/(:num)', 'DocumentController::edit/$1');
+    $routes->post('update/(:num)', 'DocumentController::update/$1');
+    $routes->get('download/(:num)', 'DocumentController::download/$1');
+    $routes->post('bulk', 'DocumentController::bulk');
 });
 
 //Agenda management is open to every administrator role (guide, scout, asbl and super admin)
@@ -109,6 +105,18 @@ $routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout
     $routes->post('album/(:num)/upload', 'AlbumController::upload/$1');
     $routes->post('photo/(:num)/visibility', 'AlbumController::photoVisibility/$1');
     $routes->post('photo/(:num)/delete', 'AlbumController::deletePhoto/$1');
+});
+
+//Section leaders (portraits of the home page): super admin only
+$routes->group('admin/responsables', ['filter' => 'auth:super_admin'], static function ($routes) {
+    $routes->get('', 'LeaderController::index');
+    $routes->get('create', 'LeaderController::create');
+    $routes->get('compte', 'LeaderController::account');
+    $routes->post('store', 'LeaderController::store');
+    $routes->get('edit/(:num)', 'LeaderController::edit/$1');
+    $routes->post('update/(:num)', 'LeaderController::update/$1');
+    $routes->post('delete/(:num)', 'LeaderController::delete/$1');
+    $routes->post('move/(:num)', 'LeaderController::move/$1');
 });
 
 $routes->group('galerie', static function ($routes) {
@@ -149,6 +157,9 @@ $routes->group('api/v1', static function ($routes) {
     $routes->group('auth', static function ($routes) {
         $routes->post('login', 'AuthController::Login');
     });
+
+    //? News (upcoming events of the agenda)
+    $routes->get('actualites', 'NewsController::index');
 
     //? Agenda
     $routes->group('agenda', static function ($routes) {

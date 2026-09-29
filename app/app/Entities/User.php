@@ -21,7 +21,7 @@ class User extends Entity
     /**
     * @var string The totem of the user.
     */
-    private string $totem;
+    private ?string $totem = null;
 
     /**
      * @var string The email of the user.
@@ -56,7 +56,7 @@ class User extends Entity
     /**
      * @var string The picture URL of the user.
      */
-    private string $picture;
+    private ?string $picture = null;
 
     /**
      * @var bool Indicates if the user exists.

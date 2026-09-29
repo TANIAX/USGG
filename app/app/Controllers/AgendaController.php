@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use DateTime;
+use Exception;
+use App\Helpers\ImageHelper;
 use App\Helpers\SessionHelper;
 use App\Controllers\BaseController;
 use App\Repositories\EventRepository;
@@ -52,6 +54,15 @@ class AgendaController extends BaseController
             return redirect()->to(base_url('/admin/agenda/create'))->withInput();
 
         [$data, $sectionIds] = $event;
+
+        $image = $this->processImage();
+        if (isset($image['error'])) {
+            $this->session->setFlashdata('errors', [$image['error']]);
+            return redirect()->to(base_url('/admin/agenda/create'))->withInput();
+        }
+        if ($image['replace'])
+            $data['image'] = $image['image'];
+
         $data['user_id'] = SessionHelper::getUserConnected()->getId();
         $this->eventRepository->create($data, $sectionIds);
 
@@ -79,7 +90,20 @@ class AgendaController extends BaseController
             return redirect()->to(base_url('/admin/agenda/edit/' . $event->id))->withInput();
 
         [$data, $sectionIds] = $validated;
+
+        $image = $this->processImage();
+        if (isset($image['error'])) {
+            $this->session->setFlashdata('errors', [$image['error']]);
+            return redirect()->to(base_url('/admin/agenda/edit/' . $event->id))->withInput();
+        }
+        if ($image['replace'])
+            $data['image'] = $image['image'];
+
+        // The author of the event stays the person who created it
         $this->eventRepository->updateWithSections($event->id, $data, $sectionIds);
+
+        if ($image['replace'])
+            EventRepository::deleteImageFiles($event->image);
 
         $this->session->setFlashdata('success', 'L\'événement « ' . $data['title'] . ' » a été modifié.');
         return redirect()->to(base_url('/admin/agenda'));
@@ -131,6 +155,7 @@ class AgendaController extends BaseController
 
         return view('pages/admin/agenda/form', [
             'event' => $event,
+            'imageUrl' => $event->image_url ?? null,
             'values' => $this->toJson($values),
             'sections' => $this->toJson($this->sectionRepository->getAllOrdered()),
         ]);
@@ -238,6 +263,44 @@ class AgendaController extends BaseController
         ];
 
         return [$data, array_map('intval', $post['sections'])];
+    }
+
+    /**
+     * Stores the image sent with the form, or removes the current one ("remove_image").
+     * The image is re-encoded (EXIF / GPS data removed) in two sizes: full (1600px) and card (800px).
+     *
+     * @return array ['replace' => false] if the image does not change, ['replace' => true, 'image' => ?string] otherwise,
+     *               ['error' => string] if the file can not be used
+     */
+    private function processImage()
+    {
+        $file = $this->request->getFile('image');
+
+        if ($file !== null && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+            if (!$file->isValid())
+                return ['error' => $file->getError() === UPLOAD_ERR_INI_SIZE ? 'L\'image est trop lourde pour le serveur.' : 'L\'image n\'a pas pu être envoyée.'];
+
+            if (!in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true))
+                return ['error' => 'Format d\'image non accepté (JPEG, PNG, WebP ou GIF).'];
+
+            try {
+                $source = ImageHelper::open($file->getTempName());
+                $name = ImageHelper::randomName();
+                ImageHelper::saveJpeg(ImageHelper::fit($source, 1600), EventRepository::getImagePath($name));
+                ImageHelper::saveJpeg(ImageHelper::fit($source, 800), EventRepository::getImagePath($name, true));
+            } catch (Exception $exception) {
+                if (isset($name))
+                    EventRepository::deleteImageFiles($name);
+                return ['error' => $exception->getMessage()];
+            }
+
+            return ['replace' => true, 'image' => $name];
+        }
+
+        if ($this->request->getPost('remove_image') === '1')
+            return ['replace' => true, 'image' => null];
+
+        return ['replace' => false];
     }
 
     /**

@@ -6,13 +6,16 @@ use App\Repositories\BaseRepository;
 
 /**
  * Tokens of the "forgotten password" feature.
- * Only the SHA-256 of a token is stored, a token can be used once and expires after PasswordResetRepository::LIFETIME seconds.
+ * Only the SHA-256 of a token is stored, a token can be used once and expires after LIFETIME seconds
+ * (INVITATION_LIFETIME for the link sent to a new account).
  *
  * @author Guillaume Cornez
  */
 class PasswordResetRepository extends BaseRepository
 {
     public const LIFETIME = 3600;
+    // Link sent to a new account to choose its password
+    public const INVITATION_LIFETIME = 7 * 24 * 3600;
 
     public function __construct()
     {
@@ -23,9 +26,10 @@ class PasswordResetRepository extends BaseRepository
     /**
      * Creates a token for a user (the previous unused tokens of the user are cancelled).
      *
+     * @param int $lifetime Validity of the link, in seconds
      * @return string The token to send by e-mail
      */
-    public function createToken(int $userId, ?string $ipAddress)
+    public function createToken(int $userId, ?string $ipAddress, int $lifetime = self::LIFETIME)
     {
         $this->invalidateForUser($userId);
 
@@ -33,7 +37,7 @@ class PasswordResetRepository extends BaseRepository
         $this->builder->insert([
             'user_id' => $userId,
             'token_hash' => hash('sha256', $token),
-            'expires_at' => date('Y-m-d H:i:s', time() + self::LIFETIME),
+            'expires_at' => date('Y-m-d H:i:s', time() + $lifetime),
             'ip_address' => $ipAddress,
             'created_at' => date('Y-m-d H:i:s'),
         ]);

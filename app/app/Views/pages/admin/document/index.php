@@ -7,215 +7,190 @@ Guides et scoutes de Gosselies - Documents
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" x-data="app()" x-cloak>
    <div class="px-4 sm:px-6 lg:px-8">
       <!-- Title -->
-      <div class="sm:flex justify-start sm:items-center mt-12 mb-12 border-b py-4">
+      <div class="sm:flex justify-start sm:items-center mt-12 mb-8 border-b py-4">
          <div class="sm:flex-auto">
-            <h1 class="font-semibold text-4xl leading-6 text-gray-900">Documents</h1>
+            <h1 class="font-semibold text-4xl leading-tight text-gray-900">Documents</h1>
+            <p class="mt-1 text-sm text-gray-500">Un document inactif n'est pas visible par le public : il reste disponible ici.</p>
+         </div>
+         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <a href="/admin/document/create" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+               Ajouter un document
+            </a>
          </div>
       </div>
 
-      <!-- Search bar & file type selection -->
-      <div class="mb-8 grid grid-cols-4 gap-4">
-         <!-- search -->
-         <div class="col-span-2 md:col-span-3">
-            <label for="search" class="block text-sm font-medium leading-6 text-gray-900">Recherche rapide</label>
-            <div class="relative mt-2 flex items-center">
-               <input type="text" name="search" accesskey="K" x-model="search" x-on:keyup="searchFiles()"
-                  id="search"
-                  class="block w-full rounded-md border-0 pl-4 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-               <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                  <kbd class="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400"
-                     x-text="shortcut"></kbd>
+      <?= $this->include('pages/admin/messages') ?>
+      <div x-show="actionErrors.length" class="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+         <template x-for="error in actionErrors"><p x-text="error"></p></template>
+      </div>
+
+      <!-- Filters -->
+      <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+         <div class="flex flex-wrap gap-2 text-sm">
+            <template x-if="Object.keys(types).length > 1">
+               <div class="flex flex-wrap gap-2">
+                  <button type="button" @click="type = ''" class="rounded-full px-3 py-1 font-medium ring-1 ring-inset" :class="type === '' ? 'bg-indigo-600 text-white ring-indigo-600' : 'bg-white text-gray-700 ring-gray-300'">Toutes les unités</button>
+                  <template x-for="(label, code) in types" :key="code">
+                     <button type="button" @click="type = code" class="rounded-full px-3 py-1 font-medium ring-1 ring-inset" :class="type === code ? 'bg-indigo-600 text-white ring-indigo-600' : 'bg-white text-gray-700 ring-gray-300'" x-text="label"></button>
+                  </template>
+                  <span class="mx-1 border-l border-gray-300"></span>
                </div>
-            </div>
+            </template>
+            <template x-for="option in [['', 'Tous'], ['active', 'Actifs'], ['inactive', 'Inactifs']]" :key="option[0]">
+               <button type="button" @click="status = option[0]" class="rounded-full px-3 py-1 font-medium ring-1 ring-inset"
+                  :class="status === option[0] ? 'bg-gray-900 text-white ring-gray-900' : 'bg-white text-gray-700 ring-gray-300'"
+                  x-text="option[1] + (option[0] ? ` (${files.filter(f => f.is_active === (option[0] === 'active')).length})` : '')"></button>
+            </template>
          </div>
-         <!-- file type -->
-         <div x-data="{isOpen:false}" class="col-span-2 md:col-span-1">
-            <label for="combobox" class="block text-sm font-medium leading-6 text-gray-900">Document pour : </label>
-            <div class="relative mt-2">
-               <input @click="isOpen = !isOpen" x-model="currentFileType" id="combobox" type="text"
-                  class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  role="combobox" aria-controls="options" aria-expanded="false">
-               <button type="button" @click="isOpen = !isOpen"
-                  class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-                  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                     <path fill-rule="evenodd"
-                        d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                        clip-rule="evenodd" />
-                  </svg>
-               </button>
-               <ul x-show="isOpen"
-                  class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                  id="options" role="listbox">
-                  <template x-for="type in file_type">
-                     <li @click="selectFileType(type); isOpen = false"
-                        class="relative cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white"
-                        :class="type.selected ? 'bg-indigo-600 text-white' : ''" id="option-0" role="option"
-                        tabindex="-1">
-                        <span class="block truncate" x-text="type"></span>
-                     </li>
-                  </template>
-               </ul>
-            </div>
+         <div class="lg:w-80">
+            <label for="search" class="sr-only">Recherche</label>
+            <input type="text" id="search" x-model="search" placeholder="Rechercher un document"
+               class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
          </div>
       </div>
 
-      <!-- Responsive Table -->
-      <div x-show="filteredData.length > 0" class="-mx-4 mt-8 sm:-mx-0">
-         <div class="relative">
-            <!-- delete all button - only appears if one is selected  -->
-            <div x-show="rowSelected()"
-               class="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
-               <button type="button"
-                  @click="deleteSelected(filteredData.filter((file) => file.selected))"
-                  class="inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">
-                  Supprimer tout
-               </button>
-            </div>
-
-            <table class="min-w-full divide-y divide-gray-300">
-               <thead>
-                  <tr>
-                     <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
-                        <input type="checkbox" @click="masterCheckbox()"
-                           class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                     </th>
-                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Nom</th>
-                     <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
-                        Date de création
-                     </th>
-                     <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                        Type de document
-                     </th>
-                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                        <span class="sr-only">Supprimer</span>
-                     </th>
+      <!-- Table -->
+      <div x-show="filteredFiles.length > 0" class="-mx-4 sm:-mx-0">
+         <table class="min-w-full divide-y divide-gray-300">
+            <thead>
+               <tr>
+                  <th scope="col" class="w-10 px-2">
+                     <input type="checkbox" :checked="allSelected" @click="toggleAll()" aria-label="Tout sélectionner"
+                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                  </th>
+                  <th scope="col" class="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">Document</th>
+                  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell">Unité</th>
+                  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">Ajouté le</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Visibilité</th>
+                  <th scope="col" class="py-3.5 pl-3"><span class="sr-only">Actions</span></th>
+               </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+               <template x-for="file in filteredFiles" :key="file.id">
+                  <tr :class="selected.includes(file.id) ? 'bg-indigo-50/50' : ''">
+                     <td class="px-2">
+                        <input type="checkbox" :checked="selected.includes(file.id)" @click="toggle(file)" :aria-label="`Sélectionner ${file.name}`"
+                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                     </td>
+                     <td class="max-w-0 py-4 pr-3 text-sm sm:max-w-none">
+                        <p class="break-words font-medium text-gray-900" :class="file.is_active ? '' : 'text-gray-500'" x-text="file.name"></p>
+                        <p class="mt-1 text-xs text-gray-500">
+                           <span class="rounded bg-gray-100 px-1.5 py-0.5 font-medium uppercase" x-text="file.extension || '?'"></span>
+                           <span x-show="file.size" x-text="formatSize(file.size)"></span>
+                           <span class="md:hidden" x-text="'· ' + (types[file.file_type] || file.file_type)"></span>
+                        </p>
+                     </td>
+                     <td class="hidden px-3 py-4 text-sm text-gray-500 md:table-cell" x-text="types[file.file_type] || file.file_type"></td>
+                     <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell" x-text="formatDate(file.created_at)"></td>
+                     <td class="px-3 py-4 text-sm">
+                        <button type="button" @click="run(file.is_active ? 'deactivate' : 'activate', [file.id])" :disabled="busy"
+                           class="inline-flex items-center gap-x-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset"
+                           :class="file.is_active ? 'bg-green-50 text-green-700 ring-green-600/20 hover:bg-green-100' : 'bg-gray-100 text-gray-600 ring-gray-300 hover:bg-gray-200'"
+                           :title="file.is_active ? 'Visible par le public : cliquer pour le masquer' : 'Masqué au public : cliquer pour le publier'">
+                           <span class="h-1.5 w-1.5 rounded-full" :class="file.is_active ? 'bg-green-500' : 'bg-gray-400'"></span>
+                           <span x-text="file.is_active ? 'Actif' : 'Inactif'"></span>
+                        </button>
+                     </td>
+                     <td class="whitespace-nowrap py-4 pl-3 text-right text-sm font-medium">
+                        <a :href="`/admin/document/download/${file.id}`" class="text-gray-600 hover:text-gray-900">Télécharger</a>
+                        <a :href="`/admin/document/edit/${file.id}`" class="ml-4 text-indigo-600 hover:text-indigo-900">Modifier</a>
+                        <button type="button" @click="remove([file])" :disabled="busy" class="ml-4 text-red-600 hover:text-red-900">Supprimer</button>
+                     </td>
                   </tr>
-               </thead>
-               <tbody class="divide-y divide-gray-200 bg-white">
-                  <template x-for="file in filteredData">
-                     <tr :class="file.selected ? 'bg-gray-50' : ''">
-                        <td class="relative px-7 sm:w-12 sm:px-6">
-                           <div x-show="file.selected" class="absolute inset-y-0 left-0 w-0.5 bg-indigo-600"></div>
-                           <input type="checkbox" @click="file.selected = !file.selected"
-                              x-bind:checked="file.selected"
-                              class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                        </td>
-                        <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0">
-                           <span x-text="file.name"></span>
-                           <!-- Mobile-only information -->
-                           <dl class="font-normal lg:hidden">
-                              <dt class="sr-only">Date de création</dt>
-                              <dd class="mt-1 truncate text-gray-700" x-text="formatDate(file.created_at.date,'DD/MM/YYYY')"></dd>
-                              <dt class="sr-only sm:hidden">Type de document</dt>
-                              <dd class="mt-1 truncate text-gray-500 sm:hidden" x-text="file.file_type"></dd>
-                           </dl>
-                        </td>
-                        <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell" x-text="formatDate(file.created_at.date,'DD/MM/YYYY')"></td>
-                        <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell" x-text="file.file_type"></td>
-                        <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                           <button type="button" @click="deleteSelected([file])" 
-                              class="text-red-600 hover:text-indigo-900">Supprimer</button>
-                        </td>
-                     </tr>
-                  </template>
-               </tbody>
-            </table>
-            <!-- Add button -->
-            <div class="sm:flex justify-end sm:items-center mt-8">
-                     <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <a href="/admin/document/create">
-                        <button type="button"
-                           class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Ajouter
-                        document</button>
-                        </a>
-                     </div>
-                  </div>
-         </div>
+               </template>
+            </tbody>
+         </table>
       </div>
 
       <!-- Empty state -->
-      <div x-show="filteredData.length == 0">
-         <div class="text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
-            </svg>
-            <h3 class="mt-2 text-sm font-semibold text-gray-900">Aucun document</h3>
-            <p class="mt-1 text-sm text-gray-500">Commencez par ajouter un document.</p>
-            <div class="mt-6">
-               <a href="/admin/document/create">
-                  <button type="button"
-                     class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                     <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                     </svg>
-                     Créer un document
-                  </button>
-               </a>
-            </div>
+      <div x-show="filteredFiles.length === 0" class="py-10 text-center">
+         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+         </svg>
+         <h3 class="mt-2 text-sm font-semibold text-gray-900" x-text="files.length ? 'Aucun document ne correspond aux filtres' : 'Aucun document'"></h3>
+      </div>
+
+      <!-- Actions on the selection -->
+      <div x-show="selected.length > 0" x-transition class="fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
+         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-lg bg-gray-900 px-4 py-3 text-sm text-white shadow-xl">
+            <span class="font-semibold" x-text="`${selected.length} document${selected.length > 1 ? 's' : ''} sélectionné${selected.length > 1 ? 's' : ''}`"></span>
+            <button type="button" @click="run('activate', selected)" :disabled="busy" class="font-medium text-green-300 hover:text-green-200">Activer</button>
+            <button type="button" @click="run('deactivate', selected)" :disabled="busy" class="font-medium text-amber-300 hover:text-amber-200">Désactiver</button>
+            <button type="button" @click="remove(files.filter(f => selected.includes(f.id)))" :disabled="busy" class="font-medium text-red-300 hover:text-red-200">Supprimer</button>
+            <button type="button" @click="selected = []" class="text-gray-400 hover:text-white">Annuler</button>
          </div>
       </div>
    </div>
 </div>
 
-<script src="<?= base_url('assets/js/moment.js')?>"></script>
 <script>
    function app() {
-       return {
-           search: '',
-           data: <?= $files ?>,
-           file_type: <?= $file_types ?>,
-           currentFileType: 'Tous',
-           filteredData: [],
-           allChecked: false,
-           shortcut: 'K',
-           init() {
-               this.filteredData = this.data;
-               this.determineShortcut();
-           },
-           rowSelected() {
-               return this.data.filter((file) => file.selected).length > 0;
-           },
-           masterCheckbox() {
-               this.allChecked = !this.allChecked;
-               this.data.forEach((file) => file.selected = this.allChecked);
-           },
-           formatDate(date, format) {
-               return moment(date).format(format);
-           },
-           searchFiles() {
-               this.filteredData = this.data.filter((file) => file.name.toLowerCase().includes(this.search.toLowerCase()));
-           },
-           determineShortcut() {
-               switch (navigator.platform) {
-                   case 'Win32':
-                   case 'Win64':
-                       this.shortcut = 'ALT + ' + this.shortcut;
-                       break;
-                   case 'MacIntel':
-                   case 'MacPPC':
-                       this.shortcut = '⌘' + this.shortcut;
-                       break;
-               }
-           },
-   
-           selectFileType(type) {
-               if(type === 'TOUS') {
-                   this.filteredData = this.data;
-                   this.currentFileType = 'Tous';
-               }else{
-                   this.currentFileType = type;
-                   this.filteredData = this.data.filter((file) => file.file_type === type);
-               }
-           },
-   
-           deleteSelected(files){
-               const confirmString = files.length === 1 ? `Êtes-vous sûr de vouloir supprimer le document "${files[0].name}" ?` : `Êtes-vous sûr de vouloir supprimer les ${files.length} documents sélectionnés ?`;
-               if(confirm(confirmString)){
-                   window.location.href = '/admin/document/delete/' + files.map((file) => file.id).join(',');
-               }
-           }
-       }
+      return {
+         files: <?= $files ?>,
+         types: <?= json_encode($types, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
+         type: '',
+         status: '',
+         search: '',
+         selected: [],
+         busy: false,
+         actionErrors: [],
+
+         get filteredFiles() {
+            const search = this.search.trim().toLowerCase();
+            return this.files.filter(file =>
+               (!this.type || file.file_type === this.type)
+               && (!this.status || file.is_active === (this.status === 'active'))
+               && (!search || file.name.toLowerCase().includes(search)));
+         },
+
+         get allSelected() {
+            return this.filteredFiles.length > 0 && this.filteredFiles.every(file => this.selected.includes(file.id));
+         },
+
+         toggle(file) {
+            this.selected = this.selected.includes(file.id) ? this.selected.filter(id => id !== file.id) : [...this.selected, file.id];
+         },
+
+         toggleAll() {
+            const ids = this.filteredFiles.map(file => file.id);
+            this.selected = this.allSelected ? this.selected.filter(id => !ids.includes(id)) : [...new Set([...this.selected, ...ids])];
+         },
+
+         remove(files) {
+            const message = files.length > 1 ? `Supprimer définitivement ces ${files.length} documents ?` : `Supprimer définitivement le document « ${files[0].name} » ?`;
+            if (confirm(message))
+               this.run('delete', files.map(file => file.id));
+         },
+
+         async run(action, ids) {
+            this.busy = true;
+            this.actionErrors = [];
+            try {
+               const data = new FormData();
+               data.append('action', action);
+               ids.forEach(id => data.append('ids[]', id));
+               const response = await fetch('/admin/document/bulk', { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+               const json = await response.json();
+               if (!response.ok || !json.success)
+                  throw new Error(json.message);
+               this.files = json.files;
+               this.actionErrors = json.errors;
+               this.selected = this.selected.filter(id => !json.ids.includes(id) && this.files.some(file => file.id === id));
+            } catch (error) {
+               this.actionErrors = [error.message || 'L\'action n\'a pas pu être effectuée. Rechargez la page et réessayez.'];
+            } finally {
+               this.busy = false;
+            }
+         },
+
+         formatSize(bytes) {
+            return bytes > 1048576 ? (bytes / 1048576).toFixed(1).replace('.', ',') + ' Mo' : Math.max(1, Math.round(bytes / 1024)) + ' Ko';
+         },
+
+         formatDate(date) {
+            return date ? parseEventDate(date).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+         },
+      }
    }
 </script>
 <?= $this->endSection() ?>

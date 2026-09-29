@@ -155,97 +155,133 @@
 
 
 
-<!-- News -->
-<article class="bg-white py-8 sm:py-12">
+<!-- News: the upcoming events of the agenda, loaded 3 by 3 -->
+<article id="actualites" class="bg-white py-8 sm:py-12" x-data="newsList(<?= esc($news, 'attr') ?>)">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Actualités</h2>
-      <p class="mt-2 text-lg leading-8 text-gray-600">En ce moment chez les scouts et guides de <span class="font-bold">Gosselies</span>.</p>
+      <p class="mt-2 text-lg leading-8 text-gray-600">Prochainement chez les scouts et guides de <span class="font-bold">Gosselies</span>.</p>
     </div>
-    <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-
-      <?php if (!empty($news) && is_array($news)) : ?>
-        <?php foreach ($news as $key => $item) : ?>
-          <article class="flex flex-col items-start justify-between <?= getAnimateClass($key) ?>">
-            <div class="relative w-full">
-              <img src="<?= $item->picture ?>" alt="<?= esc($item->title ?? '') ?>" class="aspect-[16/9] w-full rounded-2xl object-cover">
-              <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+    <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+      <template x-for="item in items" :key="item.id">
+        <article class="flex flex-col items-start">
+          <a :href="`/actualites/${item.id}`" class="relative block w-full overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-inset ring-gray-900/10">
+            <template x-if="item.image_small_url">
+              <img :src="item.image_small_url" :alt="item.title" loading="lazy" class="aspect-[16/9] w-full object-cover transition duration-300 hover:scale-105">
+            </template>
+            <!-- Without image: logo of the first section on its colour -->
+            <template x-if="!item.image_small_url">
+              <div class="flex aspect-[16/9] w-full items-center justify-center" :style="`background-color: ${(item.sections[0] || {}).color || '#6366f1'}1a`">
+                <img x-show="item.sections.length" :src="item.sections.length ? baseUrl + item.sections[0].logo : ''" alt="" loading="lazy"
+                  class="h-2/3 w-auto rounded-2xl bg-white object-contain p-2 shadow">
+              </div>
+            </template>
+          </a>
+          <div class="mt-6 flex flex-wrap items-center gap-2 text-xs">
+            <time class="text-gray-500" :datetime="item.start_at" x-text="shortDate(item)"></time>
+            <template x-for="section in item.sections" :key="section.id">
+              <span class="inline-flex items-center gap-x-1.5 rounded-full bg-gray-50 px-2.5 py-1 font-medium text-gray-600">
+                <span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${section.color}`"></span>
+                <span x-text="section.name"></span>
+              </span>
+            </template>
+          </div>
+          <div class="group relative">
+            <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+              <a :href="`/actualites/${item.id}`">
+                <span class="absolute inset-0"></span>
+                <span x-text="item.title"></span>
+              </a>
+            </h3>
+            <p class="mt-3 line-clamp-3 text-sm leading-6 text-gray-600" x-text="item.description || item.location || 'Plus d\'informations bientôt.'"></p>
+          </div>
+          <div class="relative mt-6 flex items-center gap-x-3">
+            <img :src="item.author.picture_url || baseUrl + 'assets/img/logo-unite.png'" alt=""
+              class="h-10 w-10 rounded-full bg-white ring-1 ring-gray-200" :class="item.author.picture_url ? 'object-cover' : 'object-contain p-1'">
+            <div class="text-sm leading-6">
+              <p class="text-gray-500">Publié par</p>
+              <p class="font-semibold text-gray-900" x-text="item.author.name"></p>
             </div>
-            <div class="max-w-xl">
-              <div class="mt-8 flex items-center gap-x-4 text-xs">
-                <time class="text-gray-500">
-                  <?= $item->created_at->format('d/m/Y') ?>
-                </time>
-                  <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-                    <?= $item->category->name ?>
-                  </a>
-              </div>
-              <div class="group relative">
-                <h3 class="mt-3 text-lg text-ellipsis whitespace-nowrap overflow-hidden font-semibold leading-6 text-gray-900 group-hover:text-gray-600" style="max-width: 350px;">
-                  <a href="#">
-                    <span class="absolute inset-0"></span>
-                    <?= $item->title ?>
-                  </a>
-                </h3>
-                <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                  <?= $item->content ?>
-                </p>
-              </div>
-              <div class="relative mt-8 flex items-center gap-x-4">
-                <img src="<?= $item->author->picture ?>" alt="" class="h-10 w-10 rounded-full bg-gray-100 object-cover">
-                <div class="text-sm leading-6">
-                  <p class="font-semibold text-gray-900">
-                    <a href="#">
-                      <span class="absolute inset-0"></span>
-                      <?= $item->author->totem ?>
-                    </a>
-                  </p>
-                  <p class="text-sm font-semibold leading-6 text-indigo-600">
-                    <?= $item->author->user_type->name ?>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </article>
-        <?php endforeach ?>
-      <?php else : ?>
-        <p>Aucune actualité pour le moment</p>
-      <?php endif ?>
+          </div>
+        </article>
+      </template>
+    </div>
 
+    <div x-show="items.length === 0" class="mx-auto mt-12 max-w-xl text-center text-gray-500">
+      Aucune activité n'est annoncée pour le moment. Consultez l'<a href="/en-pratique/agenda" class="link">agenda</a> pour la suite.
     </div>
   </div>
-  <!-- More Post -->
-  <div id="more_post" class="relative flex flex-col items-center justify-center overflow-hidden py-12 sm:py-24 bg-white">
-    <button id="more_post_button" type="button" class="rounded-md px-6 py-2.5 tracking-widest uppercase text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-50 reveal">voir
-      plus d'actualités</button>
+
+  <!-- More news: hidden when there are no more -->
+  <div class="flex flex-col items-center justify-center py-12 sm:py-16">
+    <button type="button" x-show="hasMore" @click="loadMore()" :disabled="loading"
+      class="rounded-md px-6 py-2.5 text-sm font-semibold uppercase tracking-widest text-indigo-600 shadow-sm ring-1 ring-inset ring-indigo-100 hover:bg-indigo-50 disabled:opacity-50"
+      x-text="loading ? 'Chargement…' : 'Voir plus d\'actualités'"></button>
+    <p x-show="error" class="mt-2 text-sm text-red-600" x-text="error"></p>
+    <a x-show="!hasMore && items.length > 0" href="/en-pratique/agenda" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Voir tout l'agenda</a>
   </div>
 </article>
 
+<script>
+  function newsList(initial) {
+    return {
+      baseUrl: '<?= rtrim(base_url(), '/') ?>/',
+      items: initial.items,
+      hasMore: initial.has_more,
+      loading: false,
+      error: '',
+
+      async loadMore() {
+        this.loading = true;
+        this.error = '';
+        try {
+          const response = await fetch(`${this.baseUrl}api/v1/actualites?offset=${this.items.length}&limit=3`, { headers: { 'Accept': 'application/json' } });
+          const json = await response.json();
+          if (!response.ok || !json.success)
+            throw new Error();
+          // An event may already be displayed if the list changed in the meantime
+          const known = this.items.map(item => item.id);
+          this.items.push(...json.data.items.filter(item => !known.includes(item.id)));
+          this.hasMore = json.data.has_more;
+        } catch (error) {
+          this.error = 'Impossible de charger les actualités suivantes. Réessayez plus tard.';
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      // e.g. "sam. 3 oct. 2026"
+      shortDate(item) {
+        return parseEventDate(item.start_at).toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+      },
+    };
+  }
+</script>
 
 
-<!-- Team -->
-<article class="bg-slate-100 py-24 sm:py-32">
+
+<!-- Team: the section leaders (admin/responsables) -->
+<article id="responsables" class="bg-slate-100 py-24 sm:py-32">
   <div class="mx-auto max-w-7xl">
     <div id="team_header" class="mx-auto px-6 lg:px-8 animate__animated animate__slow">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Portrait des responsables de section</h2>
-      <!-- <p class="mt-6 text-lg leading-8 text-gray-600">Les unités possèdes chacuns leurs propres responsables.</p> -->
     </div>
-    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 xl:grid-cols-6 reveal">
-      <?php if (!empty($users) && is_array($users)) : ?>
-        <?php foreach ($users as $user) : ?>
+    <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 px-6 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:px-8 xl:grid-cols-6 reveal">
+      <?php if (!empty($leaders)) : ?>
+        <?php foreach ($leaders as $leader) : ?>
           <li>
-            <img class="mx-auto h-24 w-24 rounded-full object-cover" src="<?= $user->picture ?>" alt="">
-            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">
-              <?= $user->totem ?>
-            </h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600">
-              <?= $user->user_type ?>
+            <img class="mx-auto h-24 w-24 rounded-full bg-white object-cover" src="<?= esc($leader->picture_url ?? base_url('assets/img/question-mark.jpg'), 'attr') ?>" alt="">
+            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900"><?= esc($leader->display_name) ?></h3>
+            <p class="text-sm font-semibold leading-6 text-indigo-600"><?= esc($leader->function ?? '') ?></p>
+            <p class="mt-1 inline-flex items-center gap-x-1.5 text-xs text-gray-500">
+              <span class="h-1.5 w-1.5 rounded-full" style="background-color: <?= esc($leader->section_color, 'attr') ?>"></span>
+              <?= esc($leader->section_name) ?>
             </p>
           </li>
         <?php endforeach ?>
       <?php else : ?>
-        <li>
-          <p class="text-sm font-semibold leading-6 text-indigo-600">Aucun responsable pour le moment</p>
+        <li class="col-span-full">
+          <p class="text-sm font-semibold leading-6 text-indigo-600">Les responsables seront bientôt présentés ici.</p>
         </li>
       <?php endif ?>
     </ul>
@@ -595,15 +631,3 @@
 </script>
 
 <?= $this->endSection() ?>
-
-
-<?php
-function getAnimateClass($index)
-{
-  if ($index % 2 == 0)
-    return "reveal-left";
-  else if ($index == 3)
-    return "reveal-right";
-  else
-    return "reveal";
-}
