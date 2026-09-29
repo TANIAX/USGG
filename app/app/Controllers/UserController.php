@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Helpers\RoleHelper;
 use App\Helpers\AccountHelper;
 use App\Helpers\SessionHelper;
@@ -63,6 +64,7 @@ class UserController extends BaseController
 
         [$userId, $sent] = AccountHelper::createAndInvite($data['profile'] + ['email' => $data['email']]);
         $this->roleRepository->setUserRoles($userId, $data['roles']);
+        AuditHelper::log('created', 'Compte', $data['email'] . ($data['roles'] ? ' (' . implode(', ', $data['roles']) . ')' : ''), '/admin/utilisateurs/edit/' . $userId);
 
         $this->session->setFlashdata('success', $sent
             ? 'Le compte de ' . $data['email'] . ' a été créé : un e-mail lui a été envoyé pour choisir son mot de passe.'
@@ -85,6 +87,7 @@ class UserController extends BaseController
         if ($data['active'] !== $user->exists)
             $this->userRepository->setActive($user->id, $data['active']);
 
+        AuditHelper::log('updated', 'Compte', $user->email . ' (rôles : ' . (implode(', ', $data['roles']) ?: 'aucun') . ($data['active'] ? '' : ', désactivé') . ')', '/admin/utilisateurs/edit/' . $user->id);
         $this->session->setFlashdata('success', 'Le compte de ' . $user->email . ' a été modifié.' . ($data['active'] ? '' : ' Il est désactivé : la personne ne peut plus se connecter.'));
         return redirect()->to(base_url('/admin/utilisateurs'));
     }

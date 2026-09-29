@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Helpers\GalleryHelper;
 use App\Helpers\DocumentHelper;
 use App\Controllers\BaseController;
@@ -69,6 +70,7 @@ class DocumentController extends BaseController
             'size' => $size,
         ]);
 
+        AuditHelper::log('created', 'Document', $data['name'] . ($data['is_active'] ? '' : ' (inactif)'), '/admin/document');
         $this->session->setFlashdata('success', 'Le document « ' . $data['name'] . ' » a été ajouté' . ($data['is_active'] ? '.' : ' (inactif : il n\'est pas visible par le public).'));
         return redirect()->to(base_url('/admin/document'));
     }
@@ -108,6 +110,7 @@ class DocumentController extends BaseController
         $update['name'] = $data['name'] . ($extension ? '.' . $extension : '');
         $this->fileRepository->updateDocument($document->id, $update);
 
+        AuditHelper::log('updated', 'Document', $data['name'] . ($data['is_active'] ? '' : ' (inactif)'), '/admin/document/edit/' . $document->id);
         $this->session->setFlashdata('success', 'Le document « ' . $data['name'] . ' » a été modifié.');
         return redirect()->to(base_url('/admin/document'));
     }
@@ -157,6 +160,7 @@ class DocumentController extends BaseController
                 $this->fileRepository->updateDocument($document->id, $update);
             }
             $done[] = $document->id;
+            AuditHelper::log($action === 'delete' ? 'deleted' : 'updated', 'Document', $document->name . ['delete' => '', 'activate' => ' (activé)', 'deactivate' => ' (désactivé)'][$action]);
         }
 
         return $this->response->setJSON([

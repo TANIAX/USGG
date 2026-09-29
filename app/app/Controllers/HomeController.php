@@ -40,8 +40,13 @@ class HomeController extends BaseController
         // News = upcoming events of the agenda, the next ones are loaded 3 by 3 (api/v1/actualites)
         $news = $this->eventRepository->getUpcoming(0, NewsController::PAGE_SIZE);
 
+        $contents = service('repository', 'Content');
+
         return view('pages/welcome_message', [
             'leaders' => $leaders,
+            // FAQ and testimonials, managed in admin/contenus
+            'questions' => $contents->getItems('faq', true),
+            'testimonials' => $contents->getItems('temoignage', true),
             'news' => $this->toJson(['items' => $news['events'], 'has_more' => $news['has_more']]),
         ]);
     }

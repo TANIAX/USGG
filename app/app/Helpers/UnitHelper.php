@@ -3,8 +3,9 @@
 namespace App\Helpers;
 
 /**
- * The two units (guides, scouts) and their sections, defined once: menus, home page, presentation and staff pages.
- * The slug of a section is its anchor on the presentation page (/guide#nutons) and its slug in the database.
+ * The two units (guides, scouts). Their sections are in the database (table section, managed in /admin/sections) and are
+ * used by the menus, the home page, the presentation and staff pages. The slug of a section is its anchor on the
+ * presentation page (/guide#nutons).
  */
 class UnitHelper
 {
@@ -14,37 +15,47 @@ class UnitHelper
             'label' => 'l’unité guide',
             'url' => '/guide',
             'logo' => 'assets/img/logo-guide.png',
-            'sections' => [
-                'nutons' => ['name' => 'Nutons', 'ages' => '5 à 7 ans', 'logo' => 'assets/img/logo-nutons.png'],
-                'lutins' => ['name' => 'Lutins', 'ages' => '8 à 11 ans', 'logo' => 'assets/img/logo-lutins.png'],
-                'aventures' => ['name' => 'Aventures', 'ages' => '11 à 15 ans', 'logo' => 'assets/img/logo-aventures.png'],
-                'horizons' => ['name' => 'Horizons', 'ages' => '16 à 18 ans', 'logo' => 'assets/img/logo-horizons.png'],
-            ],
+            'branch' => 'GUIDE',
         ],
         'scout' => [
             'name' => 'Scouts',
             'label' => 'l’unité scoute',
             'url' => '/scout',
             'logo' => 'assets/img/logo-scout.png',
-            'sections' => [
-                'baladins' => ['name' => 'Baladins', 'ages' => '6 à 8 ans', 'logo' => 'assets/img/logo-baladins.png'],
-                'louveteaux' => ['name' => 'Louveteaux', 'ages' => '8 à 12 ans', 'logo' => 'assets/img/logo-louveteaux.png'],
-                'eclaireurs' => ['name' => 'Éclaireurs', 'ages' => '12 à 16 ans', 'logo' => 'assets/img/logo-eclaireurs.png'],
-                'pionniers' => ['name' => 'Pionniers', 'ages' => '16 à 18 ans', 'logo' => 'assets/img/logo-pionniers.png'],
-            ],
+            'branch' => 'SCOUTE',
         ],
     ];
 
+    private static array $cache = [];
+
     /**
-     * Sections of a unit, with their slug and the url of their presentation.
-     * @return array list of ['slug', 'name', 'ages', 'logo', 'href']
+     * Active sections of a unit (managed in /admin/sections), with the url of their presentation.
+     * @return array list of ['id', 'slug', 'name', 'ages', 'logo', 'color', 'href', 'title', 'group', 'subtitle', 'paragraphs']
      */
     public static function sections(string $unit): array
     {
-        $sections = [];
-        foreach (self::UNITS[$unit]['sections'] as $slug => $section) {
-            $sections[] = $section + ['slug' => $slug, 'href' => self::UNITS[$unit]['url'] . '#' . $slug];
-        }
-        return $sections;
+        return self::$cache[$unit] ??= array_map(fn($section) => [
+            'id' => (int) $section->id,
+            'slug' => $section->slug,
+            'name' => $section->name,
+            'ages' => $section->ages,
+            'logo' => $section->logo,
+            'color' => $section->color,
+            'href' => self::UNITS[$unit]['url'] . '#' . $section->slug,
+            'title' => $section->title ?: $section->name,
+            'group' => $section->group_name,
+            'subtitle' => implode(' · ', array_filter([$section->group_name, $section->ages])),
+            'paragraphs' => self::paragraphs($section->description),
+        ], service('repository', 'Section')->getPresentations(self::UNITS[$unit]['branch']));
+    }
+
+    /**
+     * Paragraphs of a text (separated by an empty line), escaped, the simple line breaks being kept.
+     * @return string[] html
+     */
+    public static function paragraphs(?string $text): array
+    {
+        $paragraphs = preg_split('/\R\s*\R/', trim((string) $text)) ?: [];
+        return array_values(array_map(fn($paragraph) => nl2br(esc(trim($paragraph))), array_filter($paragraphs, fn($paragraph) => trim($paragraph) !== '')));
     }
 }

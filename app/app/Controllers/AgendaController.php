@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Helpers\LogHelper;
 use DateTime;
 use Exception;
@@ -67,6 +68,7 @@ class AgendaController extends BaseController
         $data['user_id'] = SessionHelper::getUserConnected()->getId();
         $this->eventRepository->create($data, $sectionIds);
 
+        AuditHelper::log('created', 'Événement', $data['title'], '/admin/agenda');
         $this->session->setFlashdata('success', 'L\'événement « ' . $data['title'] . ' » a été créé.');
         return redirect()->to(base_url('/admin/agenda'));
     }
@@ -106,6 +108,7 @@ class AgendaController extends BaseController
         if ($image['replace'])
             EventRepository::deleteImageFiles($event->image);
 
+        AuditHelper::log('updated', 'Événement', $data['title'], '/admin/agenda/edit/' . $event->id);
         $this->session->setFlashdata('success', 'L\'événement « ' . $data['title'] . ' » a été modifié.');
         return redirect()->to(base_url('/admin/agenda'));
     }
@@ -119,6 +122,7 @@ class AgendaController extends BaseController
         }
 
         $this->eventRepository->delete($event->id, false);
+        AuditHelper::log('deleted', 'Événement', $event->title);
         $this->session->setFlashdata('success', 'L\'événement « ' . $event->title . ' » a été supprimé.');
 
         //Back to the list the event was displayed in

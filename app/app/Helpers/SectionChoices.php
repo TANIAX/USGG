@@ -16,8 +16,7 @@ class SectionChoices
             $unit = self::UNITS[$section->branch] ?? null;
             if ($unit === null)
                 continue;
-            $ages = UnitHelper::UNITS[$unit]['sections'][$section->slug]['ages'] ?? null;
-            $choices[UnitHelper::UNITS[$unit]['name']][(int) $section->id] = $section->name . ($ages ? ' (' . $ages . ')' : '');
+            $choices[UnitHelper::UNITS[$unit]['name']][(int) $section->id] = $section->name . ($section->ages ? ' (' . $section->ages . ')' : '');
         }
         return $choices;
     }

@@ -45,6 +45,18 @@ $routes->get('/', 'HomeController::index');
 $routes->get('/contact','HomeController::contact');
 $routes->post('/contact','HomeController::sendContact');
 
+//Newsletter (public): subscription confirmed by e-mail, unsubscription link in every e-mail
+$routes->post('newsletter', 'NewsletterController::subscribe');
+$routes->get('newsletter/confirmer/(:segment)', 'NewsletterController::confirm/$1');
+$routes->get('newsletter/desinscription/(:segment)', 'NewsletterController::unsubscribe/$1');
+
+//Account of the connected user
+$routes->group('mon-compte', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('', 'AccountController::index');
+    $routes->post('profil', 'AccountController::updateProfile');
+    $routes->post('mot-de-passe', 'AccountController::updatePassword');
+});
+
 
 //? Auth
 $routes->group('auth', static function ($routes) {
@@ -130,6 +142,39 @@ $routes->group('admin/cotisations', ['filter' => 'auth:super_admin,asbl_admin'],
     $routes->get('', 'PricingController::edit');
     $routes->post('', 'PricingController::update');
 });
+
+//Sections, FAQ, testimonials, functions of the staff, newsletter, history: super admin
+$routes->group('admin', ['filter' => 'auth:super_admin'], static function ($routes) {
+    $routes->get('sections', 'SectionController::index');
+    $routes->get('sections/edit/(:num)', 'SectionController::edit/$1');
+    $routes->post('sections/update/(:num)', 'SectionController::update/$1');
+    $routes->post('sections/move/(:num)', 'SectionController::move/$1');
+
+    $routes->get('contenus', 'ContentController::index');
+    $routes->get('contenus/(faq|temoignage)/create', 'ContentController::create/$1');
+    $routes->get('contenus/(faq|temoignage)/edit/(:num)', 'ContentController::edit/$1/$2');
+    $routes->post('contenus/(faq|temoignage)/save', 'ContentController::save/$1');
+    $routes->post('contenus/(faq|temoignage)/save/(:num)', 'ContentController::save/$1/$2');
+    $routes->post('contenus/(faq|temoignage)/(:num)/(up|down|toggle|delete)', 'ContentController::action/$1/$2/$3');
+
+    $routes->get('fonctions', 'UserTypeController::index');
+    $routes->post('fonctions/save', 'UserTypeController::save');
+    $routes->post('fonctions/save/(:num)', 'UserTypeController::save/$1');
+    $routes->post('fonctions/merge/(:num)', 'UserTypeController::merge/$1');
+    $routes->post('fonctions/delete/(:num)', 'UserTypeController::delete/$1');
+
+    $routes->get('historique', 'AuditController::index');
+});
+
+//Newsletter: super admin and ASBL admin
+$routes->group('admin/newsletter', ['filter' => 'auth:super_admin,asbl_admin'], static function ($routes) {
+    $routes->get('', 'NewsletterController::index');
+    $routes->post('send', 'NewsletterController::send');
+    $routes->post('delete/(:num)', 'NewsletterController::delete/$1');
+});
+
+//Dashboard: every administrator
+$routes->get('admin', 'DashboardController::index', ['filter' => 'auth:admin,super_admin,guide_admin,scout_admin,asbl_admin']);
 
 $routes->group('admin/logs', ['filter' => 'auth:super_admin'], static function ($routes) {
     $routes->get('', 'LogController::index');

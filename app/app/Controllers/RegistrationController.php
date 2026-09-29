@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Helpers\GalleryHelper;
 use App\Helpers\SessionHelper;
 use App\Helpers\SectionChoices;
@@ -71,6 +72,7 @@ class RegistrationController extends BaseController
             'updated_by' => SessionHelper::getUserConnected()->getId(),
         ]);
 
+        AuditHelper::log('updated', 'Inscription', $request->firstname . ' ' . $request->name . ' : ' . \App\Helpers\RegistrationHelper::statusLabel($post['status']), '/admin/inscriptions/' . $request->id);
         $this->session->setFlashdata('success', 'La demande de ' . $request->firstname . ' ' . $request->name . ' a été mise à jour.');
         return redirect()->to(base_url('/admin/inscriptions'));
     }
@@ -97,6 +99,9 @@ class RegistrationController extends BaseController
             }
         }
 
+        if ($ids)
+            AuditHelper::log($action === 'delete' ? 'deleted' : 'updated', 'Inscription', count($ids) . ' demande(s)' . ($action === 'delete' ? '' : ' : ' . RegistrationHelper::statusLabel($status)), '/admin/inscriptions');
+
         return $this->response->setJSON([
             'success' => true,
             'ids' => $ids,
@@ -111,6 +116,7 @@ class RegistrationController extends BaseController
             return $this->notFound();
 
         $this->registrationRepository->deleteRequests([$request->id]);
+        AuditHelper::log('deleted', 'Inscription', $request->firstname . ' ' . $request->name);
         $this->session->setFlashdata('success', 'La demande de ' . $request->firstname . ' ' . $request->name . ' a été supprimée.');
         return redirect()->to(base_url('/admin/inscriptions'));
     }
