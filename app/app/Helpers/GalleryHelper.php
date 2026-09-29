@@ -99,6 +99,7 @@ class GalleryHelper
             ImageHelper::saveJpeg($photo, self::getPhotoPath($albumId, $filename));
             ImageHelper::saveJpeg($thumbnail, self::getPhotoPath($albumId, $filename, true));
         } catch (Exception $exception) {
+            LogHelper::exception('Photo non enregistrée sur le serveur', $exception);
             self::deletePhotoFiles($albumId, $filename);
             throw new Exception('Impossible d\'enregistrer la photo sur le serveur.');
         }

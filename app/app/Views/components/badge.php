@@ -2,7 +2,7 @@
 /**
  * Small label. Props:
  *  - label (escaped) or the slot (html); for a text computed by Alpine: 'attrs' => ['x-text' => '...']
- *  - color: gray (default), gray-dark, indigo, purple, green, outline, overlay, none (colours given by the caller)
+ *  - color: gray (default), gray-dark, indigo, purple, green, amber, red, outline, overlay, none (colours given by the caller)
  *  - ring: thin border of the colour
  *  - shape: pill (default, rounded) or tag (square corners)
  *  - dot: colour of a dot before the text (css colour); dot_alpine: same, computed by Alpine
@@ -17,6 +17,8 @@ $colors = [
    'indigo' => 'bg-indigo-50 text-indigo-700',
    'purple' => 'bg-purple-50 text-purple-700',
    'green' => 'bg-green-50 text-green-700',
+   'amber' => 'bg-amber-50 text-amber-800',
+   'red' => 'bg-red-50 text-red-700',
    'outline' => 'text-gray-700',
    'overlay' => 'bg-black/60 text-white',
    'none' => '',
@@ -25,6 +27,8 @@ $rings = [
    'indigo' => 'ring-1 ring-inset ring-indigo-200',
    'purple' => 'ring-1 ring-inset ring-purple-200',
    'green' => 'ring-1 ring-inset ring-green-600/20',
+   'amber' => 'ring-1 ring-inset ring-amber-600/20',
+   'red' => 'ring-1 ring-inset ring-red-600/10',
    'outline' => 'ring-1 ring-inset ring-gray-200',
 ];
 

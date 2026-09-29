@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\FileHelper;
 use App\Helpers\AccountHelper;
@@ -254,6 +255,7 @@ class LeaderController extends BaseController
             $name = ImageHelper::randomName() . '.jpg';
             ImageHelper::saveJpeg(ImageHelper::square(ImageHelper::open($file->getTempName()), self::PICTURE_SIZE), $this->picturePath($name));
         } catch (Exception $exception) {
+            LogHelper::exception('Photo de responsable non enregistrée', $exception);
             return ['error' => $exception->getMessage()];
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\SessionHelper;
 use App\Helpers\GalleryHelper;
@@ -169,6 +170,7 @@ class AlbumController extends BaseController
         try {
             $stored = GalleryHelper::storePhoto($file->getTempName(), $album->id);
         } catch (Exception $exception) {
+            LogHelper::exception('Photo non ajoutée à l\'album ' . $album->id, $exception, 'warning');
             return $this->jsonError(400, $exception->getMessage());
         }
 

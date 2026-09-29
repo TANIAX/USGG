@@ -39,4 +39,19 @@ class Services extends BaseService
         $repositoryName = "App\\Repositories\\" . $RepositoryName . "Repository";
         return new $repositoryName();
     }
+
+    /**
+     * Exception handler which also logs the broken links of the site (see App\Debug\Exceptions).
+     */
+    public static function exceptions(
+        ?\Config\Exceptions $config = null,
+        ?\CodeIgniter\HTTP\IncomingRequest $request = null,
+        ?\CodeIgniter\HTTP\Response $response = null,
+        bool $getShared = true
+    ) {
+        if ($getShared)
+            return static::getSharedInstance('exceptions', $config, $request, $response);
+
+        return new \App\Debug\Exceptions($config ?? config('Exceptions'), $request ?? static::request(), $response ?? static::response());
+    }
 }

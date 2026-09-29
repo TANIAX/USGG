@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
 use DateTime;
 use Exception;
 use App\Helpers\ImageHelper;
@@ -286,6 +287,7 @@ class AgendaController extends BaseController
                 ImageHelper::saveJpeg(ImageHelper::fit($source, 1600), EventRepository::getImagePath($name));
                 ImageHelper::saveJpeg(ImageHelper::fit($source, 800), EventRepository::getImagePath($name, true));
             } catch (Exception $exception) {
+                LogHelper::exception('Image d\'événement non enregistrée', $exception);
                 if (isset($name))
                     EventRepository::deleteImageFiles($name);
                 return ['error' => $exception->getMessage()];

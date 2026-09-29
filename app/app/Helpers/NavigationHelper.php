@@ -80,6 +80,7 @@ class NavigationHelper
         ['href' => '/admin/galerie', 'label' => 'Galerie', 'roles' => ['super_admin', 'guide_admin', 'scout_admin']],
         ['href' => '/admin/responsables', 'label' => 'Responsables', 'roles' => ['super_admin']],
         ['href' => '/admin/utilisateurs', 'label' => 'Utilisateurs', 'roles' => ['super_admin']],
+        ['href' => '/admin/logs', 'label' => 'Journal', 'roles' => ['super_admin']],
     ];
 
     /**
