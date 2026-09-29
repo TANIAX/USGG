@@ -8,7 +8,7 @@ namespace App\Helpers;
 class NavigationHelper
 {
     /**
-     * Menus of the site: label, footer title, links (href, label, icon of components/icon) and unit (its sections are listed, see menu()).
+     * Menus of the site: label, footer title, links (href, label, icon of lib/components/icon) and unit (its sections are listed, see menu()).
      */
     public const MENU = [
         'guide' => [

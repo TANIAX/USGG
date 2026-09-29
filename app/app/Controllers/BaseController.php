@@ -79,6 +79,22 @@ abstract class BaseController extends Controller
     }
 
     /**
+     * Spreadsheet to download (CSV with ";" and the UTF-8 mark, read correctly by Excel).
+     *
+     * @param array $rows lines (arrays of cells), the first one being the titles of the columns
+     */
+    protected function csvResponse(string $filename, array $rows)
+    {
+        $cell = fn($value) => '"' . str_replace('"', '""', (string) $value) . '"';
+        $lines = array_map(fn($row) => implode(';', array_map($cell, $row)), $rows);
+
+        return $this->response
+                    ->setHeader('Content-Type', 'text/csv; charset=utf-8')
+                    ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                    ->setBody("\u{FEFF}" . implode("\r\n", $lines));
+    }
+
+    /**
      * Error answer of a request made in javascript ({success: false, message}).
      */
     protected function jsonError(int $status, string $message)
@@ -87,7 +103,7 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Redirects to a page of the site, the errors being shown by the flash messages (components/flash).
+     * Redirects to a page of the site, the errors being shown by the flash messages (lib/components/flash).
      * @param string|array $errors
      */
     protected function redirectWithErrors(string $path, $errors)

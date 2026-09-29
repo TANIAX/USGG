@@ -168,25 +168,19 @@ class RegistrationController extends BaseController
     }
 
     /**
-     * Spreadsheet of all the requests matching the filters (Excel reads the ";" and the UTF-8 mark)
+     * Spreadsheet of all the requests matching the filters (not only the displayed page)
      */
     private function exportCsv(ListQuery $list)
     {
-        $columns = ['Enfant', 'Âge', 'Section', 'Phase', 'Statut', 'Parent', 'E-mail', 'Téléphone', 'Localité', 'Reçue le', 'Note'];
-        $cell = fn($value) => '"' . str_replace('"', '""', (string) $value) . '"';
-        $lines = [implode(';', array_map($cell, $columns))];
+        $rows = [['Enfant', 'Âge', 'Section', 'Phase', 'Statut', 'Parent', 'E-mail', 'Téléphone', 'Localité', 'Reçue le', 'Note']];
         foreach ($this->registrationRepository->castRows($this->filteredQuery($list)->get()->getResultObject()) as $row) {
             $request = $this->forList($row);
-            $lines[] = implode(';', array_map($cell, [
+            $rows[] = [
                 $request['child'], $request['age'], $request['section'], $request['phase'], RegistrationHelper::statusLabel($request['status']),
                 $request['parent'], $request['email'], $request['phone'], $request['city'], $request['created_at'], $request['note'],
-            ]));
+            ];
         }
-
-        return $this->response
-                    ->setHeader('Content-Type', 'text/csv; charset=utf-8')
-                    ->setHeader('Content-Disposition', 'attachment; filename="demandes-inscription-' . date('Y-m-d') . '.csv"')
-                    ->setBody("\u{FEFF}" . implode("\r\n", $lines));
+        return $this->csvResponse('demandes-inscription-' . date('Y-m-d') . '.csv', $rows);
     }
 
     private function getManageable(int $id)

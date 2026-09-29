@@ -8,7 +8,6 @@ use CodeIgniter\API\ResponseTrait;
 use App\Controllers\BaseController;
 use App\Libraries\HTTP\HttpResponse;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class ApiController extends BaseController
 {

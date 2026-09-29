@@ -290,7 +290,6 @@
   body {
     margin: 0;
     opacity: 0;
-    font: sofia;
   }
 
 
@@ -308,6 +307,9 @@
     padding: 0 5%;
     overflow: hidden;
     backface-visibility: hidden;
+    /* The photo (z-index: -1) stays in the banner: without this, it went behind the white background
+       of the body as soon as the fade in of the page ended (body opacity 1 = no more stacking context) */
+    isolation: isolate;
   }
 
   /* Default image container */
@@ -351,10 +353,8 @@
 
 <script type="text/javascript" src="<?= base_url('assets/js/TweenMax.2.1.3.min.js') ?>"></script>
 <script>
-  window.onload = function() {
-    document.body.className += ' loaded'
-  };
-
+  // Fade in of the page and zoom of the banner once everything is loaded
+  window.addEventListener('load', () => document.body.classList.add('loaded'));
 </script>
 
 <?= $this->endSection() ?>

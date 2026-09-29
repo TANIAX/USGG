@@ -8,7 +8,7 @@ namespace App\Helpers;
 class RegistrationHelper
 {
     /**
-     * Statuses of a request, in the order of the handling: [label, colour of components/badge]
+     * Statuses of a request, in the order of the handling: [label, colour of lib/components/badge]
      */
     public const STATUSES = [
         'new' => ['Nouvelle', 'indigo'],

@@ -3,7 +3,7 @@
 /**
  * Server-side UI components.
  *
- * A component is a view of app/Views/components/ rendered with its own props only (isolated scope: the variables
+ * A component is a view of app/Views/lib/components/ rendered with its own props only (isolated scope: the variables
  * of the page are not visible in the component, and the component variables do not leak into the page).
  *
  *   <?= component('button', ['label' => 'Enregistrer', 'type' => 'submit']) ?>
@@ -22,7 +22,7 @@
 if (!function_exists('component')) {
     function component(string $name, array $props = [], ?string $slot = null): string
     {
-        $file = APPPATH . 'Views/components/' . $name . '.php';
+        $file = APPPATH . 'Views/lib/components/' . $name . '.php';
         if (!is_file($file))
             throw new InvalidArgumentException('Unknown component: ' . $name);
 

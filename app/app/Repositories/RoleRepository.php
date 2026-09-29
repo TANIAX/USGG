@@ -2,9 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Entities\Role;
-use App\Helpers\FileHelper;
-use Config\Database;
 use App\Interfaces\IRepository;
 use App\Repositories\BaseRepository;
 
@@ -42,16 +39,6 @@ class RoleRepository extends BaseRepository
             ->get();
 
         return $this->getResultAs($query, $result_type, $result_class);
-    }
-
-    /**
-     * Names of the roles of a user.
-     *
-     * @return array of string
-     */
-    public function getRoleNames(int $userId)
-    {
-        return array_column($this->getRolesByUserId($userId, self::RESULT_AS_ARRAY), 'name');
     }
 
     /**
