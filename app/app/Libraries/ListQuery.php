@@ -16,9 +16,10 @@ use CodeIgniter\HTTP\IncomingRequest;
 class ListQuery
 {
     /**
-     * Number of items per page that can be chosen (the first one is the default)
+     * Number of items per page that can be chosen, and the default one
      */
-    public const PER_PAGE = [25, 50, 100];
+    public const PER_PAGE = [5, 10, 25, 50];
+    public const DEFAULT_PER_PAGE = 25;
 
     /**
      * Maximum length of the search, and number of words taken into account
@@ -42,15 +43,16 @@ class ListQuery
 
     /**
      * @param array $filters [name => allowed values (the first one is the default)]
-     * @param array $perPage the sizes of page that can be chosen (the first one is the default)
+     * @param array $perPage the sizes of page that can be chosen (default: DEFAULT_PER_PAGE if it is one of them, otherwise the first one)
      */
     public static function fromRequest(IncomingRequest $request, array $filters = [], array $perPage = self::PER_PAGE): self
     {
         $list = new self();
         $list->page = max(1, (int) $request->getGet('page'));
         $size = (int) $request->getGet('per_page');
-        $list->perPage = in_array($size, $perPage, true) ? $size : $perPage[0];
-        $list->defaults = ['search' => '', 'per_page' => $perPage[0]];
+        $default = in_array(self::DEFAULT_PER_PAGE, $perPage, true) ? self::DEFAULT_PER_PAGE : $perPage[0];
+        $list->perPage = in_array($size, $perPage, true) ? $size : $default;
+        $list->defaults = ['search' => '', 'per_page' => $default];
         $list->search = mb_substr(trim((string) $request->getGet('search')), 0, self::SEARCH_MAX_LENGTH);
 
         foreach ($filters as $name => $allowed) {
