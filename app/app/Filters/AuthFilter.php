@@ -46,6 +46,9 @@ class AuthFilter implements FilterInterface
 
             if(!$hasRole)
             {
+                // A link or a menu shown to someone who can not use it is a bug
+                log_message('notice', 'Accès refusé : {url} demande le rôle {roles} (rôles du compte : {userRoles})', [
+                    'url' => $request->getUri()->getPath(), 'roles' => implode(' ou ', $args), 'userRoles' => implode(', ', $roles) ?: 'aucun']);
                 SessionHelper::disconnectUser();
                 return redirect()->to(base_url('/auth/login'));
             }

@@ -38,6 +38,7 @@ class JWTAuthFilter implements FilterInterface
         try{
             JWT::decode($token, new Key($key, 'HS256'));
         } catch (\Exception $e) {
+            log_message('notice', 'API : jeton refusé ({message})', ['message' => $e->getMessage()]);
             return Services::response()->setStatusCode(ResponseInterface::HTTP_FORBIDDEN)->setJSON($errorResponse);
         }
     }

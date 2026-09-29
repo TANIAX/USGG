@@ -277,17 +277,6 @@ class DocumentController extends BaseController
 
     private function denied(string $message = 'Ce document n\'existe pas ou vous n\'avez pas le droit de le gérer.')
     {
-        $this->session->setFlashdata('errors', [$message]);
-        return redirect()->to(base_url('/admin/document'));
-    }
-
-    private function jsonError(int $status, string $message)
-    {
-        return $this->response->setStatusCode($status)->setJSON(['success' => false, 'message' => $message]);
-    }
-
-    private function toJson($data)
-    {
-        return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        return $this->redirectWithErrors('/admin/document', $message);
     }
 }

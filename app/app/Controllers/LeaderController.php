@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\FileHelper;
 use App\Helpers\AccountHelper;
@@ -254,6 +255,7 @@ class LeaderController extends BaseController
             $name = ImageHelper::randomName() . '.jpg';
             ImageHelper::saveJpeg(ImageHelper::square(ImageHelper::open($file->getTempName()), self::PICTURE_SIZE), $this->picturePath($name));
         } catch (Exception $exception) {
+            LogHelper::exception('Photo de responsable non enregistrée', $exception);
             return ['error' => $exception->getMessage()];
         }
 
@@ -274,12 +276,6 @@ class LeaderController extends BaseController
 
     private function notFound()
     {
-        $this->session->setFlashdata('errors', ['Ce responsable n\'existe pas ou a été retiré.']);
-        return redirect()->to(base_url('/admin/responsables'));
-    }
-
-    private function toJson($data)
-    {
-        return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        return $this->redirectWithErrors('/admin/responsables', 'Ce responsable n\'existe pas ou a été retiré.');
     }
 }

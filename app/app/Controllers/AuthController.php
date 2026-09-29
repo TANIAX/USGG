@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
+
 use App\Entities\User;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -56,14 +58,16 @@ class AuthController extends BaseController
 
             //Get the user from the database
             $user = $this->userRepository->getFullUserBy(['email' => $userLogin->email], BaseRepository::RESULT_AS_CUSTOM, User::class);
-            if (!$user)
+            if (!$user || !password_verify($userLogin->password, $user->getPassword())) {
+                // Many failed logins can reveal a problem (forgotten passwords, e-mail changed) or an attack
+                log_message('notice', 'Échec de connexion ({reason}) pour {email}', ['reason' => $user ? 'mot de passe incorrect' : 'adresse inconnue', 'email' => LogHelper::maskEmail($userLogin->email)]);
                 return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
-            if (!password_verify($userLogin->password, $user->getPassword()))
-                return view('pages/auth/login', ['errors' => ['L\'adresse email ou le mot de passe est incorrect'], 'authUrl' => $authUrl]);
+            }
             //A deactivated account can not log in anymore
-            if (!$user->getExists())
+            if (!$user->getExists()) {
+                log_message('notice', 'Connexion refusée : compte {id} désactivé', ['id' => $user->getId()]);
                 return view('pages/auth/login', ['errors' => ['Ce compte est désactivé. Contactez l\'unité si vous pensez qu\'il s\'agit d\'une erreur.'], 'authUrl' => $authUrl]);
-
+            }
 
             //Store the user in the session
             $this->session->set(SessionHelper::USER_CONNECTED_SESSION_KEY, $user->getRestrictedUser());
@@ -99,6 +103,7 @@ class AuthController extends BaseController
         //Get the user from the database        
         $user = $this->userRepository->getFullUserBy(['email' => $email], BaseRepository::RESULT_AS_CUSTOM, User::class);
         if (!$user || !$user->getExists()) {
+            log_message('notice', 'Connexion Google refusée ({reason}) pour {email}', ['reason' => $user ? 'compte désactivé' : 'adresse inconnue', 'email' => LogHelper::maskEmail($email)]);
             return view('pages/auth/login', [
                 'errors' => [$user ? 'Ce compte est désactivé.' : 'L\'adresse email est inconnue de l\'application'],
                 'authUrl' => $this->googleClient->createAuthUrl()

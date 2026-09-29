@@ -46,3 +46,23 @@ Events::on('pre_system', static function () {
         Services::toolbar()->respond();
     }
 });
+
+/*
+ * --------------------------------------------------------------------
+ * Failed and slow database queries
+ * --------------------------------------------------------------------
+ * In production (DBDebug disabled), a failed query only returns false: it is logged here so that the bug can be found.
+ * CodeIgniter gives a failed query a duration of exactly 0 (same start and end time), whatever the database driver.
+ */
+Events::on('DBQuery', static function (\CodeIgniter\Database\Query $query) {
+    $duration = (float) $query->getDuration(12);
+    if ($duration === 0.0) {
+        $error = \Config\Database::connect()->error();
+        log_message('error', 'Requête SQL en échec : {error} — {sql}', [
+            'error' => trim(($error['code'] ?? '') . ' ' . ($error['message'] ?? '')),
+            'sql' => mb_substr($query->getQuery(), 0, 1000),
+        ]);
+    } elseif ($duration > 1) {
+        log_message('warning', 'Requête SQL lente ({duration} s) : {sql}', ['duration' => number_format($duration, 2, ',', ''), 'sql' => mb_substr($query->getQuery(), 0, 1000)]);
+    }
+});

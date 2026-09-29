@@ -6,24 +6,14 @@ Guides et scoutes de Gosselies - Agenda
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" x-data="app()" x-cloak>
    <div class="px-4 sm:px-6 lg:px-8">
-      <!-- Title -->
-      <div class="sm:flex justify-start sm:items-center mt-12 mb-8 border-b py-4">
-         <div class="sm:flex-auto">
-            <h1 class="font-semibold text-4xl leading-6 text-gray-900">Agenda</h1>
+      <?php component_open('page_header', ['title' => 'Agenda']) ?>
+         <div class="flex gap-x-3">
+            <?= component('button', ['label' => 'Voir l\'agenda public', 'href' => '/en-pratique/agenda', 'variant' => 'secondary', 'size' => 'sm', 'block' => true, 'attrs' => ['target' => '_blank']]) ?>
+            <?= component('button', ['label' => 'Ajouter un événement', 'href' => '/admin/agenda/create', 'size' => 'sm', 'block' => true]) ?>
          </div>
-         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex gap-x-3">
-            <a href="/en-pratique/agenda" target="_blank"
-               class="block rounded-md bg-white px-3 py-2 text-center text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-               Voir l'agenda public
-            </a>
-            <a href="/admin/agenda/create"
-               class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               Ajouter un événement
-            </a>
-         </div>
-      </div>
+      <?= component_close() ?>
 
-      <?= $this->include('pages/admin/messages') ?>
+      <?= component('flash') ?>
 
       <!-- Period & search -->
       <div class="mb-6 sm:flex sm:items-end sm:justify-between gap-4">
@@ -37,11 +27,7 @@ Guides et scoutes de Gosselies - Agenda
                Passés
             </a>
          </nav>
-         <div class="mt-4 sm:mt-0 sm:w-80">
-            <label for="search" class="sr-only">Recherche rapide</label>
-            <input type="text" id="search" x-model="search" placeholder="Rechercher (titre, lieu, section)"
-               class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-         </div>
+         <?= component('search', ['label' => 'Recherche rapide', 'placeholder' => 'Rechercher (titre, lieu, section)', 'class' => 'mt-4 sm:mt-0 sm:w-80']) ?>
       </div>
 
       <?php if ($past): ?>
@@ -78,10 +64,7 @@ Guides et scoutes de Gosselies - Agenda
                      <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                         <div class="flex flex-wrap gap-1.5">
                            <template x-for="section in event.sections" :key="section.id">
-                              <span class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-0.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-200">
-                                 <span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${section.color}`"></span>
-                                 <span x-text="section.name"></span>
-                              </span>
+                              <?= component('section_tag', ['alpine' => 'section']) ?>
                            </template>
                         </div>
                      </td>
@@ -101,23 +84,11 @@ Guides et scoutes de Gosselies - Agenda
          </table>
       </div>
 
-      <!-- Empty state -->
-      <div x-show="filteredEvents.length == 0" class="py-10 text-center">
-         <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd"
-               d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-               clip-rule="evenodd" />
-         </svg>
-         <h3 class="mt-2 text-sm font-semibold text-gray-900" x-text="search ? 'Aucun événement ne correspond à la recherche' : '<?= $past ? 'Aucun événement passé' : 'Aucun événement à venir' ?>'"></h3>
+      <?php component_open('empty_state', ['icon' => 'calendar', 'title_alpine' => "search ? 'Aucun événement ne correspond à la recherche' : '" . ($past ? 'Aucun événement passé' : 'Aucun événement à venir') . "'", 'attrs' => ['x-show' => 'filteredEvents.length === 0']]) ?>
          <?php if (!$past): ?>
-            <div class="mt-6">
-               <a href="/admin/agenda/create"
-                  class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
-                  Créer un événement
-               </a>
-            </div>
+            <div class="mt-6"><?= component('button', ['label' => 'Créer un événement', 'href' => '/admin/agenda/create', 'size' => 'sm']) ?></div>
          <?php endif; ?>
-      </div>
+      <?= component_close() ?>
    </div>
 </div>
 

@@ -27,6 +27,7 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         'auth'          => AuthFilter::class,
         'jwtAuth'       => JWTAuthFilter::class,
+        'requestLog'    => \App\Filters\RequestLogFilter::class,
     ];
 
     /**
@@ -42,6 +43,7 @@ class Filters extends BaseConfig
             // 'invalidchars',
         ],
         'after' => [
+            'requestLog',
             'toolbar',
             // 'honeypot',
             // 'secureheaders',

@@ -5,27 +5,14 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
 <?= $this->section('content') ?>
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" x-data="app()" x-cloak>
    <div class="px-4 sm:px-6 lg:px-8">
-      <!-- Title -->
-      <div class="sm:flex justify-start sm:items-center mt-12 mb-8 border-b py-4">
-         <div class="sm:flex-auto">
-            <h1 class="font-semibold text-4xl leading-tight text-gray-900">
-               <?= $event ? 'Modifier l\'événement' : 'Nouvel événement' ?>
-            </h1>
-         </div>
-      </div>
+      <?= component('page_header', ['title' => $event ? 'Modifier l\'événement' : 'Nouvel événement']) ?>
 
-      <?= $this->include('pages/admin/messages') ?>
+      <?= component('flash') ?>
 
       <form method="POST" action="<?= $event ? base_url('admin/agenda/update/' . $event->id) : base_url('admin/agenda/store') ?>"
          enctype="multipart/form-data" class="max-w-3xl space-y-8" @submit="submitting = true">
 
-         <!-- Title -->
-         <div>
-            <label for="title" class="block text-sm font-medium leading-6 text-gray-900">Titre <span class="text-red-600">*</span></label>
-            <input type="text" name="title" id="title" x-model="values.title" required maxlength="255"
-               placeholder="Réunion, week-end, souper..."
-               class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-         </div>
+         <?= component('field', ['label' => 'Titre', 'name' => 'title', 'required' => true, 'placeholder' => 'Réunion, week-end, souper...', 'attrs' => ['x-model' => 'values.title', 'maxlength' => 255]]) ?>
 
          <!-- Sections -->
          <fieldset>
@@ -54,29 +41,21 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
          <!-- Dates -->
          <fieldset>
             <legend class="block text-sm font-medium leading-6 text-gray-900">Date et heure <span class="text-red-600">*</span></legend>
-            <label class="mt-2 inline-flex items-center gap-x-2 text-sm text-gray-700">
-               <input type="checkbox" name="all_day" value="1" x-model="values.all_day"
-                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-               Toute la journée
-            </label>
+            <?= component('checkbox', ['label' => 'Toute la journée', 'name' => 'all_day', 'class' => 'mt-2', 'attrs' => ['x-model' => 'values.all_day']]) ?>
 
             <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                <div>
                   <p class="text-sm text-gray-500">Début</p>
                   <div class="mt-1 flex gap-x-2">
-                     <input type="date" name="start_date" x-model="values.start_date" @change="syncEndDate()" required aria-label="Date de début"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                     <input type="time" name="start_time" x-model="values.start_time" x-show="!values.all_day" :required="!values.all_day" aria-label="Heure de début"
-                        class="block w-32 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                     <?= component('input', ['type' => 'date', 'name' => 'start_date', 'id' => false, 'required' => true, 'attrs' => ['x-model' => 'values.start_date', '@change' => 'syncEndDate()', 'aria-label' => 'Date de début']]) ?>
+                     <?= component('input', ['type' => 'time', 'name' => 'start_time', 'id' => false, 'width' => 'w-32', 'attrs' => ['x-model' => 'values.start_time', 'x-show' => '!values.all_day', ':required' => '!values.all_day', 'aria-label' => 'Heure de début']]) ?>
                   </div>
                </div>
                <div>
                   <p class="text-sm text-gray-500">Fin</p>
                   <div class="mt-1 flex gap-x-2">
-                     <input type="date" name="end_date" x-model="values.end_date" :min="values.start_date" aria-label="Date de fin"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                     <input type="time" name="end_time" x-model="values.end_time" x-show="!values.all_day" aria-label="Heure de fin"
-                        class="block w-32 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                     <?= component('input', ['type' => 'date', 'name' => 'end_date', 'id' => false, 'attrs' => ['x-model' => 'values.end_date', ':min' => 'values.start_date', 'aria-label' => 'Date de fin']]) ?>
+                     <?= component('input', ['type' => 'time', 'name' => 'end_time', 'id' => false, 'width' => 'w-32', 'attrs' => ['x-model' => 'values.end_time', 'x-show' => '!values.all_day', 'aria-label' => 'Heure de fin']]) ?>
                   </div>
                </div>
             </div>
@@ -84,34 +63,13 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
             <p class="mt-1 text-sm font-medium text-gray-700" x-show="preview" x-text="'Aperçu : ' + preview"></p>
          </fieldset>
 
-         <!-- Location -->
-         <div>
-            <label for="location" class="block text-sm font-medium leading-6 text-gray-900">Lieu</label>
-            <input type="text" name="location" id="location" x-model="values.location" maxlength="255"
-               placeholder="Local de Gosselies, adresse..."
-               class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-         </div>
+         <?= component('field', ['label' => 'Lieu', 'name' => 'location', 'placeholder' => 'Local de Gosselies, adresse...', 'attrs' => ['x-model' => 'values.location', 'maxlength' => 255]]) ?>
 
-         <!-- Description -->
-         <div>
-            <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description</label>
-            <textarea name="description" id="description" rows="6" x-model="values.description" maxlength="5000"
-               placeholder="Programme, matériel à prévoir, prix..."
-               class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
-            <p class="mt-2 text-sm text-gray-500">Les retours à la ligne sont conservés.</p>
-         </div>
+         <?= component('field', ['label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 6, 'placeholder' => 'Programme, matériel à prévoir, prix...',
+            'help' => 'Les retours à la ligne sont conservés.', 'attrs' => ['x-model' => 'values.description', 'maxlength' => 5000]]) ?>
 
-         <!-- Registration -->
-         <div>
-            <label for="registration_url" class="block text-sm font-medium leading-6 text-gray-900">Lien d'inscription</label>
-            <input type="url" name="registration_url" id="registration_url" x-model="values.registration_url" maxlength="255"
-               placeholder="https://..."
-               class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-            <p class="mt-2 text-sm text-gray-500">
-               Facultatif. Un bouton « S'inscrire » sera affiché tant que l'événement n'est pas terminé.
-               Si chaque section a son propre formulaire, laissez ce champ vide et indiquez les liens dans la description.
-            </p>
-         </div>
+         <?= component('field', ['label' => 'Lien d\'inscription', 'name' => 'registration_url', 'type' => 'url', 'placeholder' => 'https://...', 'attrs' => ['x-model' => 'values.registration_url', 'maxlength' => 255],
+            'help' => 'Facultatif. Un bouton « S\'inscrire » sera affiché tant que l\'événement n\'est pas terminé. Si chaque section a son propre formulaire, laissez ce champ vide et indiquez les liens dans la description.']) ?>
 
          <!-- Image (shown in the news of the home page and in the agenda) -->
          <div>
@@ -124,30 +82,15 @@ Guides et scoutes de Gosselies - <?= $event ? 'Modification' : 'Création' ?> d'
                   </div>
                </div>
                <div class="space-y-3 text-sm">
-                  <label class="inline-block cursor-pointer rounded-md bg-white px-3 py-2 font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                     <span x-text="imagePreview && !removeImage ? 'Changer l\'image' : 'Choisir une image'"></span>
-                     <input type="file" name="image" accept="image/*" class="sr-only" @change="chooseImage($event.target)">
-                  </label>
-                  <label x-show="hasCurrentImage" class="flex items-center gap-x-2 text-gray-700">
-                     <input type="checkbox" name="remove_image" value="1" x-model="removeImage" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                     Retirer l'image actuelle
-                  </label>
+                  <?= component('file_button', ['name' => 'image', 'label_alpine' => "imagePreview && !removeImage ? 'Changer l\\'image' : 'Choisir une image'", 'attrs' => ['@change' => 'chooseImage($event.target)']]) ?>
+                  <?= component('checkbox', ['label' => 'Retirer l\'image actuelle', 'name' => 'remove_image', 'class' => 'flex', 'attrs' => ['x-model' => 'removeImage']]) ?>
                   <p class="text-gray-500" x-show="reducing">Préparation de l'image…</p>
                   <p class="text-gray-500">Facultatif. Format paysage conseillé (16/9). La photo est réduite avant l'envoi.</p>
                </div>
             </div>
          </div>
 
-         <div class="flex justify-end gap-x-3 border-t pt-6">
-            <a href="/admin/agenda"
-               class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-               Annuler
-            </a>
-            <button type="submit" :disabled="reducing || submitting"
-               class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               Enregistrer
-            </button>
-         </div>
+         <?= component('form_actions', ['cancel' => '/admin/agenda', 'submit_attrs' => [':disabled' => 'reducing || submitting']]) ?>
       </form>
    </div>
 </div>

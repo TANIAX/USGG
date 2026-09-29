@@ -4,7 +4,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<section class="flex" x-data="{ errors : <?= isset($errors) ? 'true' : 'false'  ?> }">
+<section class="flex">
     <div class="flex justify-center w-screen h-screen md:h-1/2 lg:m-24">
 
         <!-- Logo -->
@@ -19,66 +19,26 @@
             <div class="w-full h-100">
                 <!-- Errors -->
                 <?php if (isset($errors)): ?>
-                    <div class="rounded-md bg-red-50 p-2" x-show="errors">
-                        <div class="flex">
-                            <div @click="errors = false" class="flex-shrink-0 cursor-pointer">
-                                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"
-                                    aria-hidden="true">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-red-800">Erreur
-                                    <?= count($errors) > 1 ? 's' : '' ?> détectée
-                                    <?= count($errors) > 1 ? 's' : '' ?>
-                                </h3>
-                                <div class="mt-2 text-sm text-red-700">
-                                    <ul role="list" class="list-disc space-y-1 pl-5">
-                                        <?php foreach ($errors as $error): ?>
-                                            <li>
-                                                <?= $error ?>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?= component('alert', ['messages' => $errors]) ?>
                 <?php endif; ?>
 
                 <!-- Message after a password change -->
-                <?php if (session()->getFlashdata('success')): ?>
-                    <div class="rounded-md bg-green-50 p-3 text-sm font-medium text-green-800"><?= esc(session()->getFlashdata('success')) ?></div>
-                <?php endif; ?>
+                <?= component('flash', ['class' => 'mt-0']) ?>
 
                 <h1 class="text-xl md:text-2xl font-bold leading-tight mt-6">Connexion</h1>
-                <form class="mt-6" action="/auth/login" method="post">
+                <form class="mt-6 space-y-4" action="/auth/login" method="post">
+                    <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'email', 'type' => 'email', 'required' => true, 'placeholder' => 'exemple@gmail.com',
+                        'attrs' => ['autofocus' => true, 'autocomplete' => 'username']]) ?>
+
                     <div>
-                        <label class="block text-gray-700">Email</label>
-                        <input type="email" name="email" id="email" title="email" placeholder="exemple@gmail.com"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            autofocus="" autocomplete="" required="">
+                        <?= component('field', ['label' => 'Mot de passe', 'name' => 'password', 'type' => 'password', 'required' => true,
+                            'attrs' => ['minlength' => 8, 'maxlength' => 32, 'autocomplete' => 'current-password']]) ?>
+                        <div class="text-right mt-2">
+                            <a href="/auth/mot-de-passe-oublie" class="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Mot de passe oublié ?</a>
+                        </div>
                     </div>
 
-                    <div class="mt-4">
-                        <label class="block text-gray-700">Mot de passe</label>
-                        <input type="password" name="password" id="password" title="mot de passe" minlength="8"
-                            maxlength="32"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            required="">
-                    </div>
-
-                    <div class="text-right mt-2">
-                        <a href="/auth/mot-de-passe-oublie"
-                            class="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Mot de
-                            passe oublié ?</a>
-                    </div>
-
-                    <button type="submit"
-                        class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6">Se
-                        connecter</button>
+                    <?= component('button', ['label' => 'Se connecter', 'type' => 'submit', 'size' => 'lg', 'class' => 'mt-2 w-full']) ?>
                 </form>
 
                 <?php // Connexion Google désactivée temporairement (token OAuth expiré) : passer à true pour la réactiver ?>

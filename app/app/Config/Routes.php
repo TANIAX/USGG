@@ -108,6 +108,11 @@ $routes->group('admin/galerie', ['filter' => 'auth:super_admin,guide_admin,scout
 });
 
 //Accounts and roles: super admin only
+$routes->group('admin/logs', ['filter' => 'auth:super_admin'], static function ($routes) {
+    $routes->get('', 'LogController::index');
+    $routes->get('download/(:segment)', 'LogController::download/$1');
+});
+
 $routes->group('admin/utilisateurs', ['filter' => 'auth:super_admin'], static function ($routes) {
     $routes->get('', 'UserController::index');
     $routes->get('create', 'UserController::create');

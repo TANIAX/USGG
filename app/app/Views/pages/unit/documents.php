@@ -34,7 +34,7 @@
             </tbody>
          </table>
       <?php else: ?>
-         <p class="mt-8 rounded-md bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">Aucun document n'est disponible pour le moment.</p>
+         <?= component('notice', ['tone' => 'muted', 'class' => 'mt-8', 'message' => 'Aucun document n\'est disponible pour le moment.']) ?>
       <?php endif; ?>
    </div>
 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\SessionHelper;
 use App\Helpers\GalleryHelper;
@@ -31,7 +32,7 @@ class AlbumController extends BaseController
         $albums = $this->albumRepository->getAlbums(GalleryHelper::getManageableBranches(), true, false);
 
         return view('pages/admin/gallery/index', [
-            'albums' => json_encode($albums, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'albums' => $this->toJson($albums),
             'branches' => $this->getBranchChoices(),
         ]);
     }
@@ -169,6 +170,7 @@ class AlbumController extends BaseController
         try {
             $stored = GalleryHelper::storePhoto($file->getTempName(), $album->id);
         } catch (Exception $exception) {
+            LogHelper::exception('Photo non ajoutée à l\'album ' . $album->id, $exception, 'warning');
             return $this->jsonError(400, $exception->getMessage());
         }
 
@@ -280,12 +282,6 @@ class AlbumController extends BaseController
 
     private function denied()
     {
-        $this->session->setFlashdata('errors', ['Cet album n\'existe pas ou vous n\'avez pas le droit de le gérer.']);
-        return redirect()->to(base_url('/admin/galerie'));
-    }
-
-    private function jsonError(int $status, string $message)
-    {
-        return $this->response->setStatusCode($status)->setJSON(['success' => false, 'message' => $message]);
+        return $this->redirectWithErrors('/admin/galerie', 'Cet album n\'existe pas ou vous n\'avez pas le droit de le gérer.');
     }
 }

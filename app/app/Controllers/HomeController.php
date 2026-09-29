@@ -40,7 +40,7 @@ class HomeController extends BaseController
 
         return view('pages/welcome_message', [
             'leaders' => $leaders,
-            'news' => json_encode(['items' => $news['events'], 'has_more' => $news['has_more']], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'news' => $this->toJson(['items' => $news['events'], 'has_more' => $news['has_more']]),
         ]);
     }
 

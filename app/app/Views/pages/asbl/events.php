@@ -36,12 +36,10 @@
          <?php endforeach; ?>
       </ul>
    <?php else: ?>
-      <p class="mt-6 rounded-md bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">
-         Aucun événement de l’unité n’est annoncé pour le moment. Les dates seront publiées dans l’agenda.
-      </p>
+      <?= component('notice', ['tone' => 'muted', 'class' => 'mt-6', 'message' => 'Aucun événement de l’unité n’est annoncé pour le moment. Les dates seront publiées dans l’agenda.']) ?>
    <?php endif; ?>
 
-   <a href="/en-pratique/agenda" class="mt-8 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Voir tout l'agenda</a>
+   <?= component('button', ['label' => 'Voir tout l\'agenda', 'href' => '/en-pratique/agenda', 'class' => 'mt-8']) ?>
 </div>
 
 <script>

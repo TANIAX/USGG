@@ -4,6 +4,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<?php use App\Helpers\UnitHelper; ?>
 
 <!-- Banner -->
 <header class="banner hidden md:block">
@@ -47,52 +48,10 @@
     <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
       <div class="md:col-span-3 p-4 reveal-reverse">
         <img src="<?= base_url('assets/img/logo-scout.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] object-contain w-[90vw] md:w-auto" alt="logo scouts">
-
-        <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-baladins.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo baladins">
-          </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">6 à 8 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Baladins</span>
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-louveteaux.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo louvetaux">
-          </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">8 à 12 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Louvetaux</span>
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-eclaireurs.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo éclaireurs">
-          </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">12 à 16 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Éclaireurs</span>
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal md:flex-row-reverse w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-pionniers.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom rotate-4 shadow-md" alt="logo pionners">
-          </div>
-          <div class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">16 à 18 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Pionners</span>
-          </div>
-        </div>
+        <?php foreach (UnitHelper::sections('scout') as $index => $section): ?>
+          <?= $index ? '<hr>' : '' ?>
+          <?= component('section_tile', ['section' => $section, 'mirrored' => true]) ?>
+        <?php endforeach; ?>
       </div>
 
       <div class="hidden xl:block w-24 mt-[577px] ml-[1000px] absolute">
@@ -100,52 +59,10 @@
       </div>
       <div class="md:col-span-3 reveal">
         <img src="<?= base_url('assets/img/logo-guide.png') ?>" class="p-4 mx-auto max-w-[500px] max-h-[200px] object-contain mt-4" alt="logo guide">
-
-        <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-nutons.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo nuton">
-          </div>
-          <a href="/guide/#nutons" class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">5 à 7 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Nutons</span>
-          </a>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-lutins.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo lutin">
-          </div>
-          <a href="/guide/#lutins" class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">8 à 11 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">lutins</span>
-          </a>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-aventures.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo aventures">
-          </div>
-          <a href="/guide/#aventures" class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">11 à 15 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Aventures</span>
-          </a>
-        </div>
-
-        <hr>
-
-        <div class="flex justify-center md:justify-normal flex-row-reverse md:flex-row w-full py-8">
-          <div class="bg-white p-4 w-32 h-40 flex items-center justify-center rounded-lg shadow-md transition-all ease-in-out magnetic hover:w-40">
-            <img src="<?= base_url('assets/img/logo-horizons.png') ?>" class="w-28 h-28 bg-white object-contain origin-bottom -rotate-4 shadow-md" alt="logo horizons">
-          </div>
-          <a href="/guide/#horizons" class="flex flex-col items-center justify-center p-8 magnetic">
-            <label class="font-bold text-4xl tracking-tighter uppercase leading-tight hover:text-indigo-600">16 à 18 ans</label>
-            <span class="font-bold text-gray-500 text-2xl tracking-tigh italic uppercase">Horizons</span>
-          </a>
-        </div>
+        <?php foreach (UnitHelper::sections('guide') as $index => $section): ?>
+          <?= $index ? '<hr>' : '' ?>
+          <?= component('section_tile', ['section' => $section]) ?>
+        <?php endforeach; ?>
       </div>
     </div>
 
@@ -180,10 +97,7 @@
           <div class="mt-6 flex flex-wrap items-center gap-2 text-xs">
             <time class="text-gray-500" :datetime="item.start_at" x-text="shortDate(item)"></time>
             <template x-for="section in item.sections" :key="section.id">
-              <span class="inline-flex items-center gap-x-1.5 rounded-full bg-gray-50 px-2.5 py-1 font-medium text-gray-600">
-                <span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${section.color}`"></span>
-                <span x-text="section.name"></span>
-              </span>
+              <?= component('section_tag', ['alpine' => 'section']) ?>
             </template>
           </div>
           <div class="group relative">
@@ -214,9 +128,7 @@
 
   <!-- More news: hidden when there are no more -->
   <div class="flex flex-col items-center justify-center py-12 sm:py-16">
-    <button type="button" x-show="hasMore" @click="loadMore()" :disabled="loading"
-      class="rounded-md px-6 py-2.5 text-sm font-semibold uppercase tracking-widest text-indigo-600 shadow-sm ring-1 ring-inset ring-indigo-100 hover:bg-indigo-50 disabled:opacity-50"
-      x-text="loading ? 'Chargement…' : 'Voir plus d\'actualités'"></button>
+    <?= component('button', ['variant' => 'soft', 'class' => 'px-6 py-2.5 uppercase tracking-widest', 'attrs' => ['x-show' => 'hasMore', '@click' => 'loadMore()', ':disabled' => 'loading', 'x-text' => "loading ? 'Chargement…' : 'Voir plus d\\'actualités'"]]) ?>
     <p x-show="error" class="mt-2 text-sm text-red-600" x-text="error"></p>
     <a x-show="!hasMore && items.length > 0" href="/en-pratique/agenda" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Voir tout l'agenda</a>
   </div>
@@ -235,10 +147,7 @@
         this.loading = true;
         this.error = '';
         try {
-          const response = await fetch(`${this.baseUrl}api/v1/actualites?offset=${this.items.length}&limit=3`, { headers: { 'Accept': 'application/json' } });
-          const json = await response.json();
-          if (!response.ok || !json.success)
-            throw new Error();
+          const json = await requestJson(`${this.baseUrl}api/v1/actualites?offset=${this.items.length}&limit=3`);
           // An event may already be displayed if the list changed in the meantime
           const known = this.items.map(item => item.id);
           this.items.push(...json.data.items.filter(item => !known.includes(item.id)));
@@ -269,15 +178,7 @@
     <ul id="team_list" role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 px-6 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:px-8 xl:grid-cols-6 reveal">
       <?php if (!empty($leaders)) : ?>
         <?php foreach ($leaders as $leader) : ?>
-          <li>
-            <img class="mx-auto h-24 w-24 rounded-full bg-white object-cover" src="<?= esc($leader->picture_url ?? base_url('assets/img/question-mark.jpg'), 'attr') ?>" alt="">
-            <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900"><?= esc($leader->display_name) ?></h3>
-            <p class="text-sm font-semibold leading-6 text-indigo-600"><?= esc($leader->function ?? '') ?></p>
-            <p class="mt-1 inline-flex items-center gap-x-1.5 text-xs text-gray-500">
-              <span class="h-1.5 w-1.5 rounded-full" style="background-color: <?= esc($leader->section_color, 'attr') ?>"></span>
-              <?= esc($leader->section_name) ?>
-            </p>
-          </li>
+          <?= component('leader', ['leader' => $leader, 'show_section' => true]) ?>
         <?php endforeach ?>
       <?php else : ?>
         <li class="col-span-full">
@@ -314,65 +215,21 @@
       </figure>
       <div class="space-y-8 xl:contents xl:space-y-0">
         <div class="space-y-8 xl:row-span-2">
-          <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 reveal-left">
-            <blockquote class="text-gray-900">
-            <p>”Les guides ont été une expérience formidable. Les compétences en plein air, les amis et les valeurs positives ont marqué mon enfance de manière inoubliable.”</p>
-          </blockquote>
-            <figcaption class="mt-6 flex items-center gap-x-4">
-              <img class="h-10 w-10 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-              <div>
-                <div class="font-semibold">Leslie Alexander</div>
-                <div class="text-gray-600">@Guanaco</div>
-              </div>
-            </figcaption>
-          </figure>
+          <?= component('testimonial', ['quote' => 'Les guides ont été une expérience formidable. Les compétences en plein air, les amis et les valeurs positives ont marqué mon enfance de manière inoubliable.', 'name' => 'Leslie Alexander', 'totem' => 'Guanaco', 'picture' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'class' => 'reveal-left']) ?>
 
         </div>
         <div class="space-y-8 xl:row-start-1">
-          <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5" x-bind:class="width > 768 ? 'reveal-right' : 'reveal'">
-            <blockquote class="text-gray-900">
-              <p>“Être guide a été génial. Les aventures en plein air, les amitiés durables et les valeurs enseignées ont été des éléments clés de ma jeunesse.”</p>
-            </blockquote>
-            <figcaption class="mt-6 flex items-center gap-x-4">
-              <img class="h-10 w-10 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-              <div>
-                <div class="font-semibold">Lindsay Walton</div>
-                <div class="text-gray-600">@Azara</div>
-              </div>
-            </figcaption>
-          </figure>
+          <?= component('testimonial', ['quote' => 'Être guide a été génial. Les aventures en plein air, les amitiés durables et les valeurs enseignées ont été des éléments clés de ma jeunesse.', 'name' => 'Lindsay Walton', 'totem' => 'Azara', 'picture' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'attrs' => ['x-bind:class' => "width > 768 ? 'reveal-right' : 'reveal'"]]) ?>
 
         </div>
       </div>
       <div class="space-y-8 xl:contents xl:space-y-0">
         <div class="space-y-8 xl:row-start-1">
-          <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 reveal">
-            <blockquote class="text-gray-900">
-              <p>“Les années chez les scouts ont été incroyables. Les leçons de vie, les amis proches et les souvenirs resteront toujours précieux.”</p>
-            </blockquote>
-            <figcaption class="mt-6 flex items-center gap-x-4">
-              <img class="h-10 w-10 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-              <div>
-                <div class="font-semibold">Tom Cook</div>
-                <div class="text-gray-600">@zebre</div>
-              </div>
-            </figcaption>
-          </figure>
+          <?= component('testimonial', ['quote' => 'Les années chez les scouts ont été incroyables. Les leçons de vie, les amis proches et les souvenirs resteront toujours précieux.', 'name' => 'Tom Cook', 'totem' => 'zebre', 'picture' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'class' => 'reveal']) ?>
 
         </div>
         <div class="space-y-8 xl:row-span-2">
-          <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5" x-bind:class="width > 768 ? 'reveal-right' : 'reveal'">
-            <blockquote class="text-gray-900">
-              <p>“Être scout a été une aventure enrichissante. Les activités pratiques, les amitiés solides et les valeurs positives ont laissé une empreinte durable.”</p>
-            </blockquote>
-            <figcaption class="mt-6 flex items-center gap-x-4">
-              <img class="h-10 w-10 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-              <div>
-                <div class="font-semibold">Leonard Krasner</div>
-                <div class="text-gray-600">@ailurus</div>
-              </div>
-            </figcaption>
-          </figure>
+          <?= component('testimonial', ['quote' => 'Être scout a été une aventure enrichissante. Les activités pratiques, les amitiés solides et les valeurs positives ont laissé une empreinte durable.', 'name' => 'Leonard Krasner', 'totem' => 'ailurus', 'picture' => 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'attrs' => ['x-bind:class' => "width > 768 ? 'reveal-right' : 'reveal'"]]) ?>
 
         </div>
       </div>
@@ -390,8 +247,8 @@
     <form class="w-full max-w-md lg:col-span-5 lg:pt-2">
       <div class="flex gap-x-4">
         <label for="email-address" class="sr-only">Adresse email</label>
-        <input id="email-address" name="email" type="email" autocomplete="email" required class="min-w-0 flex-auto rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Entrez votre email">
-        <button type="submit" class="flex-none rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Souscrire</button>
+        <?= component('input', ['type' => 'email', 'name' => 'email', 'id' => 'email-address', 'required' => true, 'placeholder' => 'Votre adresse e-mail', 'width' => 'min-w-0 flex-auto', 'attrs' => ['autocomplete' => 'email']]) ?>
+        <?= component('button', ['label' => 'Souscrire', 'type' => 'submit', 'class' => 'flex-none']) ?>
       </div>
       <p class="mt-4 text-sm leading-6 text-gray-900">Nous tenons compte de votre vie privée.<br>Lisez notre <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">politique de confidentialité</a>.</p>
     </form>
@@ -404,156 +261,23 @@
     <div class="mx-auto max-w-7xl divide-y divide-gray-900/10">
       <h2 class="text-2xl font-bold leading-10 tracking-tight text-gray-900">Questions fréquentes</h2>
       <dl class="mt-10 space-y-6 divide-y divide-gray-900/10">
-        <div x-data="{ open: false }" class="pt-6">
-          <dt>
-            <button @click="open = !open" type="button" class="flex w-full items-start justify-between text-left text-gray-900" aria-controls="faq-0" aria-expanded="false">
-              <span class="text-base font-semibold leading-7">Quels sont les avantages principaux de l'inscription de mon enfant achez les guide ou les scouts?</span>
-              <span class="ml-6 flex h-7 items-center">
-                <template x-if="!open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                  </svg>
-                </template>
-                <template x-if="open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                  </svg>
-                </template>
-              </span>
-            </button>
-          </dt>
-          <dd x-show="open"  
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform scale-90"
-              x-transition:enter-end="opacity-100 transform scale-100"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform scale-100"
-              x-transition:leave-end="opacity-0 transform scale-90"
-              class="mt-2 pr-12" id="faq-0">
-            <p class="text-base leading-7 text-gray-600">Les guide ou scouts offrent de nombreux avantages tels que le développement du leadership, l'apprentissage de compétences pratiques, la socialisation, la formation au travail d'équipe, et la connexion avec la nature. Les activités des guides et des scouts visent à favoriser la croissance personnelle et le sens des responsabilités.</p>
-          </dd>
-        </div>
-
-        <div x-data="{ open: false }" class="pt-6">
-          <dt>
-            <button @click="open = !open" type="button" class="flex w-full items-start justify-between text-left text-gray-900" aria-controls="faq-0" aria-expanded="false">
-              <span class="text-base font-semibold leading-7">Comment fonctionne la supervision et la sécurité lors des activités les guides et les scouts?</span>
-              <span class="ml-6 flex h-7 items-center">
-                <template x-if="!open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                  </svg>
-                </template>
-                <template x-if="open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                  </svg>
-                </template>
-              </span>
-            </button>
-          </dt>
-          <dd x-show="open"  
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform scale-90"
-              x-transition:enter-end="opacity-100 transform scale-100"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform scale-100"
-              x-transition:leave-end="opacity-0 transform scale-90"
-              class="mt-2 pr-12" id="faq-0">
-            <p class="text-base leading-7 text-gray-600">La sécurité des enfants est une priorité pour les guidew ainsi que les scouts. Les activités sont planifiées et supervisées par des adultes formés. Les camps et sorties sont organisés avec des protocoles de sécurité stricts, et les responsables sont généralement soumis à des vérifications d'antécédents.</p>
-          </dd>
-        </div>
-
-        <div x-data="{ open: false }" class="pt-6">
-          <dt>
-            <button @click="open = !open" type="button" class="flex w-full items-start justify-between text-left text-gray-900" aria-controls="faq-0" aria-expanded="false">
-              <span class="text-base font-semibold leading-7">Quel est l'engagement requis de la part des parents?</span>
-              <span class="ml-6 flex h-7 items-center">
-                <template x-if="!open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                  </svg>
-                </template>
-                <template x-if="open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                  </svg>
-                </template>
-              </span>
-            </button>
-          </dt>
-          <dd x-show="open"  
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform scale-90"
-              x-transition:enter-end="opacity-100 transform scale-100"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform scale-100"
-              x-transition:leave-end="opacity-0 transform scale-90"
-              class="mt-2 pr-12" id="faq-0">
-            <p class="text-base leading-7 text-gray-600">Les parents peuvent être impliqués de différentes manières, en fonction de leurs disponibilités. Certains peuvent devenir des bénévoles actifs, tandis que d'autres peuvent participer à des réunions ou événements ponctuels. Il est important de comprendre les attentes et de choisir un niveau d'engagement qui convient à la famille.</p>
-          </dd>
-        </div>
-
-        <div x-data="{ open: false }" class="pt-6">
-          <dt>
-            <button @click="open = !open" type="button" class="flex w-full items-start justify-between text-left text-gray-900" aria-controls="faq-0" aria-expanded="false">
-              <span class="text-base font-semibold leading-7">Comment les unités gèrent-elles l'inclusion et la diversité ?</span>
-              <span class="ml-6 flex h-7 items-center">
-                <template x-if="!open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                  </svg>
-                </template>
-                <template x-if="open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                  </svg>
-                </template>
-              </span>
-            </button>
-          </dt>
-          <dd x-show="open"  
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform scale-90"
-              x-transition:enter-end="opacity-100 transform scale-100"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform scale-100"
-              x-transition:leave-end="opacity-0 transform scale-90"
-              class="mt-2 pr-12" id="faq-0">
-            <p class="text-base leading-7 text-gray-600">Les guides et les scouts s'efforcent de promouvoir l'inclusion et la diversité. Ils accueillent des membres de toutes origines, croyances et sexes. Les activités sont conçues pour favoriser le respect mutuel et la compréhension interculturelle. Il peut être utile de discuter avec les responsables locaux pour comprendre comment ces principes sont mis en œuvre au sein du groupe.</p>
-          </dd>
-        </div>
-
-        <div x-data="{ open: false }" class="pt-6">
-          <dt>
-            <button @click="open = !open" type="button" class="flex w-full items-start justify-between text-left text-gray-900" aria-controls="faq-0" aria-expanded="false">
-              <span class="text-base font-semibold leading-7">Quels sont les coûts associés à l'adhésion aux unités guide / scoute ?</span>
-              <span class="ml-6 flex h-7 items-center">
-                <template x-if="!open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                  </svg>
-                </template>
-                <template x-if="open">
-                  <svg class="h-6 w-6 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                  </svg>
-                </template>
-              </span>
-            </button>
-          </dt>
-          <dd x-show="open"  
-              x-transition:enter="transition ease-out duration-300"
-              x-transition:enter-start="opacity-0 transform scale-90"
-              x-transition:enter-end="opacity-100 transform scale-100"
-              x-transition:leave="transition ease-in duration-300"
-              x-transition:leave-start="opacity-100 transform scale-100"
-              x-transition:leave-end="opacity-0 transform scale-90"
-              class="mt-2 pr-12" id="faq-0">
-            <p class="text-base leading-7 text-gray-600">Les coûts peuvent varier en fonction de la région et des activités spécifiques du groupe. Il est important de comprendre les frais d'adhésion, les coûts des uniformes, des camps et des événements spéciaux. De nombreuses organisations offrent des options d'aide financière pour assurer que la participation aux scouts soit accessible à tous.
-            </dd>
-        </div>
-        <!-- More questions... -->
+        <?php
+          $questions = [
+            ['Quels sont les avantages principaux de l\'inscription de mon enfant achez les guide ou les scouts?',
+              'Les guide ou scouts offrent de nombreux avantages tels que le développement du leadership, l\'apprentissage de compétences pratiques, la socialisation, la formation au travail d\'équipe, et la connexion avec la nature. Les activités des guides et des scouts visent à favoriser la croissance personnelle et le sens des responsabilités.'],
+            ['Comment fonctionne la supervision et la sécurité lors des activités les guides et les scouts?',
+              'La sécurité des enfants est une priorité pour les guidew ainsi que les scouts. Les activités sont planifiées et supervisées par des adultes formés. Les camps et sorties sont organisés avec des protocoles de sécurité stricts, et les responsables sont généralement soumis à des vérifications d\'antécédents.'],
+            ['Quel est l\'engagement requis de la part des parents?',
+              'Les parents peuvent être impliqués de différentes manières, en fonction de leurs disponibilités. Certains peuvent devenir des bénévoles actifs, tandis que d\'autres peuvent participer à des réunions ou événements ponctuels. Il est important de comprendre les attentes et de choisir un niveau d\'engagement qui convient à la famille.'],
+            ['Comment les unités gèrent-elles l\'inclusion et la diversité ?',
+              'Les guides et les scouts s\'efforcent de promouvoir l\'inclusion et la diversité. Ils accueillent des membres de toutes origines, croyances et sexes. Les activités sont conçues pour favoriser le respect mutuel et la compréhension interculturelle. Il peut être utile de discuter avec les responsables locaux pour comprendre comment ces principes sont mis en œuvre au sein du groupe.'],
+            ['Quels sont les coûts associés à l\'adhésion aux unités guide / scoute ?',
+              'Les coûts peuvent varier en fonction de la région et des activités spécifiques du groupe. Il est important de comprendre les frais d\'adhésion, les coûts des uniformes, des camps et des événements spéciaux. De nombreuses organisations offrent des options d\'aide financière pour assurer que la participation aux scouts soit accessible à tous.'],
+          ];
+        ?>
+        <?php foreach ($questions as $index => [$question, $answer]): ?>
+          <?= component('faq_item', ['id' => 'faq-' . $index, 'question' => $question, 'answer' => $answer]) ?>
+        <?php endforeach; ?>
       </dl>
     </div>
   </div>

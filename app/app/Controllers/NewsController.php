@@ -26,7 +26,7 @@ class NewsController extends BaseController
 
         return view('pages/news/show', [
             'event' => $event,
-            'eventJson' => json_encode($event, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'eventJson' => $this->toJson($event),
         ]);
     }
 }

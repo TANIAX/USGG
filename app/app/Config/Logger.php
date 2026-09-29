@@ -3,7 +3,7 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
-use CodeIgniter\Log\Handlers\FileHandler;
+use App\Log\JsonFileHandler;
 
 class Logger extends BaseConfig
 {
@@ -36,9 +36,12 @@ class Logger extends BaseConfig
      * For a live site you'll usually enable Critical or higher (3) to be logged otherwise
      * your log files will fill up very fast.
      *
+     * Here: up to the notices (6), which include the events useful to find a bug (access refused, failed login,
+     * broken link, slow request...). Can be changed in .env: logger.threshold = 9
+     *
      * @var array|int
      */
-    public $threshold = 4;
+    public $threshold = 6;
 
     /**
      * --------------------------------------------------------------------------
@@ -81,47 +84,16 @@ class Logger extends BaseConfig
 
         /*
          * --------------------------------------------------------------------
-         * File Handler
+         * JSON file handler (App\Log\JsonFileHandler)
          * --------------------------------------------------------------------
+         * One JSON line per log, with the request (url, user...), in writable/logs/app-YYYY-MM-DD.log.
+         * Read by the administration page /admin/logs.
          */
-        FileHandler::class => [
+        JsonFileHandler::class => [
+            'handles' => ['critical', 'alert', 'emergency', 'debug', 'error', 'info', 'notice', 'warning'],
 
-            // The log levels that this handler will handle.
-            'handles' => [
-                'critical',
-                'alert',
-                'emergency',
-                'debug',
-                'error',
-                'info',
-                'notice',
-                'warning',
-            ],
-
-            /*
-             * The default filename extension for log files.
-             * An extension of 'php' allows for protecting the log files via basic
-             * scripting, when they are to be stored under a publicly accessible directory.
-             *
-             * Note: Leaving it blank will default to 'log'.
-             */
-            'fileExtension' => '',
-
-            /*
-             * The file system permissions to be applied on newly created log files.
-             *
-             * IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
-             * integer notation (i.e. 0700, 0644, etc.)
-             */
-            'filePermissions' => 0644,
-
-            /*
-             * Logging Directory Path
-             *
-             * By default, logs are written to WRITEPATH . 'logs/'
-             * Specify a different destination here, if desired.
-             */
-            'path' => '',
+            // Log files older than this are deleted
+            'retentionDays' => 90,
         ],
 
         /*

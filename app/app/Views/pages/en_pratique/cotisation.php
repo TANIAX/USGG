@@ -54,29 +54,12 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  <tr>
-                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-0" colspan="2">1
-                      personne
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900"><?= $pricing->getTier1() ?>€</span> par personne</td>
-                  </tr>
-
-                  <tr>
-                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-0" colspan="2">2
-                      personnes
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900"><?= $pricing->getTier2() ?>€</span> par personne</td>
-                  </tr>
-
-                  <tr>
-                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-0" colspan="2">3
-                      personnes
-                      ou plus</td>
-                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span
-                        class="font-medium text-gray-900"><?= $pricing->getTier3() ?>€</span> par personne</td>
-                  </tr>
+                  <?php foreach (['1 personne' => $pricing->getTier1(), '2 personnes' => $pricing->getTier2(), '3 personnes ou plus' => $pricing->getTier3()] as $people => $price): ?>
+                    <tr>
+                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-0" colspan="2"><?= $people ?></td>
+                      <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500"><span class="font-medium text-gray-900"><?= $price ?>€</span> par personne</td>
+                    </tr>
+                  <?php endforeach; ?>
 
                   <tr>
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-0">
@@ -143,7 +126,6 @@
 
   <div class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32"></div>
 </div>
-</article>
 
 <script>
   function app() {
@@ -180,7 +162,7 @@
         else {
           input.value = 9;
           montant.innerHTML = 0;
-          calcul();
+          this.calcul();
         }
       }
     }

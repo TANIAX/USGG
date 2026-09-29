@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\SessionHelper;
+use App\Helpers\NavigationHelper;
 
 ?>
 
@@ -18,27 +19,16 @@ use App\Helpers\SessionHelper;
   <div class="flex gap-x-6 bg-blue-400 px-6 py-2.5 sm:px-3.5 sm:before:flex-1" style="background-color: #03497A;">
     <button type="button" class="sm:w-full cursor-pointer text-left md:hidden" @click="open = !open"
       :aria-expanded="open.toString()" :aria-label="open ? 'Fermer le menu' : 'Ouvrir le menu'">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
-        class="w-6 h-6" x-bind:class="open ? 'hidden' : ''" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-      </svg>
-
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
-        class="w-6 h-6" x-bind:class="open ? '' : 'hidden'" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+      <?= component('icon', ['name' => 'bars', 'class' => 'w-6 h-6 text-white', 'attrs' => ['x-bind:class' => "open ? 'hidden' : ''"]]) ?>
+      <?= component('icon', ['name' => 'x-mark', 'class' => 'w-6 h-6 text-white', 'attrs' => ['x-bind:class' => "open ? '' : 'hidden'"]]) ?>
     </button>
 
 
     <div class="flex flex-1 items-center justify-end md:px-12">
       <!-- Login -->
       <?php if (!SessionHelper::isUserConnected()): ?>
-        <a href="/auth/login" class="px-2">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
-            class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-          </svg>
+        <a href="/auth/login" class="px-2" aria-label="Se connecter">
+          <?= component('icon', ['name' => 'user', 'class' => 'w-4 h-4 text-white']) ?>
         </a>
       <?php else: ?>
         <div x-data="{ open: false }" class="relative">
@@ -47,31 +37,16 @@ use App\Helpers\SessionHelper;
             class="flex items-center text-white hover:text-gray-200 px-2 uppercase text-xs tracking-widest sofia font-bold"
             type="button">
             <span class="mr-1"><?= esc(SessionHelper::getUserConnected()->getTotem() ?: SessionHelper::getUserConnected()->getFirstname()) ?></span>
-            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-            </svg>
+            <?= component('icon', ['name' => 'caret-down', 'class' => 'fill-current h-4 w-4']) ?>
           </button>
           <ul
             x-show="open"
             @click.away="open = false"
             class="bg-white text-gray-700 rounded shadow-lg absolute py-2 min-w-24 mt-1 right-0 z-[99]">
-            <?php
-              // Only the administration pages allowed by the roles of the user (same roles as the filters of app/Config/Routes.php)
-              $roles = SessionHelper::getUserConnected()->getRolesAsStrings();
-              $adminLinks = [
-                ['/admin/document', 'Documents', ['super_admin', 'guide_admin', 'scout_admin']],
-                ['/admin/agenda', 'Agenda', ['admin', 'super_admin', 'guide_admin', 'scout_admin', 'asbl_admin']],
-                ['/admin/galerie', 'Galerie', ['super_admin', 'guide_admin', 'scout_admin']],
-                ['/admin/responsables', 'Responsables', ['super_admin']],
-                ['/admin/utilisateurs', 'Utilisateurs', ['super_admin']],
-              ];
-            ?>
-            <?php foreach ($adminLinks as [$href, $label, $allowedRoles]): ?>
-              <?php if (array_intersect($roles, $allowedRoles)): ?>
-                <li>
-                  <a href="<?= $href ?>" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap"><?= $label ?></a>
-                </li>
-              <?php endif ?>
+            <?php foreach (NavigationHelper::adminLinks(SessionHelper::getUserConnected()->getRolesAsStrings()) as $link): ?>
+              <li>
+                <a href="<?= $link['href'] ?>" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap"><?= $link['label'] ?></a>
+              </li>
             <?php endforeach ?>
             <li>
               <a href="/auth/logout" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap">
