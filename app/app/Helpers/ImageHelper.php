@@ -74,6 +74,32 @@ class ImageHelper
     }
 
     /**
+     * Saves a logo in PNG, fitting in a square of $maxSize px, the transparency being kept.
+     *
+     * @throws Exception If the image can not be saved
+     */
+    public static function saveTransparentPng($image, string $path, int $maxSize = 512)
+    {
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $ratio = min(1, $maxSize / max($width, $height));
+        $newWidth = max(1, (int) round($width * $ratio));
+        $newHeight = max(1, (int) round($height * $ratio));
+
+        $result = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($result, false);
+        imagesavealpha($result, true);
+        imagefill($result, 0, 0, imagecolorallocatealpha($result, 0, 0, 0, 127));
+        imagecopyresampled($result, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        $directory = dirname($path);
+        if (!is_dir($directory))
+            mkdir($directory, 0775, true);
+        if (!imagepng($result, $path, 9))
+            throw new Exception('Impossible d\'enregistrer l\'image sur le serveur.');
+    }
+
+    /**
      * Random file name (without extension), impossible to guess.
      */
     public static function randomName()

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Helpers\LogHelper;
 use Exception;
 use App\Helpers\SessionHelper;
@@ -53,6 +54,7 @@ class AlbumController extends BaseController
         $data['user_id'] = SessionHelper::getUserConnected()->getId();
         $id = $this->albumRepository->create($data);
 
+        AuditHelper::log('created', 'Album', $data['title'], '/admin/galerie/album/' . $id);
         $this->session->setFlashdata('success', 'L\'album « ' . $data['title'] . ' » a été créé, vous pouvez maintenant y ajouter des photos.');
         return redirect()->to(base_url('/admin/galerie/album/' . $id));
     }
@@ -83,6 +85,7 @@ class AlbumController extends BaseController
         $data = $this->validateAlbum();
         if ($data !== null) {
             $this->albumRepository->updateAlbum($album->id, $data);
+            AuditHelper::log('updated', 'Album', $data['title'], '/admin/galerie/album/' . $album->id);
             $this->session->setFlashdata('success', 'L\'album a été modifié.');
         }
 
@@ -99,6 +102,7 @@ class AlbumController extends BaseController
         $this->albumRepository->deleteAlbum($album->id);
         GalleryHelper::deleteAlbumDirectory($album->id);
 
+        AuditHelper::log('deleted', 'Album', $album->title . ' et ses photos');
         $this->session->setFlashdata('success', 'L\'album « ' . $album->title . ' » et ses photos ont été supprimés.');
         return redirect()->to(base_url('/admin/galerie'));
     }

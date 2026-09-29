@@ -43,11 +43,17 @@ use App\Helpers\NavigationHelper;
             x-show="open"
             @click.away="open = false"
             class="bg-white text-gray-700 rounded shadow-lg absolute py-2 min-w-24 mt-1 right-0 z-[99]">
-            <?php foreach (NavigationHelper::adminLinks(SessionHelper::getUserConnected()->getRolesAsStrings()) as $link): ?>
-              <li>
-                <a href="<?= $link['href'] ?>" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap"><?= $link['label'] ?></a>
-              </li>
-            <?php endforeach ?>
+            <?php $roles = SessionHelper::getUserConnected()->getRolesAsStrings(); ?>
+            <?php if (array_intersect($roles, NavigationHelper::ADMIN_ROLES)): ?>
+              <li><a href="/admin" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap">Tableau de bord</a></li>
+              <?php foreach (NavigationHelper::adminLinks($roles) as $link): ?>
+                <?php if (!empty($link['menu'])): ?>
+                  <li><a href="<?= $link['href'] ?>" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap"><?= $link['label'] ?></a></li>
+                <?php endif ?>
+              <?php endforeach ?>
+              <li class="my-1 border-t border-gray-100"></li>
+            <?php endif ?>
+            <li><a href="/mon-compte" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap">Mon compte</a></li>
             <li>
               <a href="/auth/logout" class="block hover:bg-gray-200 py-2 px-4 font-medium whitespace-nowrap">
                 Déconnexion

@@ -188,7 +188,8 @@
     </ul>
   </div>
 </article>
-<!-- Testimonials -->
+<!-- Testimonials (admin/contenus): the first one is highlighted -->
+<?php if ($testimonials): ?>
 <div class="relative isolate overflow-hidden bg-white pb-32 pt-24 sm:pt-32" x-data="{ width : (window.innerWidth > 0) ? window.innerWidth : screen.width }"  @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;">
   <div class="absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 transform-gpu overflow-hidden opacity-30 blur-3xl" aria-hidden="true">
     <div class="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-[#FCF7F8] to-[#CED3DC]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
@@ -198,90 +199,54 @@
   </div>
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-xl text-center">
-      <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Ils ont passés leurs enfances chez nous.</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Ils ont passé leur enfance chez nous.</h2>
     </div>
-    <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
-      <figure class="rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1 reveal">
-        <blockquote class="p-6 text-lg font-semibold leading-7 tracking-tight text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
-          <p>”Mon enfance chez les guides a été une expérience enrichissante. Les activités en plein air m'ont appris la collaboration,le respect de la nature. Les souvenirs de feux de camp et d'aventures restent des moments forts de mon enfance, façonnant des valeurs qui perdurent.”</p>
-        </blockquote>
-        <figcaption class="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
-          <img class="h-10 w-10 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80" alt="">
-          <div class="flex-auto">
-            <div class="font-semibold">Brenna Goyette</div>
-            <div class="text-gray-600">@Koala</div>
-          </div>
-        </figcaption>
-      </figure>
-      <div class="space-y-8 xl:contents xl:space-y-0">
-        <div class="space-y-8 xl:row-span-2">
-          <?= component('testimonial', ['quote' => 'Les guides ont été une expérience formidable. Les compétences en plein air, les amis et les valeurs positives ont marqué mon enfance de manière inoubliable.', 'name' => 'Leslie Alexander', 'totem' => 'Guanaco', 'picture' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'class' => 'reveal-left']) ?>
-
-        </div>
-        <div class="space-y-8 xl:row-start-1">
-          <?= component('testimonial', ['quote' => 'Être guide a été génial. Les aventures en plein air, les amitiés durables et les valeurs enseignées ont été des éléments clés de ma jeunesse.', 'name' => 'Lindsay Walton', 'totem' => 'Azara', 'picture' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'attrs' => ['x-bind:class' => "width > 768 ? 'reveal-right' : 'reveal'"]]) ?>
-
-        </div>
-      </div>
-      <div class="space-y-8 xl:contents xl:space-y-0">
-        <div class="space-y-8 xl:row-start-1">
-          <?= component('testimonial', ['quote' => 'Les années chez les scouts ont été incroyables. Les leçons de vie, les amis proches et les souvenirs resteront toujours précieux.', 'name' => 'Tom Cook', 'totem' => 'zebre', 'picture' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'class' => 'reveal']) ?>
-
-        </div>
-        <div class="space-y-8 xl:row-span-2">
-          <?= component('testimonial', ['quote' => 'Être scout a été une aventure enrichissante. Les activités pratiques, les amitiés solides et les valeurs positives ont laissé une empreinte durable.', 'name' => 'Leonard Krasner', 'totem' => 'ailurus', 'picture' => 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', 'attrs' => ['x-bind:class' => "width > 768 ? 'reveal-right' : 'reveal'"]]) ?>
-
-        </div>
-      </div>
+    <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 text-sm leading-6 text-gray-900 sm:mt-20 sm:grid-cols-2 xl:max-w-none xl:grid-cols-3">
+      <?php foreach ($testimonials as $index => $testimonial): ?>
+        <?= component('testimonial', ['quote' => $testimonial->quote, 'name' => $testimonial->name, 'totem' => $testimonial->totem,
+          'picture' => \App\Controllers\ContentController::pictureUrl($testimonial->picture), 'featured' => $index === 0,
+          'class' => $index === 0 ? 'sm:col-span-2 xl:col-span-3 xl:mx-auto xl:max-w-3xl reveal' : 'reveal']) ?>
+      <?php endforeach; ?>
     </div>
   </div>
 </div>
+<?php endif; ?>
 
-<!-- Sign up newsletters -->
-<div class="bg-slate-100 py-16 sm:py-24 lg:py-32">
+<!-- Newsletter: subscription confirmed by e-mail -->
+<div id="newsletter" class="bg-slate-100 py-16 sm:py-24 lg:py-32 scroll-mt-8">
   <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:gap-8 lg:px-8">
     <div class="max-w-xl text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:col-span-7">
-      <h2 class="inline sm:block lg:inline xl:block">Souhaitez-vous être notifiés lors de la parution d'une actualité?</h2>
+      <h2 class="inline sm:block lg:inline xl:block">Souhaitez-vous être notifiés lors de la parution d'une actualité ?</h2>
       <p class="block sm:pt-8 md:pt-4">Inscrivez-vous à notre newsletter.</p>
     </div>
-    <form class="w-full max-w-md lg:col-span-5 lg:pt-2">
+    <form method="POST" action="<?= base_url('newsletter') ?>" class="w-full max-w-md lg:col-span-5 lg:pt-2">
+      <?= component('flash') ?>
+      <?= \App\Helpers\FormGuard::field() ?>
       <div class="flex gap-x-4">
-        <label for="email-address" class="sr-only">Adresse email</label>
-        <?= component('input', ['type' => 'email', 'name' => 'email', 'id' => 'email-address', 'required' => true, 'placeholder' => 'Votre adresse e-mail', 'width' => 'min-w-0 flex-auto', 'attrs' => ['autocomplete' => 'email']]) ?>
-        <?= component('button', ['label' => 'Souscrire', 'type' => 'submit', 'class' => 'flex-none']) ?>
+        <label for="email-address" class="sr-only">Adresse e-mail</label>
+        <?= component('input', ['type' => 'email', 'name' => 'email', 'id' => 'email-address', 'required' => true, 'placeholder' => 'Votre adresse e-mail', 'width' => 'min-w-0 flex-auto', 'attrs' => ['autocomplete' => 'email', 'maxlength' => 255]]) ?>
+        <?= component('button', ['label' => 'S\'inscrire', 'type' => 'submit', 'class' => 'flex-none']) ?>
       </div>
-      <p class="mt-4 text-sm leading-6 text-gray-900">Nous tenons compte de votre vie privée.<br>Lisez notre <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">politique de confidentialité</a>.</p>
+      <p class="mt-4 text-sm leading-6 text-gray-900">Vous recevrez un e-mail pour confirmer l'inscription. Votre adresse sert uniquement à l'envoi des actualités de l'unité ; chaque e-mail contient un lien de désinscription.</p>
     </form>
   </div>
 </div>
 
-<!-- FAQ -->
+<!-- FAQ (admin/contenus) -->
+<?php if ($questions): ?>
 <article class="bg-white" id="faq">
   <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
     <div class="mx-auto max-w-7xl divide-y divide-gray-900/10">
       <h2 class="text-2xl font-bold leading-10 tracking-tight text-gray-900">Questions fréquentes</h2>
       <dl class="mt-10 space-y-6 divide-y divide-gray-900/10">
-        <?php
-          $questions = [
-            ['Quels sont les avantages principaux de l\'inscription de mon enfant achez les guide ou les scouts?',
-              'Les guide ou scouts offrent de nombreux avantages tels que le développement du leadership, l\'apprentissage de compétences pratiques, la socialisation, la formation au travail d\'équipe, et la connexion avec la nature. Les activités des guides et des scouts visent à favoriser la croissance personnelle et le sens des responsabilités.'],
-            ['Comment fonctionne la supervision et la sécurité lors des activités les guides et les scouts?',
-              'La sécurité des enfants est une priorité pour les guidew ainsi que les scouts. Les activités sont planifiées et supervisées par des adultes formés. Les camps et sorties sont organisés avec des protocoles de sécurité stricts, et les responsables sont généralement soumis à des vérifications d\'antécédents.'],
-            ['Quel est l\'engagement requis de la part des parents?',
-              'Les parents peuvent être impliqués de différentes manières, en fonction de leurs disponibilités. Certains peuvent devenir des bénévoles actifs, tandis que d\'autres peuvent participer à des réunions ou événements ponctuels. Il est important de comprendre les attentes et de choisir un niveau d\'engagement qui convient à la famille.'],
-            ['Comment les unités gèrent-elles l\'inclusion et la diversité ?',
-              'Les guides et les scouts s\'efforcent de promouvoir l\'inclusion et la diversité. Ils accueillent des membres de toutes origines, croyances et sexes. Les activités sont conçues pour favoriser le respect mutuel et la compréhension interculturelle. Il peut être utile de discuter avec les responsables locaux pour comprendre comment ces principes sont mis en œuvre au sein du groupe.'],
-            ['Quels sont les coûts associés à l\'adhésion aux unités guide / scoute ?',
-              'Les coûts peuvent varier en fonction de la région et des activités spécifiques du groupe. Il est important de comprendre les frais d\'adhésion, les coûts des uniformes, des camps et des événements spéciaux. De nombreuses organisations offrent des options d\'aide financière pour assurer que la participation aux scouts soit accessible à tous.'],
-          ];
-        ?>
-        <?php foreach ($questions as $index => [$question, $answer]): ?>
-          <?= component('faq_item', ['id' => 'faq-' . $index, 'question' => $question, 'answer' => $answer]) ?>
+        <?php foreach ($questions as $question): ?>
+          <?= component('faq_item', ['id' => 'faq-' . $question->id, 'question' => $question->question, 'slot' => nl2br(esc($question->answer))]) ?>
         <?php endforeach; ?>
       </dl>
     </div>
   </div>
 </article>
+<?php endif; ?>
 
 <style>
   body {

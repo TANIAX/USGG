@@ -66,11 +66,18 @@ class SessionHelper
         if (!$user)
             return;
 
-        $row = \Config\Database::connect()->table('user')->select('exists')->where('id', $user->getId())->get()->getRowObject();
+        $row = \Config\Database::connect()->table('user')->select('exists, firstname, name, totem, phone, picture')->where('id', $user->getId())->get()->getRowObject();
         if (!$row || !$row->exists) {
             self::disconnectUser();
             return;
         }
+
+        // Profile changed from "Mon compte" (name shown in the header)
+        $user->setFirstname((string) $row->firstname);
+        $user->setName((string) $row->name);
+        $user->setTotem((string) $row->totem);
+        $user->setPhone((string) $row->phone);
+        $user->setPicture((string) $row->picture);
 
         $roles = service('repository', 'Role')->getRolesByUserId($user->getId(), \App\Repositories\BaseRepository::RESULT_AS_CUSTOM, \App\Entities\Role::class);
         $user->setRoles($roles);

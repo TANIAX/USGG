@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Repositories\PricingRepository;
 
 /**
@@ -57,6 +58,7 @@ class PricingController extends BaseController
             $this->db()->table('pricing')->insert($data);
 
         log_message('notice', 'Tarifs des cotisations modifiés : {tiers} € (réduction {reduction} €)', ['tiers' => $data['tier_1'] . ' / ' . $data['tier_2'] . ' / ' . $data['tier_3'], 'reduction' => $data['reduction']]);
+        AuditHelper::log('updated', 'Cotisations', $data['tier_1'] . ' / ' . $data['tier_2'] . ' / ' . $data['tier_3'] . ' € (réduction ' . $data['reduction'] . ' €)', '/admin/cotisations');
         $this->session->setFlashdata('success', 'Les tarifs ont été enregistrés : ils sont affichés sur la page Cotisation.');
         return redirect()->to(base_url('/admin/cotisations'));
     }

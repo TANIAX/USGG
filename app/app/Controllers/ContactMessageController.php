@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Repositories\ContactMessageRepository;
 
 /**
@@ -40,10 +41,13 @@ class ContactMessageController extends BaseController
             return $this->jsonError(400, 'Action inconnue.');
 
         $ids = array_map('intval', (array) $this->request->getPost('ids'));
-        if ($action === 'delete')
+        if ($action === 'delete') {
             $this->messageRepository->deleteMessages($ids);
-        else
+            AuditHelper::log('deleted', 'Message', count($ids) . ' message(s) de contact');
+        }
+        else {
             $this->messageRepository->updateMessages($ids, $actions[$action]);
+        }
 
         return $this->response->setJSON(['success' => true, 'messages' => $this->messageRepository->getAllRecent()]);
     }

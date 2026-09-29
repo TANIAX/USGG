@@ -2,11 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Helpers\LogHelper;
-use Exception;
-use App\Helpers\FileHelper;
+use App\Helpers\AuditHelper;
+use App\Helpers\ProfilePictureHelper;
 use App\Helpers\AccountHelper;
-use App\Helpers\ImageHelper;
 use App\Controllers\BaseController;
 use App\Repositories\UserRepository;
 use App\Repositories\SectionRepository;
@@ -19,8 +17,6 @@ use App\Repositories\SectionLeaderRepository;
  */
 class LeaderController extends BaseController
 {
-    private const PICTURE_SIZE = 400;
-
     private UserRepository $userRepository;
     private SectionRepository $sectionRepository;
     private SectionLeaderRepository $leaderRepository;
@@ -121,6 +117,7 @@ class LeaderController extends BaseController
         }
 
         $this->leaderRepository->add($userId, $data['section_id'], $data['user_type_id']);
+        AuditHelper::log('created', 'Responsable', $data['email'], '/admin/responsables');
         $this->session->setFlashdata('success', implode(' ', $messages));
         return redirect()->to(base_url('/admin/responsables'));
     }
@@ -151,6 +148,7 @@ class LeaderController extends BaseController
             $this->deletePicture($leader->picture);
         $this->leaderRepository->updateLeader($leader->id, $data['section_id'], $data['user_type_id'], $data['section_id'] !== $leader->section_id);
 
+        AuditHelper::log('updated', 'Responsable', $leader->display_name ?: $leader->email, '/admin/responsables/edit/' . $leader->id);
         $this->session->setFlashdata('success', 'La fiche de ' . ($leader->display_name ?: $leader->email) . ' a été modifiée.');
         return redirect()->to(base_url('/admin/responsables'));
     }
@@ -165,6 +163,7 @@ class LeaderController extends BaseController
             return $this->notFound();
 
         $this->leaderRepository->remove($leader->id);
+        AuditHelper::log('deleted', 'Responsable', ($leader->display_name ?: $leader->email) . ' (section ' . $leader->section_name . ')');
         $this->session->setFlashdata('success', ($leader->display_name ?: $leader->email) . ' a été retiré(e) des responsables (section ' . $leader->section_name . ') ; son compte est conservé.');
         return redirect()->to(base_url('/admin/responsables'));
     }
@@ -236,42 +235,16 @@ class LeaderController extends BaseController
     }
 
     /**
-     * Stores the portrait sent with the form: square, 400px, re-encoded without metadata, in public/uploads/pp/.
-     *
-     * @return array ['replace' => false] | ['replace' => true, 'picture' => string] | ['error' => string]
+     * Stores the portrait sent with the form (see ProfilePictureHelper).
      */
     private function processPicture()
     {
-        $file = $this->request->getFile('picture');
-        if ($file === null || $file->getError() === UPLOAD_ERR_NO_FILE)
-            return ['replace' => false];
-
-        if (!$file->isValid())
-            return ['error' => $file->getError() === UPLOAD_ERR_INI_SIZE ? 'La photo est trop lourde pour le serveur.' : 'La photo n\'a pas pu être envoyée.'];
-        if (!in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true))
-            return ['error' => 'Format de photo non accepté (JPEG, PNG, WebP ou GIF).'];
-
-        try {
-            $name = ImageHelper::randomName() . '.jpg';
-            ImageHelper::saveJpeg(ImageHelper::square(ImageHelper::open($file->getTempName()), self::PICTURE_SIZE), $this->picturePath($name));
-        } catch (Exception $exception) {
-            LogHelper::exception('Photo de responsable non enregistrée', $exception);
-            return ['error' => $exception->getMessage()];
-        }
-
-        return ['replace' => true, 'picture' => $name];
+        return ProfilePictureHelper::store();
     }
 
     private function deletePicture(?string $picture)
     {
-        // Only a file of the profile pictures directory, never a path given by someone
-        if ($picture && basename($picture) === $picture && is_file($this->picturePath($picture)))
-            unlink($this->picturePath($picture));
-    }
-
-    private function picturePath(string $name)
-    {
-        return ROOTPATH . 'public' . DIRECTORY_SEPARATOR . FileHelper::PROFIL_PICTURE_DIRECTORY . $name;
+        ProfilePictureHelper::delete($picture);
     }
 
     private function notFound()

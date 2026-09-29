@@ -16,8 +16,8 @@ use App\Repositories\PasswordResetRepository;
 class PasswordResetController extends BaseController
 {
     // Same rules as the login form (App\DTO\Request\Auth\LoginRequestDTO)
-    private const PASSWORD_MIN_LENGTH = 8;
-    private const PASSWORD_MAX_LENGTH = 32;
+    public const PASSWORD_MIN_LENGTH = 8;
+    public const PASSWORD_MAX_LENGTH = 32;
 
     // Limits: requests per IP address, and delay between two e-mails for the same account
     private const MAX_REQUESTS_PER_IP = 5;
