@@ -204,12 +204,6 @@ class UserController extends BaseController
 
     private function notFound()
     {
-        $this->session->setFlashdata('errors', ['Ce compte n\'existe pas.']);
-        return redirect()->to(base_url('/admin/utilisateurs'));
-    }
-
-    private function toJson($data)
-    {
-        return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        return $this->redirectWithErrors('/admin/utilisateurs', 'Ce compte n\'existe pas.');
     }
 }

@@ -34,7 +34,7 @@ class EnPratiqueController extends BaseController
         $sections = $this->sectionRepository->getAllOrdered();
 
         return view('pages/en_pratique/agenda', [
-            'sections' => json_encode($sections, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+            'sections' => $this->toJson($sections)
         ]);
     }
 

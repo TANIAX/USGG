@@ -37,7 +37,7 @@ abstract class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = [];
+    protected $helpers = ['component'];
 
     /**
      * @var mixed $session The session object.
@@ -57,6 +57,32 @@ abstract class BaseController extends Controller
         \App\Helpers\SessionHelper::refreshConnectedUser();
     }
 
+
+    /**
+     * Data encoded for the javascript of a view (see js_data() of the component helper).
+     */
+    protected function toJson($data): string
+    {
+        return js_data($data);
+    }
+
+    /**
+     * Error answer of a request made in javascript ({success: false, message}).
+     */
+    protected function jsonError(int $status, string $message)
+    {
+        return $this->response->setStatusCode($status)->setJSON(['success' => false, 'message' => $message]);
+    }
+
+    /**
+     * Redirects to a page of the site, the errors being shown by the flash messages (components/flash).
+     * @param string|array $errors
+     */
+    protected function redirectWithErrors(string $path, $errors)
+    {
+        $this->session->setFlashdata('errors', (array) $errors);
+        return redirect()->to(base_url($path));
+    }
 
     /**
      * Workaround for JSON request stored in "body" field and "form-data" request content  stored in the "post" field.

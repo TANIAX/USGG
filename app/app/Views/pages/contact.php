@@ -24,11 +24,7 @@
                     <div class="mt-6">
                         <dt class="sr-only">Email</dt>
                         <dd class="flex">
-                            <svg class="h-6 w-6 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                            </svg>
+                            <?= component('icon', ['name' => 'envelope', 'class' => 'h-6 w-6 flex-shrink-0 text-gray-400']) ?>
                             <span class="ml-3">contact@gsgosselies.be</span>
                         </dd>
                     </div>
@@ -43,32 +39,12 @@
         <div class="bg-white px-6 py-16 lg:col-span-3 lg:px-8 lg:py-24 xl:pl-12">
             <div class="mx-auto max-w-lg lg:max-w-none">
                 <form action="#" method="POST" class="grid grid-cols-1 gap-y-6">
+                    <?= component('field', ['label' => 'Nom - Prénom', 'name' => 'fullname', 'required' => true, 'placeholder' => 'John Doe', 'attrs' => ['autocomplete' => 'name']]) ?>
+                    <?= component('field', ['label' => 'Adresse e-mail', 'name' => 'email', 'type' => 'email', 'required' => true, 'placeholder' => 'exemple@gmail.com', 'attrs' => ['autocomplete' => 'email']]) ?>
+                    <?= component('field', ['label' => 'Téléphone', 'name' => 'phone', 'type' => 'tel', 'placeholder' => '0497/12.34.45', 'attrs' => ['autocomplete' => 'tel']]) ?>
+                    <?= component('field', ['label' => 'Message', 'name' => 'message', 'type' => 'textarea', 'rows' => 4, 'required' => true, 'placeholder' => 'Votre message']) ?>
                     <div>
-                        <label class="block text-gray-700">Nom - Prénom</label>
-                        <input type="text" name="fullname" placeholder="John Doe"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            autofocus="" autocomplete="" required="">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700">Email</label>
-                        <input type="email" name="email" placeholder="exemple@gmail.com"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            autofocus="" autocomplete="" required="">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700">Téléphone</label>
-                        <input type="text" name="fullname" placeholder="0497/12.34.45"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            autofocus="" autocomplete="" required="">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700">Message</label>
-                        <textarea id="message" name="message" placeholder="Votre message" rows="4"
-                            class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
-                    </div>
-                    <div>
-                        <button type="submit"
-                            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Envoyer</button>
+                        <?= component('button', ['label' => 'Envoyer', 'type' => 'submit', 'size' => 'lg']) ?>
                     </div>
                 </form>
             </div>

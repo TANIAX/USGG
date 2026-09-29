@@ -1,47 +1,14 @@
 <?php
-   // Temporary texts, to be reviewed by the unit. The names and photos of the teams will be added later.
-   $units = [
-      'guide' => [
-         'name' => 'Guides',
-         'label' => 'l’unité guide',
-         'presentation' => '/guide',
-         'sections' => [
-            ['id' => 'nutons', 'name' => 'Nutons', 'ages' => '5 à 7 ans', 'logo' => 'assets/img/logo-nutons.png'],
-            ['id' => 'lutins', 'name' => 'Lutins', 'ages' => '8 à 11 ans', 'logo' => 'assets/img/logo-lutins.png'],
-            ['id' => 'aventures', 'name' => 'Aventures', 'ages' => '11 à 15 ans', 'logo' => 'assets/img/logo-aventures.png'],
-            ['id' => 'horizons', 'name' => 'Horizons', 'ages' => '16 à 18 ans', 'logo' => 'assets/img/logo-horizons.png'],
-         ],
-      ],
-      'scout' => [
-         'name' => 'Scouts',
-         'label' => 'l’unité scoute',
-         'presentation' => '/scout',
-         'sections' => [
-            ['id' => 'baladins', 'name' => 'Baladins', 'ages' => '6 à 8 ans', 'logo' => 'assets/img/logo-baladins.png'],
-            ['id' => 'louveteaux', 'name' => 'Louveteaux', 'ages' => '8 à 12 ans', 'logo' => 'assets/img/logo-louveteaux.png'],
-            ['id' => 'eclaireurs', 'name' => 'Éclaireurs', 'ages' => '12 à 16 ans', 'logo' => 'assets/img/logo-eclaireurs.png'],
-            ['id' => 'pionniers', 'name' => 'Pionniers', 'ages' => '16 à 18 ans', 'logo' => 'assets/img/logo-pionniers.png'],
-         ],
-      ],
-   ];
-   $unit = $units[$branch];
+   // Temporary texts, to be reviewed by the unit
+   use App\Helpers\UnitHelper;
+
+   $unit = UnitHelper::UNITS[$branch];
 
    // Leaders by section (slug); no personal contact information is shown
    $leadersBySection = [];
    foreach ($leaders as $leader) {
       $leadersBySection[$leader->section_slug][] = $leader;
    }
-   $renderLeaders = function (array $sectionLeaders) {
-      $html = '<ul role="list" class="mt-4 w-full space-y-3 text-left">';
-      foreach ($sectionLeaders as $leader) {
-         $picture = $leader->picture_url ?? base_url('assets/img/question-mark.jpg');
-         $html .= '<li class="flex items-center gap-x-3">'
-            . '<img src="' . esc($picture, 'attr') . '" alt="" class="h-10 w-10 flex-none rounded-full bg-gray-100 object-cover">'
-            . '<div class="min-w-0"><p class="truncate text-sm font-semibold text-gray-900">' . esc($leader->display_name) . '</p>'
-            . '<p class="truncate text-xs text-gray-500">' . esc($leader->function ?? '') . '</p></div></li>';
-      }
-      return $html . '</ul>';
-   };
 ?>
 <?= $this->extend('pages/default') ?>
 
@@ -51,58 +18,40 @@
 
 <?= $this->section('content') ?>
 <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8 xl:py-20">
-   <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Staff d'unité</h1>
-
-   <div class="mt-8 grid gap-8 text-lg text-gray-600 lg:grid-cols-2 lg:gap-12">
-      <div>
-         <p>
-            Le staff d’unité coordonne la vie de <?= $unit['label'] ?> : il accompagne les équipes d’animation,
-            veille à la cohérence du projet pédagogique et fait le lien avec les parents, l’ASBL et la fédération.
-         </p>
-         <p class="mt-4">
-            Il est composé du chef d’unité et de ses équipiers, tous bénévoles. Ils sont les premiers interlocuteurs
-            des familles pour toute question sur l’organisation de l’unité.
-         </p>
-      </div>
-      <div>
-         <p>
-            Chaque section est animée par sa propre équipe : un animateur responsable et plusieurs animateurs,
-            formés au cours de formations reconnues par la Fédération Wallonie-Bruxelles.
-         </p>
-         <p class="mt-4">
-            Vous souhaitez nous rejoindre ou donner un coup de main ? <a href="/contact" class="link">Contactez-nous</a>,
-            chaque bonne volonté est la bienvenue.
-         </p>
-      </div>
-   </div>
+   <?= component('page_intro', ['title' => 'Staff d\'unité', 'columns' => [
+      ['Le staff d’unité coordonne la vie de ' . $unit['label'] . ' : il accompagne les équipes d’animation, veille à la cohérence du projet pédagogique et fait le lien avec les parents, l’ASBL et la fédération.',
+       'Il est composé du chef d’unité et de ses équipiers, tous bénévoles. Ils sont les premiers interlocuteurs des familles pour toute question sur l’organisation de l’unité.'],
+      ['Chaque section est animée par sa propre équipe : un animateur responsable et plusieurs animateurs, formés au cours de formations reconnues par la Fédération Wallonie-Bruxelles.',
+       'Vous souhaitez nous rejoindre ou donner un coup de main ? <a href="/contact" class="link">Contactez-nous</a>, chaque bonne volonté est la bienvenue.'],
+   ]]) ?>
 
    <!-- Unit staff (section "Unité") -->
    <?php if (!empty($leadersBySection['unite'])): ?>
       <h2 class="mt-16 text-2xl font-semibold text-gray-900">Le staff d'unité</h2>
       <ul role="list" class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
          <?php foreach ($leadersBySection['unite'] as $leader): ?>
-            <li class="text-center">
-               <img src="<?= esc($leader->picture_url ?? base_url('assets/img/question-mark.jpg'), 'attr') ?>" alt="" class="mx-auto h-24 w-24 rounded-full bg-gray-100 object-cover">
-               <p class="mt-3 font-semibold text-gray-900"><?= esc($leader->display_name) ?></p>
-               <p class="text-sm text-indigo-600"><?= esc($leader->function ?? '') ?></p>
-            </li>
+            <?= component('leader', ['leader' => $leader]) ?>
          <?php endforeach; ?>
       </ul>
    <?php endif; ?>
 
    <h2 class="mt-16 text-2xl font-semibold text-gray-900">Les équipes d'animation</h2>
    <ul role="list" class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <?php foreach ($unit['sections'] as $section): ?>
+      <?php foreach (UnitHelper::sections($branch) as $section): ?>
          <li class="flex flex-col items-center rounded-2xl bg-white p-6 text-center shadow ring-1 ring-gray-200">
             <img class="h-24 w-24 rounded-full bg-white object-contain ring-1 ring-gray-200" src="<?= base_url($section['logo']) ?>" alt="">
-            <h3 class="mt-4 font-semibold text-gray-900"><?= $section['name'] ?></h3>
-            <p class="text-sm text-gray-500"><?= $section['ages'] ?></p>
-            <?php if (!empty($leadersBySection[$section['id']])): ?>
-               <?= $renderLeaders($leadersBySection[$section['id']]) ?>
+            <h3 class="mt-4 font-semibold text-gray-900"><?= esc($section['name']) ?></h3>
+            <p class="text-sm text-gray-500"><?= esc($section['ages']) ?></p>
+            <?php if (!empty($leadersBySection[$section['slug']])): ?>
+               <ul role="list" class="mt-4 w-full space-y-3 text-left">
+                  <?php foreach ($leadersBySection[$section['slug']] as $leader): ?>
+                     <?= component('leader', ['leader' => $leader, 'variant' => 'row']) ?>
+                  <?php endforeach; ?>
+               </ul>
             <?php else: ?>
-               <p class="mt-3 text-sm text-gray-600">L’équipe d’animation des <?= $section['name'] ?> sera présentée ici prochainement.</p>
+               <p class="mt-3 text-sm text-gray-600">L’équipe d’animation des <?= esc($section['name']) ?> sera présentée ici prochainement.</p>
             <?php endif; ?>
-            <a href="<?= $unit['presentation'] ?>#<?= $section['id'] ?>" class="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-500">Découvrir la section</a>
+            <a href="<?= $section['href'] ?>" class="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-500">Découvrir la section</a>
          </li>
       <?php endforeach; ?>
    </ul>

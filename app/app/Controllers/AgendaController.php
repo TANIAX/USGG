@@ -114,8 +114,7 @@ class AgendaController extends BaseController
         $event = $this->eventRepository->getWithSections((int) $id);
 
         if ($event === null) {
-            $this->session->setFlashdata('errors', ['L\'événement n\'existe pas ou a déjà été supprimé.']);
-            return redirect()->to(base_url('/admin/agenda'));
+            return $this->redirectWithErrors('/admin/agenda', 'L\'événement n\'existe pas ou a déjà été supprimé.');
         }
 
         $this->eventRepository->delete($event->id, false);
@@ -172,13 +171,11 @@ class AgendaController extends BaseController
         $event = $this->eventRepository->getWithSections($id);
 
         if ($event === null) {
-            $this->session->setFlashdata('errors', ['L\'événement n\'existe pas ou a été supprimé.']);
-            return redirect()->to(base_url('/admin/agenda'));
+            return $this->redirectWithErrors('/admin/agenda', 'L\'événement n\'existe pas ou a été supprimé.');
         }
 
         if (new DateTime($event->end_at) < new DateTime()) {
-            $this->session->setFlashdata('errors', ['L\'événement « ' . $event->title . ' » est terminé, il ne peut plus être modifié.']);
-            return redirect()->to(base_url('/admin/agenda?periode=passes'));
+            return $this->redirectWithErrors('/admin/agenda?periode=passes', ['L\'événement « ' . $event->title . ' » est terminé, il ne peut plus être modifié.']);
         }
 
         return $event;
@@ -306,8 +303,4 @@ class AgendaController extends BaseController
     /**
      * Encodes data to be safely printed inside a <script> tag.
      */
-    private function toJson($data)
-    {
-        return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-    }
 }

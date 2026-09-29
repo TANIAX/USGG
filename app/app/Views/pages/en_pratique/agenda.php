@@ -15,11 +15,7 @@
     <div class="mt-6">
         <p class="text-sm text-gray-500 mb-2">Afficher les activités de :</p>
         <div class="flex flex-wrap gap-2">
-            <button type="button" @click="selectedSections = []"
-                class="rounded-full px-3 py-1 text-sm font-medium ring-1 ring-inset"
-                :class="selectedSections.length === 0 ? 'bg-indigo-600 text-white ring-indigo-600' : 'bg-white text-gray-700 ring-gray-300 hover:bg-gray-50'">
-                Toutes les sections
-            </button>
+            <?= component('chip', ['label' => 'Toutes les sections', 'active_alpine' => 'selectedSections.length === 0', 'attrs' => ['@click' => 'selectedSections = []']]) ?>
             <template x-for="section in sections" :key="section.id">
                 <button type="button" @click="toggleSection(section)"
                     class="flex items-center gap-x-2 rounded-full bg-white py-1 pl-1 pr-3 text-sm font-medium text-gray-700 ring-1 ring-inset hover:bg-gray-50"
@@ -37,25 +33,9 @@
         <!-- Calendar -->
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
             <div class="flex items-center text-gray-900">
-                <button type="button" @click="moveCurrentDateTo(-1)"
-                    class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
-                    <span class="sr-only">Mois précédent</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
+                <?= component('icon_button', ['icon' => 'chevron-left', 'label' => 'Mois précédent', 'class' => '-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'moveCurrentDateTo(-1)']]) ?>
                 <div class="flex-auto text-sm font-semibold uppercase" x-text="currentDateString"></div>
-                <button type="button" @click="moveCurrentDateTo(1)"
-                    class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
-                    <span class="sr-only">Mois suivant</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
+                <?= component('icon_button', ['icon' => 'chevron-right', 'label' => 'Mois suivant', 'class' => '-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'moveCurrentDateTo(1)']]) ?>
             </div>
             <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
                 <div>L</div>
@@ -130,47 +110,19 @@
                             <div class="flex-auto">
                                 <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600">
                                     <span x-text="event.title"></span>
-                                    <span x-show="isPast(event)" class="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-500">Terminé</span>
+                                    <?= component('badge', ['label' => 'Terminé', 'shape' => 'tag', 'class' => 'ml-2', 'attrs' => ['x-show' => 'isPast(event)']]) ?>
                                 </h3>
                                 <dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-                                    <div class="flex items-start space-x-3">
-                                        <dt class="mt-0.5">
-                                            <span class="sr-only">Date</span>
-                                            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
-                                                aria-hidden="true">
-                                                <path fill-rule="evenodd"
-                                                    d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </dt>
-                                        <dd><time :datetime="event.start_at" x-text="formatEventPeriod(event)"></time></dd>
-                                    </div>
-                                    <div x-show="event.location"
-                                        class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-                                        <dt class="mt-0.5">
-                                            <span class="sr-only">Emplacement</span>
-                                            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
-                                                aria-hidden="true">
-                                                <path fill-rule="evenodd"
-                                                    d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </dt>
-                                        <dd x-text="event.location"></dd>
-                                    </div>
+                                    <?= component('detail', ['icon' => 'calendar', 'label' => 'Date', 'slot' => '<time :datetime="event.start_at" x-text="formatEventPeriod(event)"></time>']) ?>
+                                    <?= component('detail', ['icon' => 'map-pin', 'label' => 'Lieu', 'slot' => '<span x-text="event.location"></span>', 'class' => 'mt-2 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5', 'attrs' => ['x-show' => 'event.location']]) ?>
                                 </dl>
                                 <div class="mt-2 flex flex-wrap gap-1.5">
                                     <template x-for="section in event.sections" :key="section.id">
-                                        <span class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-0.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-200">
-                                            <span class="h-1.5 w-1.5 rounded-full" :style="`background-color: ${section.color}`"></span>
-                                            <span x-text="section.name"></span>
-                                        </span>
+                                        <?= component('section_tag', ['alpine' => 'section']) ?>
                                     </template>
                                 </div>
                             </div>
-                            <svg class="mt-1 h-5 w-5 flex-none text-gray-300 group-hover:text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                            </svg>
+                            <?= component('icon', ['name' => 'chevron-right', 'class' => 'mt-1 h-5 w-5 flex-none text-gray-300 group-hover:text-indigo-600']) ?>
                         </button>
                     </li>
                 </template>
@@ -178,11 +130,7 @@
 
             <!-- Empty state -->
             <div x-show="!loading && listedEvents.length === 0" class="py-10 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd"
-                        d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                        clip-rule="evenodd" />
-                </svg>
+                <?= component('icon', ['name' => 'calendar', 'class' => 'mx-auto h-12 w-12 text-gray-300']) ?>
                 <p class="mt-2 text-sm text-gray-500" x-text="selectedKey ? 'Aucune activité prévue ce jour-là.' : 'Aucune activité prévue ce mois-ci.'"></p>
             </div>
         </div>
@@ -204,12 +152,7 @@
                         <div class="px-6 pb-6 pt-5">
                             <div class="flex items-start justify-between gap-x-4">
                                 <h3 id="event-title" class="text-xl font-semibold text-gray-900" x-text="openedEvent.title"></h3>
-                                <button type="button" @click="closeEvent()" class="rounded-md text-gray-400 hover:text-gray-500">
-                                    <span class="sr-only">Fermer</span>
-                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
+                                <?= component('icon_button', ['icon' => 'x-mark', 'icon_class' => 'h-6 w-6', 'label' => 'Fermer', 'class' => 'rounded-md text-gray-400 hover:text-gray-500', 'attrs' => ['@click' => 'closeEvent()']]) ?>
                             </div>
 
                             <div class="mt-3 flex flex-wrap gap-2">
@@ -222,32 +165,12 @@
                             </div>
 
                             <dl class="mt-5 space-y-3 text-sm text-gray-700">
-                                <div class="flex items-start gap-x-3">
-                                    <dt class="mt-0.5">
-                                        <span class="sr-only">Date</span>
-                                        <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </dt>
-                                    <dd x-text="formatEventPeriod(openedEvent)"></dd>
-                                </div>
-                                <div class="flex items-start gap-x-3" x-show="openedEvent.location">
-                                    <dt class="mt-0.5">
-                                        <span class="sr-only">Emplacement</span>
-                                        <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </dt>
-                                    <dd>
-                                        <span x-text="openedEvent.location"></span>
-                                        <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(openedEvent.location || '')"
-                                            target="_blank" rel="noopener" class="ml-1 text-indigo-600 hover:text-indigo-500">(voir sur la carte)</a>
-                                    </dd>
-                                </div>
+                                <?= component('detail', ['icon' => 'calendar', 'label' => 'Date', 'slot' => '<span x-text="formatEventPeriod(openedEvent)"></span>']) ?>
+                                <?php component_open('detail', ['icon' => 'map-pin', 'label' => 'Lieu', 'attrs' => ['x-show' => 'openedEvent.location']]) ?>
+                                    <span x-text="openedEvent.location"></span>
+                                    <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(openedEvent.location || '')"
+                                        target="_blank" rel="noopener" class="ml-1 text-indigo-600 hover:text-indigo-500">(voir sur la carte)</a>
+                                <?= component_close() ?>
                             </dl>
 
                             <p x-show="openedEvent.description" class="mt-5 whitespace-pre-line text-sm leading-6 text-gray-600"
@@ -256,15 +179,8 @@
                             <a :href="`/actualites/${openedEvent.id}`" class="mt-2 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-500">Voir la page de l'événement</a>
 
                             <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                                <button type="button" @click="closeEvent()"
-                                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                    Fermer
-                                </button>
-                                <a x-show="registrationUrl(openedEvent) && !isPast(openedEvent)" :href="registrationUrl(openedEvent)"
-                                    target="_blank" rel="noopener"
-                                    class="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
-                                    S'inscrire
-                                </a>
+                                <?= component('button', ['label' => 'Fermer', 'variant' => 'secondary', 'size' => 'sm', 'attrs' => ['@click' => 'closeEvent()']]) ?>
+                                <?= component('button', ['label' => 'S\'inscrire', 'size' => 'sm', 'attrs' => ['x-show' => 'registrationUrl(openedEvent) && !isPast(openedEvent)', ':href' => 'registrationUrl(openedEvent)', 'target' => '_blank', 'rel' => 'noopener'], 'href' => '#']) ?>
                             </div>
                         </div>
                     </div>
@@ -372,11 +288,7 @@
                 this.loadingError = false;
 
                 try {
-                    const response = await fetch(`${this.apiUrl}?start=${start}&end=${end}`, { headers: { 'Accept': 'application/json' } });
-                    const json = await response.json();
-                    if (!response.ok || !json.success)
-                        throw new Error(json.messages);
-
+                    const json = await requestJson(`${this.apiUrl}?start=${start}&end=${end}`);
                     // Ignore the response if the user already moved to another month
                     if (requestId === this.requestId)
                         this.events = (json.data || []).map(withDayKeys);
@@ -398,11 +310,7 @@
                     return;
 
                 try {
-                    const response = await fetch(`${this.apiUrl}/${id}`, { headers: { 'Accept': 'application/json' } });
-                    const json = await response.json();
-                    if (!response.ok || !json.success)
-                        return;
-
+                    const json = await requestJson(`${this.apiUrl}/${id}`);
                     const start = parseEventDate(json.data.start_at);
                     this.goToMonth(start.getFullYear(), start.getMonth());
                     this.openEvent(withDayKeys(json.data));

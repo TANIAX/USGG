@@ -15,29 +15,12 @@
    ];
 ?>
 <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8 xl:py-20">
-   <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">L'ASBL de l'unité</h1>
-
-   <div class="mt-8 grid gap-8 text-lg text-gray-600 lg:grid-cols-2 lg:gap-12">
-      <div>
-         <p>
-            L’ASBL soutient l’unité guide et l’unité scoute de Gosselies. Elle prend en charge tout ce qui permet aux
-            animateurs de se concentrer sur l’essentiel : proposer aux jeunes des activités de qualité, en toute sécurité.
-         </p>
-         <p class="mt-4">
-            Elle est composée de parents, d’anciens et d’amis de l’unité, tous bénévoles, réunis au sein d’un conseil
-            d’administration (président, vice-président, trésorier et administrateurs).
-         </p>
-      </div>
-      <div>
-         <p>
-            Les locaux de l’unité se trouvent Rue Henri Belyn 77, à Gosselies.
-         </p>
-         <p class="mt-4">
-            Vous souhaitez vous investir, proposer une aide ponctuelle ou soutenir l’unité ?
-            <a href="/contact" class="link">Contactez-nous</a> : toutes les compétences sont utiles.
-         </p>
-      </div>
-   </div>
+   <?= component('page_intro', ['title' => 'L\'ASBL de l\'unité', 'columns' => [
+      ['L’ASBL soutient l’unité guide et l’unité scoute de Gosselies. Elle prend en charge tout ce qui permet aux animateurs de se concentrer sur l’essentiel : proposer aux jeunes des activités de qualité, en toute sécurité.',
+       'Elle est composée de parents, d’anciens et d’amis de l’unité, tous bénévoles, réunis au sein d’un conseil d’administration (président, vice-président, trésorier et administrateurs).'],
+      ['Les locaux de l’unité se trouvent Rue Henri Belyn 77, à Gosselies.',
+       'Vous souhaitez vous investir, proposer une aide ponctuelle ou soutenir l’unité ? <a href="/contact" class="link">Contactez-nous</a> : toutes les compétences sont utiles.'],
+   ]]) ?>
 
    <h2 class="mt-16 text-2xl font-semibold text-gray-900">Ses missions</h2>
    <dl class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -50,9 +33,9 @@
    </dl>
 
    <div class="mt-12 flex flex-wrap gap-3">
-      <a href="/asbl/evenements" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Nos événements</a>
-      <a href="/en-pratique/cotisation" class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Cotisations</a>
-      <a href="/contact" class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Contact</a>
+      <?= component('button', ['label' => 'Nos événements', 'href' => '/asbl/evenements']) ?>
+      <?= component('button', ['label' => 'Cotisations', 'href' => '/en-pratique/cotisation', 'variant' => 'secondary']) ?>
+      <?= component('button', ['label' => 'Contact', 'href' => '/contact', 'variant' => 'secondary']) ?>
    </div>
 </div>
 <?= $this->endSection() ?>

@@ -183,6 +183,60 @@ function formatEventPeriod(event) {
 }
 
 /**
+ * Formats a date coming from the database in french.
+ * @param {string} value - The date ("YYYY-MM-DD" or "YYYY-MM-DD HH:MM:SS").
+ * @param {string} style - "long" (12 août 2026) or "short" (12 août 2026 with an abbreviated month).
+ * @returns {string} - The formatted date, "" without date.
+ */
+function formatDate(value, style = "long") {
+  if (!value) return "";
+  let month = style === "short" ? "short" : "long";
+  return parseEventDate(value).toLocaleDateString("fr-BE", { day: "numeric", month: month, year: "numeric" });
+}
+
+/**
+ * Formats a size of file in french ("1,2 Mo", "350 Ko").
+ * @param {number} bytes - The size.
+ * @returns {string} - The formatted size.
+ */
+function formatFileSize(bytes) {
+  return bytes > 1048576 ? (bytes / 1048576).toFixed(1).replace(".", ",") + " Mo" : Math.max(1, Math.round(bytes / 1024)) + " Ko";
+}
+
+/**
+ * Calls an url of the site and returns its JSON answer ({success: true, ...}).
+ * With "data", the request is a POST of a form (the arrays are sent as "name[]").
+ * @param {string} url - The url.
+ * @param {Object|FormData|null} data - The data to post, null for a GET.
+ * @returns {Promise<Object>} - The JSON answer.
+ * @throws {Error} - When the request failed, with the message of the server if there is one.
+ */
+async function requestJson(url, data = null) {
+  let options = { headers: { "X-Requested-With": "XMLHttpRequest", Accept: "application/json" } };
+  if (data !== null) {
+    let body = data instanceof FormData ? data : new FormData();
+    if (!(data instanceof FormData))
+      Object.entries(data).forEach(([name, value]) =>
+        Array.isArray(value) ? value.forEach((item) => body.append(name + "[]", item)) : body.append(name, value)
+      );
+    options = { ...options, method: "POST", body: body };
+  }
+
+  let response = await fetch(url, options);
+  let json = null;
+  try {
+    json = await response.json();
+  } catch (error) {
+    // Not a JSON answer (error page, session expired...)
+  }
+  if (!response.ok || !json || !json.success) {
+    let message = json && (json.message || json.messages);
+    throw new Error(typeof message === "string" ? message : "");
+  }
+  return json;
+}
+
+/**
  * Alpine component: automatic carousel (crossfade) of the photos of an album cover.
  * - a photo is only loaded just before being displayed,
  * - the animation stops when the cover is not on screen or the tab is hidden,

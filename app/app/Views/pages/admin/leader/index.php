@@ -6,25 +6,14 @@ Guides et scoutes de Gosselies - Responsables de section
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" x-data="app()" x-cloak>
    <div class="px-4 sm:px-6 lg:px-8">
-      <!-- Title -->
-      <div class="sm:flex justify-start sm:items-center mt-12 mb-8 border-b py-4">
-         <div class="sm:flex-auto">
-            <h1 class="font-semibold text-4xl leading-tight text-gray-900">Responsables de section</h1>
-            <p class="mt-1 text-sm text-gray-500">Ils sont présentés sur la page d'accueil, dans l'ordre des sections puis dans l'ordre choisi ici.</p>
+      <?php component_open('page_header', ['title' => 'Responsables de section', 'subtitle' => 'Ils sont présentés sur la page d\'accueil, dans l\'ordre des sections puis dans l\'ordre choisi ici.']) ?>
+         <div class="flex gap-x-3">
+            <?= component('button', ['label' => 'Voir l\'accueil', 'href' => '/#responsables', 'variant' => 'secondary', 'size' => 'sm', 'block' => true, 'attrs' => ['target' => '_blank']]) ?>
+            <?= component('button', ['label' => 'Ajouter un responsable', 'href' => '/admin/responsables/create', 'size' => 'sm', 'block' => true]) ?>
          </div>
-         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex gap-x-3">
-            <a href="/#responsables" target="_blank"
-               class="block rounded-md bg-white px-3 py-2 text-center text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-               Voir l'accueil
-            </a>
-            <a href="/admin/responsables/create"
-               class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
-               Ajouter un responsable
-            </a>
-         </div>
-      </div>
+      <?= component_close() ?>
 
-      <?= $this->include('pages/admin/messages') ?>
+      <?= component('flash') ?>
       <p x-show="error" x-text="error" class="mb-4 text-sm text-red-600"></p>
 
       <div class="space-y-10 pb-16">
@@ -48,16 +37,8 @@ Guides et scoutes de Gosselies - Responsables de section
                            <p class="truncate text-sm text-gray-500"><span x-text="leader.function || 'Fonction non précisée'"></span> · <span x-text="leader.email"></span></p>
                         </div>
                         <div class="flex items-center gap-x-1">
-                           <button type="button" @click="move(leader, 'up')" :disabled="index === 0 || busy" title="Monter"
-                              class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30">
-                              <span class="sr-only">Monter</span>
-                              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z" clip-rule="evenodd" /></svg>
-                           </button>
-                           <button type="button" @click="move(leader, 'down')" :disabled="index === leadersOf(section).length - 1 || busy" title="Descendre"
-                              class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30">
-                              <span class="sr-only">Descendre</span>
-                              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
-                           </button>
+                           <?= component('icon_button', ['icon' => 'chevron-up', 'label' => 'Monter', 'attrs' => ['@click' => "move(leader, 'up')", ':disabled' => 'index === 0 || busy']]) ?>
+                           <?= component('icon_button', ['icon' => 'chevron-down', 'label' => 'Descendre', 'attrs' => ['@click' => "move(leader, 'down')", ':disabled' => 'index === leadersOf(section).length - 1 || busy']]) ?>
                            <a :href="`/admin/responsables/edit/${leader.id}`" class="ml-2 text-sm font-medium text-indigo-600 hover:text-indigo-900">Modifier</a>
                            <form method="POST" :action="`/admin/responsables/delete/${leader.id}`" class="inline"
                               @submit="if (!confirm(`Retirer ${leader.display_name} des responsables des ${section.name} ? Son compte est conservé.`)) $event.preventDefault()">
@@ -91,12 +72,7 @@ Guides et scoutes de Gosselies - Responsables de section
             this.busy = true;
             this.error = '';
             try {
-               const data = new FormData();
-               data.append('direction', direction);
-               const response = await fetch(`/admin/responsables/move/${leader.id}`, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-               const json = await response.json();
-               if (!response.ok || !json.success)
-                  throw new Error();
+               const json = await requestJson(`/admin/responsables/move/${leader.id}`, { direction: direction });
                this.leaders = json.leaders;
             } catch (error) {
                this.error = 'L\'ordre n\'a pas pu être modifié. Rechargez la page et réessayez.';
