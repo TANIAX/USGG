@@ -29,6 +29,26 @@ Comptes de test (mot de passe = adresse e-mail) :
 | `scout_admin@gmail.com` | administrateur scout |
 | `asbl_admin@gmail.com` | administrateur ASBL |
 
+### Site exemple (vitrine)
+
+```bash
+docker compose --profile vitrine up --build
+```
+
+En plus du démarrage normal, le service `vitrine` remplit la base avec un site exemple, puis s'arrête :
+
+- 26 responsables de section avec photo (pages staff et présentations) ;
+- 10 albums, environ 80 photos, dont quelques-unes réservées aux membres connectés ;
+- 15 événements passés et à venir, avec images ;
+- 8 documents PDF (guide et scout) ;
+- des demandes d'inscription dans tous les statuts, des messages de contact, des abonnés à la newsletter et l'historique.
+
+Les images sont dessinées par le seed (`app/Database/Seeds/VitrineImages.php`) : pas besoin d'internet. Les dates suivent la date du jour.
+Les responsables ont un compte `prenom.nom@exemple.be` (mot de passe = adresse e-mail).
+
+La vitrine ne s'ajoute qu'une fois (rien n'est fait si des albums existent). Pour repartir de zéro : `docker compose down -v`, puis relancer la commande.
+Sans Docker : `php spark db:seed VitrineSeeder`.
+
 ### Commandes utiles
 
 ```bash
