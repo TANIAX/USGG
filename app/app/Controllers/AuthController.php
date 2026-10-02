@@ -146,9 +146,11 @@ class AuthController extends BaseController
     private function initGoogleClient()
     {
         $this->googleClient = new \Google\Client(['verify' => false]);
-        $this->googleClient->setClientId(getenv('GOOGLE_CLIENT_ID'));
-        $this->googleClient->setClientSecret(getenv('GOOGLE_CLIENT_SECRET'));
-        $this->googleClient->setRedirectUri(getenv('GOOGLE_REDIRECT_URL'));
+        // Missing settings (e.g. in local): the client stays empty, the Google login is not proposed (googleAuthUrl())
+        $this->googleClient->setClientId((string) getenv('GOOGLE_CLIENT_ID'));
+        $this->googleClient->setClientSecret((string) getenv('GOOGLE_CLIENT_SECRET'));
+        if (getenv('GOOGLE_REDIRECT_URL'))
+            $this->googleClient->setRedirectUri(getenv('GOOGLE_REDIRECT_URL'));
         $this->googleClient->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
         $this->googleClient->addScope('email');
     }
