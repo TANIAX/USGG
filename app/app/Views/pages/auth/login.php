@@ -42,7 +42,7 @@
                 </form>
 
                 <?php // Connexion Google désactivée temporairement (token OAuth expiré) : passer à true pour la réactiver ?>
-                <?php if (false): ?>
+                <?php if (false && !empty($authUrl)): ?>
                 <hr class="my-6 border-gray-300 w-full">
 
                 <button type="button"

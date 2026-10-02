@@ -41,7 +41,7 @@ class AuthController extends BaseController
      */
     public function login()
     {
-        $authUrl = $this->googleClient->createAuthUrl();
+        $authUrl = $this->googleAuthUrl();
 
         //If the user is already connected, we redirect him to the home page
         if ($this->session->get(SessionHelper::USER_CONNECTED_SESSION_KEY))
@@ -106,7 +106,7 @@ class AuthController extends BaseController
             log_message('notice', 'Connexion Google refusée ({reason}) pour {email}', ['reason' => $user ? 'compte désactivé' : 'adresse inconnue', 'email' => LogHelper::maskEmail($email)]);
             return view('pages/auth/login', [
                 'errors' => [$user ? 'Ce compte est désactivé.' : 'L\'adresse email est inconnue de l\'application'],
-                'authUrl' => $this->googleClient->createAuthUrl()
+                'authUrl' => $this->googleAuthUrl()
             ]);
         }
 
@@ -122,6 +122,18 @@ class AuthController extends BaseController
     {
         $this->session->remove(SessionHelper::USER_CONNECTED_SESSION_KEY);
         return redirect()->to(base_url('/auth/login'));
+    }
+
+    /**
+     * Address of the Google login page, or null when the Google login is not configured
+     * (GOOGLE_CLIENT_ID and GOOGLE_REDIRECT_URL in .env): the login page must work without it, e.g. in local.
+     */
+    private function googleAuthUrl(): ?string
+    {
+        if (!getenv('GOOGLE_CLIENT_ID') || !getenv('GOOGLE_REDIRECT_URL'))
+            return null;
+
+        return $this->googleClient->createAuthUrl();
     }
 
     /**

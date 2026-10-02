@@ -67,3 +67,22 @@ La configuration Docker est dans `docker-compose.yml` (service `php`, `environme
 - Connexion Google : renseigner `GOOGLE_CLIENT_ID` et `GOOGLE_CLIENT_SECRET`.
 
 Le code est monté dans les conteneurs : les modifications de `app/` sont visibles sans reconstruire. Il faut reconstruire (`--build`) seulement après une modification de `.docker/`.
+
+## Lancer le site sans Docker
+
+Prérequis : PHP 8.1 ou plus avec les extensions `intl`, `mbstring`, `gd`, `sqlite3` et `fileinfo`, et Composer.
+Toutes les commandes se lancent dans le dossier `app/`.
+
+1. `composer install`
+2. Créer `app/.env` :
+   ```ini
+   CI_ENVIRONMENT = development
+   app.baseURL = 'http://localhost:8080/'
+   JWT_SECRET = 'une-cle-locale'
+   ```
+   La base SQLite est créée dans `app/writable/database/usgg.db` (autre emplacement : `database.default.database = ...`).
+3. `php spark migrate --all`, puis `php spark db:seed DatabaseSeeder` (comptes de test ci-dessus).
+   Site exemple : `php spark db:seed VitrineSeeder` (extension `gd` nécessaire).
+4. `php spark serve`, puis http://localhost:8080
+
+Pour repartir de zéro : supprimer `app/writable/database/usgg.db` et refaire l'étape 3. Après un `git pull` : `php spark migrate --all`.

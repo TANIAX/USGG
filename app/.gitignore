@@ -60,6 +60,11 @@ writable/session/*
 writable/uploads/*
 !writable/uploads/index.html
 
+# Local SQLite database (the folder and the sample are kept)
+writable/database/*
+!writable/database/index.html
+!writable/database/sample.db
+
 writable/debugbar/*
 
 php_errors.log

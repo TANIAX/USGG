@@ -42,7 +42,8 @@ class Database extends Config
         'hostname' => 'localhost',
         'username' => '',
         'password' => '',
-        'database' => '',
+        // SQLite file in writable/database/ (can be changed in .env: database.default.database = ...)
+        'database' => WRITEPATH . 'database' . DIRECTORY_SEPARATOR . 'usgg.db',
         'DBDriver' => 'SQLite3',
         'DBPrefix' => '',
         'pConnect' => false,

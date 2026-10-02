@@ -8,7 +8,9 @@
  | make sure they don't make it to production. And save us hours of
  | painful debugging.
  */
-error_reporting(-1);
+// All the errors, except the deprecation notices: with PHP 8.4, CodeIgniter 4.2 and the Google library
+// raise some (session.sid_length...) that would stop every page in development
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 ini_set('display_errors', '1');
 
 /*
